@@ -41,6 +41,7 @@ The `UserManager` constructor requires a settings object as a parameter. The set
  * silent_redirect_uri (string): The URL for the page containing the code handling the silent renew.
  * automaticSilentRenew (boolean, default: `false`): Flag to indicate if there should be an automatic attempt to renew the access token prior to its expiration. The attempt is made as a result of the `accessTokenExpiring` event being raised.
  * accessTokenExpiringNotificationTime (number, default: 60): The number of seconds before an access token is to expire to raise the `accessTokenExpiring` event.
+ * userStore: (default: session storage): Storage object used to persist `User` for currently authenticated user. 
 
 ### APIs
 * getUser: Returns promise to load the `User` object for the currently authenticated user. 
