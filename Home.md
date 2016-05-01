@@ -43,13 +43,13 @@ The `UserManager` constructor requires a settings object as a parameter. The set
  * accessTokenExpiringNotificationTime (number, default: 60): The number of seconds before an access token is to expire to raise the `accessTokenExpiring` event.
 
 ### APIs
-* getUser: Returns promise to load the `User` object for the currently authenticated user.
+* getUser: Returns promise to load the `User` object for the currently authenticated user. 
 * removeUser: Returns promise to remove from any storage the currently authenticated user.
 * signinRedirect: Returns promise to trigger a redirect of the current window to the authorization endpoint.
-* signinRedirectCallback: Returns promise to process response from the authorization endpoint.
-* signinSilent: Returns promise to trigger a silent request (via an iframe) to the authorization endpoint.
+* signinRedirectCallback: Returns promise to process response from the authorization endpoint. The result of the promise is the authenticated `User`.
+* signinSilent: Returns promise to trigger a silent request (via an iframe) to the authorization endpoint. The result of the promise is the authenticated `User`.
 * signinSilentCallback: Returns promise to notify the parent window of response from the authorization endpoint.
-* signinPopup: Returns promise to trigger a request (via a popup window) to the authorization endpoint.
+* signinPopup: Returns promise to trigger a request (via a popup window) to the authorization endpoint. The result of the promise is the authenticated `User`.
 * signinPopupCallback: Returns promise to notify the opening window of response from the authorization endpoint.
 * signoutRedirect: Returns promise to trigger a redirect of the current window to the end session endpoint.
 * signoutRedirectCallback: Returns promise to process response from the end session endpoint.
