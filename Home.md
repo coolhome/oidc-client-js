@@ -43,7 +43,7 @@ The `UserManager` constructor requires a settings object as a parameter. The set
  * accessTokenExpiringNotificationTime (number, default: `60`): The number of seconds before an access token is to expire to raise the `accessTokenExpiring` event.
  * userStore: (default: session storage): Storage object used to persist `User` for currently authenticated user. 
 
-### APIs
+### Methods
 * getUser: Returns promise to load the `User` object for the currently authenticated user. 
 * removeUser: Returns promise to remove from any storage the currently authenticated user.
 * signinRedirect: Returns promise to trigger a redirect of the current window to the authorization endpoint.
