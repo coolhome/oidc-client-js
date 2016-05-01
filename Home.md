@@ -1,7 +1,7 @@
 # oidc-client
 oidc-client is a JavaScript library intended to run in browsers (and possibly Cordova style applications). It provides protocol support for OIDC and OAuth2, as well as management functions for user sessions and access tokens management.
 
-The two main classes that you might want to use depend on the level at with you use to use the library. 
+There are two main classes that you might want to use depend on the level at with you use to use the library:
 
 The `UserManager` class provides a higher level API for signing a user in, signing out, managing the user's claims returned from the OIDC provider, and managing an access token returned from the OIDC/OAuth2 provider. The `UserManager` is the primary feature of the library.
 
