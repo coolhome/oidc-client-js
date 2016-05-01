@@ -31,7 +31,7 @@ The `UserManager` constructor requires a settings object as a parameter. The set
  * acr_values
 
 * Other Optional Settings
- * clockSkew (number, default: 300): The window of time (in seconds) to allow the current time to deviate when validating id_token's `iat`, `nbf`, and `exp` values.
+ * clockSkew (number, default: `300`): The window of time (in seconds) to allow the current time to deviate when validating id_token's `iat`, `nbf`, and `exp` values.
  * loadUserInfo (boolean, default: `true`): Flag to control if additional identity data is loaded from the user info endpoint in order to populate the user's `profile`.
  * filterProtocolClaims (boolean, default: `true`): Should OIDC protocol claims be removed from `profile`.
  * post_logout_redirect_uri (string): The OIDC/OAuth2 post-logout redirect URI.
@@ -40,7 +40,7 @@ The `UserManager` constructor requires a settings object as a parameter. The set
  * popupWindowTarget (string, default: `'_blank'`): The `target` parameter to `window.open` for the popup signin window.
  * silent_redirect_uri (string): The URL for the page containing the code handling the silent renew.
  * automaticSilentRenew (boolean, default: `false`): Flag to indicate if there should be an automatic attempt to renew the access token prior to its expiration. The attempt is made as a result of the `accessTokenExpiring` event being raised.
- * accessTokenExpiringNotificationTime (number, default: 60): The number of seconds before an access token is to expire to raise the `accessTokenExpiring` event.
+ * accessTokenExpiringNotificationTime (number, default: `60`): The number of seconds before an access token is to expire to raise the `accessTokenExpiring` event.
  * userStore: (default: session storage): Storage object used to persist `User` for currently authenticated user. 
 
 ### APIs
