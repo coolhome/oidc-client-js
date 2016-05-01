@@ -9,7 +9,9 @@ The `OidcClient` class provides the raw OIDC/OAuth2 protocol support for the aut
 
 The remainder of this document will primarily focus on the `UserManager`.
 
-## Configuration
+## UserManager
+
+### Configuration
 
 The `UserManager` constructor requires a settings object as a parameter. The settings has these properties:
 
@@ -40,7 +42,7 @@ The `UserManager` constructor requires a settings object as a parameter. The set
  * automaticSilentRenew (boolean, default: `false`): Flag to indicate if there should be an automatic attempt to renew the access token prior to its expiration. The attempt is made as a result of the `accessTokenExpiring` event being raised.
  * accessTokenExpiringNotificationTime (number, default: 60): The number of seconds before an access token is to expire to raise the `accessTokenExpiring` event.
 
-## APIs
+### APIs
 * getUser: Returns promise to load the `User` object for the currently authenticated user.
 * removeUser: Returns promise to remove from any storage the currently authenticated user.
 * signinRedirect: Returns promise to trigger a redirect of the current window to the authorization endpoint.
@@ -52,14 +54,30 @@ The `UserManager` constructor requires a settings object as a parameter. The set
 * signoutRedirect: Returns promise to trigger a redirect of the current window to the end session endpoint.
 * signoutRedirectCallback: Returns promise to process response from the end session endpoint.
 
-## Properties
+### Properties
 * settings: Returns the settings used to configure the `UserManager`.
 * events: Returns an object used to register for events raised by the `UserManager`. 
 * metadataService: Returns an object used to access the metadata configuration of the OIDC provider.
 
-## Events
-* userLoaded
-* userUnloaded
-* accessTokenExpiring
-* accessTokenExpired
-* silentRenewError
+### Events
+* userLoaded: Raised when a user session has been established (or re-established).
+* userUnloaded: Raised when a user session has been terminated.
+* accessTokenExpiring: Raised prior to the access token expiring.
+* accessTokenExpired: Raised after the access token has expired.
+* silentRenewError: Raised when the automatic silent renew has failed.
+
+## User
+
+The `User` type is returned from the `UserManager`'s `getUser` API. It contains these properties:
+
+* id_token: The id_token returned from the OIDC provider.
+* profile: The claims represented by a combination of the `id_token` and the user info endpoint.
+* session_state: The session state value returned from the OIDC provider. 
+* access_token: The access token returned from the OIDC provider. 
+* access_token: The access token returned from the OIDC provider. 
+* scope: The scope returned from the OIDC provider. 
+* expires_at: The expires at returned from the OIDC provider. 
+* expires_in: Calculated number of seconds the access token has remaining.
+* expired: Calculated value indicating if the access token is expired.
+* scopes: Array representing the parsed values from the `scope`.
+
