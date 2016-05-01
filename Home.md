@@ -34,7 +34,7 @@ The `UserManager` constructor requires a settings object as a parameter. The set
  * filterProtocolClaims (boolean, default: `true`): Should OIDC protocol claims be removed from `profile`.
  * post_logout_redirect_uri (string): The OIDC/OAuth2 post-logout redirect URI.
  * popup_redirect_uri (string): The URL for the page containing the call to `signinPopupCallback` to handle the callback from the OIDC/OAuth2
- * popupWindowFeatures (string, default: `''`): The `features` parameter to `window.open` for the popup signin window.
+ * popupWindowFeatures (string, default: `'location=no,toolbar=no,width=500,height=500,left=100,top=100'`): The `features` parameter to `window.open` for the popup signin window.
  * popupWindowTarget (string, default: `'_blank'`): The `target` parameter to `window.open` for the popup signin window.
  * silent_redirect_uri (string): The URL for the page containing the code handling the silent renew.
  * automaticSilentRenew (boolean, default: `false`): Flag to indicate if there should be an automatic attempt to renew the access token prior to its expiration. The attempt is made as a result of the `accessTokenExpiring` event being raised.
