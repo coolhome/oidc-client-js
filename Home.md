@@ -23,7 +23,8 @@ The `UserManager` constructor requires a settings object as a parameter. The set
  * scope (string, default: `'openid'`): The scope being requested from the OIDC/OAuth2 provider.
 
 * Provider settings if CORS not supported
- The authority URL is used to make HTTP requests to discover more information about the server. If the server does not allow CORS on the metadata endpoint, then these additional settings can be provided (which can be found on the metadata endpoint of the provider):
+
+ The `authority` URL setting is used to make HTTP requests to discover more information about the OIDC/OAuth2 provider. If the server does not allow CORS on the metadata endpoint, then these additional settings can be configured (which can be found on the metadata endpoint of the provider):
  * issuer
  * authorization_endpoint
  * userinfo_endpoint
