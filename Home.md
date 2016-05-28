@@ -22,7 +22,7 @@ The `UserManager` constructor requires a settings object as a parameter. The set
  * response_type (string, default: `'id_token'`): The type of response desired from the OIDC/OAuth2 provider.
  * scope (string, default: `'openid'`): The scope being requested from the OIDC/OAuth2 provider.
 
-* Provider settings if CORS not supported
+* Provider settings if CORS not supported on OIDC/OAuth2 provider metadata endpoint
 
  The `authority` URL setting is used to make HTTP requests to discover more information about the OIDC/OAuth2 provider and populate a `metadata` property on the settings. If the server does not allow CORS on the metadata endpoint, then these additional settings can be configured (which can be found on the metadata endpoint of the provider):
  * metadata property which contains:
