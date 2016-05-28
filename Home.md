@@ -25,11 +25,12 @@ The `UserManager` constructor requires a settings object as a parameter. The set
 * Provider settings if CORS not supported
 
  The `authority` URL setting is used to make HTTP requests to discover more information about the OIDC/OAuth2 provider. If the server does not allow CORS on the metadata endpoint, then these additional settings can be configured (which can be found on the metadata endpoint of the provider):
- * issuer
- * authorization_endpoint
- * userinfo_endpoint
- * end_session_endpoint
- * jwks_uri
+ * metadata property which contains:
+  * issuer
+  * authorization_endpoint
+  * userinfo_endpoint
+  * end_session_endpoint
+  * jwks_uri
  * signingKeys (which is the `keys` property of the `jwks_uri` endpoint) 
 
 * Optional Authorization Request Settings
