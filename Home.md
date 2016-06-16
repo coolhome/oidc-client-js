@@ -94,10 +94,12 @@ The `User` type is returned from the `UserManager`'s `getUser` API. It contains 
 
 ## Logging
 
-The oidc-client-js library supports logging. You can set a logger by assigning `Oidc.Log.logger` to anything that supports a `info`, `warn`, and `error` methods that accept a params array. The `console` object in the browser supports these, so a common way to easily enable logging in the browser is to simply add this code:
+The oidc-client-js library supports logging. You can set a logger by assigning `Oidc.Log.logger` to anything that supports a `info`, `warn`, and `error` methods that accept a params array. By default, no logger is configured.
+
+The `console` object in the browser supports these, so a common way to easily enable logging in the browser is to simply add this code:
 
 ```
 Oidc.Log.logger = console;
 ```
 
-Also, logging has levels so you can control the verbosity by setting the `Oidc.Log.level` to one of `Oidc.Log.NONE`, `Oidc.Log.ERROR`, `Oidc.Log.WARN`, or `Oidc.Log.INFO`.
+Also, logging has levels so you can control the verbosity by setting the `Oidc.Log.level` to one of `Oidc.Log.NONE`, `Oidc.Log.ERROR`, `Oidc.Log.WARN`, or `Oidc.Log.INFO`. The default is `Oidc.Log.INFO`.
