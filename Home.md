@@ -53,6 +53,7 @@ The `UserManager` constructor requires a settings object as a parameter. The set
  * automaticSilentRenew (boolean, default: `false`): Flag to indicate if there should be an automatic attempt to renew the access token prior to its expiration. The attempt is made as a result of the `accessTokenExpiring` event being raised.
  * accessTokenExpiringNotificationTime (number, default: `60`): The number of seconds before an access token is to expire to raise the `accessTokenExpiring` event.
  * userStore: (default: session storage): Storage object used to persist `User` for currently authenticated user. 
+ * monitorSession: (default: `true`): Will raise events for when user has performed a signout at the OP.
 
 ### Methods
 * getUser: Returns promise to load the `User` object for the currently authenticated user. 
@@ -65,6 +66,7 @@ The `UserManager` constructor requires a settings object as a parameter. The set
 * signinPopupCallback: Returns promise to notify the opening window of response from the authorization endpoint.
 * signoutRedirect: Returns promise to trigger a redirect of the current window to the end session endpoint.
 * signoutRedirectCallback: Returns promise to process response from the end session endpoint.
+* querySessionStatus: Returns promise to query OP for user's current signin status. Returns object with session_state and subject identifier.
 
 ### Properties
 * settings: Returns the settings used to configure the `UserManager`.
@@ -77,6 +79,7 @@ The `UserManager` constructor requires a settings object as a parameter. The set
 * accessTokenExpiring: Raised prior to the access token expiring.
 * accessTokenExpired: Raised after the access token has expired.
 * silentRenewError: Raised when the automatic silent renew has failed.
+* userSignedOut: Raised when the user's signin status at the OP has changed.
 
 ## User
 
