@@ -106,3 +106,7 @@ Oidc.Log.logger = console;
 ```
 
 Also, logging has levels so you can control the verbosity by setting the `Oidc.Log.level` to one of `Oidc.Log.NONE`, `Oidc.Log.ERROR`, `Oidc.Log.WARN`, or `Oidc.Log.INFO`. The default is `Oidc.Log.INFO`.
+
+## Samples using oidc-client
+
+[Angular2](https://github.com/jmurphzyo/Angular2OidcClient)
