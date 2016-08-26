@@ -110,5 +110,5 @@ Also, logging has levels so you can control the verbosity by setting the `Oidc.L
 
 ## Samples using oidc-client
 
-[Angular2](https://github.com/jmurphzyo/Angular2OidcClient)
-[Aurelia](https://github.com/shaunluttin/openiddict-samples/tree/spa-sample/samples/ImplicitFlow)
+* [Angular2](https://github.com/jmurphzyo/Angular2OidcClient)
+* [Aurelia](https://github.com/shaunluttin/openiddict-samples/tree/spa-sample/samples/ImplicitFlow)
