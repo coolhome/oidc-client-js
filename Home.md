@@ -112,3 +112,4 @@ Also, logging has levels so you can control the verbosity by setting the `Oidc.L
 
 * [Angular2](https://github.com/jmurphzyo/Angular2OidcClient)
 * [Aurelia](https://github.com/shaunluttin/aurelia-open-id-connect)
+* [ReactJS & Redux](https://github.com/maxmantz/redux-oidc)
