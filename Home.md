@@ -55,6 +55,7 @@ The `UserManager` constructor requires a settings object as a parameter. The set
  * accessTokenExpiringNotificationTime (number, default: `60`): The number of seconds before an access token is to expire to raise the `accessTokenExpiring` event.
  * userStore: (default: session storage): Storage object used to persist `User` for currently authenticated user. E.g. `userStore: new WebStorageStateStore({ store: window.localStorage })`
  * monitorSession [1.1.0]: (default: `true`): Will raise events for when user has performed a signout at the OP.
+ * revokeAccessTokenOnSignout [1.2.1] (default: `false`): Will invoke the revocation endpoint on signout if there is an access token for the user.
 
 ### Methods
 * getUser: Returns promise to load the `User` object for the currently authenticated user. 
