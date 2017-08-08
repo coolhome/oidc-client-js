@@ -17,48 +17,47 @@ The remainder of this document will primarily focus on the `UserManager`.
 
 The `UserManager` constructor requires a settings object as a parameter. The settings has these properties:
 
-* Required Settings
-  * authority (string): The URL of the OIDC/OAuth2 provider.
-  * client_id (string): Your client application's identifier as registered with the OIDC/OAuth2 provider.
-  * redirect_uri (string): The redirect URI of your client application to receive a response from the OIDC/OAuth2 provider.
-  * response_type (string, default: `'id_token'`): The type of response desired from the OIDC/OAuth2 provider.
-  * scope (string, default: `'openid'`): The scope being requested from the OIDC/OAuth2 provider.
+#### Required Settings
+* authority (string): The URL of the OIDC/OAuth2 provider.
+* client_id (string): Your client application's identifier as registered with the OIDC/OAuth2 provider.
+* redirect_uri (string): The redirect URI of your client application to receive a response from the OIDC/OAuth2 provider.
+* response_type (string, default: `'id_token'`): The type of response desired from the OIDC/OAuth2 provider.
+* scope (string, default: `'openid'`): The scope being requested from the OIDC/OAuth2 provider.
 
-* Provider settings if CORS not supported on OIDC/OAuth2 provider metadata endpoint
+#### Provider settings if CORS not supported on OIDC/OAuth2 provider metadata endpoint
+The `authority` URL setting is used to make HTTP requests to discover more information about the OIDC/OAuth2 provider and populate a `metadata` property on the settings. If the server does not allow CORS on the metadata endpoint, then these additional settings can be manually configured. These values can be found on the metadata endpoint of the provider:
+* metadata property which contains:
+   * issuer
+   * authorization_endpoint
+   * userinfo_endpoint
+   * end_session_endpoint
+   * jwks_uri
+* signingKeys (which is the `keys` property of the `jwks_uri` endpoint) 
 
- The `authority` URL setting is used to make HTTP requests to discover more information about the OIDC/OAuth2 provider and populate a `metadata` property on the settings. If the server does not allow CORS on the metadata endpoint, then these additional settings can be manually configured. These values can be found on the metadata endpoint of the provider:
-  * metadata property which contains:
-     * issuer
-     * authorization_endpoint
-     * userinfo_endpoint
-     * end_session_endpoint
-     * jwks_uri
-  * signingKeys (which is the `keys` property of the `jwks_uri` endpoint) 
+#### Optional Authorization Request Settings
+* prompt
+* display
+* max_age
+* ui_locales
+* login_hint
+* acr_values
 
-* Optional Authorization Request Settings
-  * prompt
-  * display
-  * max_age
-  * ui_locales
-  * login_hint
-  * acr_values
-
-* Other Optional Settings
-  * clockSkew (number, default: `300`): The window of time (in seconds) to allow the current time to deviate when validating id_token's `iat`, `nbf`, and `exp` values.
-  * loadUserInfo (boolean, default: `true`): Flag to control if additional identity data is loaded from the user info endpoint in order to populate the user's `profile`.
-  * filterProtocolClaims (boolean, default: `true`): Should OIDC protocol claims be removed from `profile`.
-  * post_logout_redirect_uri (string): The OIDC/OAuth2 post-logout redirect URI.
-  * popup_redirect_uri (string): The URL for the page containing the call to `signinPopupCallback` to handle the callback from the OIDC/OAuth2
-  * popupWindowFeatures (string, default: `'location=no,toolbar=no,width=500,height=500,left=100,top=100'`): The `features` parameter to `window.open` for the popup signin window.
-  * popupWindowTarget (string, default: `'_blank'`): The `target` parameter to `window.open` for the popup signin window.
-  * silent_redirect_uri (string): The URL for the page containing the code handling the silent renew.
-  * automaticSilentRenew (boolean, default: `false`): Flag to indicate if there should be an automatic attempt to renew the access token prior to its expiration. The attempt is made as a result of the `accessTokenExpiring` event being raised.
-  * silentRequestTimeout (number, default: `5000`): Number of milliseconds to wait for the silent renew to return before assuming it has failed or timed out. 
-  * accessTokenExpiringNotificationTime (number, default: `60`): The number of seconds before an access token is to expire to raise the `accessTokenExpiring` event.
-  * userStore: (default: session storage): Storage object used to persist `User` for currently authenticated user. E.g. `userStore: new WebStorageStateStore({ store: window.localStorage })`
-  * monitorSession [1.1.0]: (default: `true`): Will raise events for when user has performed a signout at the OP.
-  * checkSessionInterval: (default: `2000`): Interval, in ms, to check the user's session.
-  * revokeAccessTokenOnSignout [1.2.1] (default: `false`): Will invoke the revocation endpoint on signout if there is an access token for the user.
+#### Other Optional Settings
+* clockSkew (number, default: `300`): The window of time (in seconds) to allow the current time to deviate when validating id_token's `iat`, `nbf`, and `exp` values.
+* loadUserInfo (boolean, default: `true`): Flag to control if additional identity data is loaded from the user info endpoint in order to populate the user's `profile`.
+* filterProtocolClaims (boolean, default: `true`): Should OIDC protocol claims be removed from `profile`.
+* post_logout_redirect_uri (string): The OIDC/OAuth2 post-logout redirect URI.
+* popup_redirect_uri (string): The URL for the page containing the call to `signinPopupCallback` to handle the callback from the OIDC/OAuth2
+* popupWindowFeatures (string, default: `'location=no,toolbar=no,width=500,height=500,left=100,top=100'`): The `features` parameter to `window.open` for the popup signin window.
+* popupWindowTarget (string, default: `'_blank'`): The `target` parameter to `window.open` for the popup signin window.
+* silent_redirect_uri (string): The URL for the page containing the code handling the silent renew.
+* automaticSilentRenew (boolean, default: `false`): Flag to indicate if there should be an automatic attempt to renew the access token prior to its expiration. The attempt is made as a result of the `accessTokenExpiring` event being raised.
+* silentRequestTimeout (number, default: `5000`): Number of milliseconds to wait for the silent renew to return before assuming it has failed or timed out. 
+* accessTokenExpiringNotificationTime (number, default: `60`): The number of seconds before an access token is to expire to raise the `accessTokenExpiring` event.
+* userStore: (default: session storage): Storage object used to persist `User` for currently authenticated user. E.g. `userStore: new WebStorageStateStore({ store: window.localStorage })`
+* monitorSession [1.1.0]: (default: `true`): Will raise events for when user has performed a signout at the OP.
+* checkSessionInterval: (default: `2000`): Interval, in ms, to check the user's session.
+* revokeAccessTokenOnSignout [1.2.1] (default: `false`): Will invoke the revocation endpoint on signout if there is an access token for the user.
 
 ### Methods
 * getUser: Returns promise to load the `User` object for the currently authenticated user. 
