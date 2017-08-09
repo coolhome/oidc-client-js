@@ -78,12 +78,23 @@ The `authority` URL setting is used to make HTTP requests to discover more infor
 * metadataService: Returns an object used to access the metadata configuration of the OIDC provider.
 
 ### Events
+The `UserManager` will raise various events about the user's session:
+
 * userLoaded: Raised when a user session has been established (or re-established).
 * userUnloaded: Raised when a user session has been terminated.
 * accessTokenExpiring: Raised prior to the access token expiring.
 * accessTokenExpired: Raised after the access token has expired.
 * silentRenewError: Raised when the automatic silent renew has failed.
 * userSignedOut [1.1.0]: Raised when the user's signin status at the OP has changed.
+
+To register for the events, there is an `events` property on the `UserManager` with `addXxx` and `removeXxx` APIs to add/remove callbacks for the events. An example:
+
+```
+var mgr = new UserManager();
+mgr.events.addAccessTokenExpiring(function(){
+    console.log("token expiring...");
+});
+```
 
 ## User
 
