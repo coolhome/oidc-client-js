@@ -58,6 +58,8 @@ The `authority` URL setting is used to make HTTP requests to discover more infor
 * monitorSession [1.1.0]: (default: `true`): Will raise events for when user has performed a signout at the OP.
 * checkSessionInterval: (default: `2000`): Interval, in ms, to check the user's session.
 * revokeAccessTokenOnSignout [1.2.1] (default: `false`): Will invoke the revocation endpoint on signout if there is an access token for the user.
+* includeIdTokenInSilentRenew [1.4.0] (default: `true`): Flag to control if `id_token` is included as `id_token_hint` in silent renew calls.
+* staleStateAge (default: `300`): Number (in seconds) indicating the age of state entries in storage for authorize requests that are considered abandoned and thus can be cleaned up.
 
 ### Methods
 * getUser: Returns promise to load the `User` object for the currently authenticated user. 
@@ -70,7 +72,12 @@ The `authority` URL setting is used to make HTTP requests to discover more infor
 * signinPopupCallback: Returns promise to notify the opening window of response from the authorization endpoint.
 * signoutRedirect: Returns promise to trigger a redirect of the current window to the end session endpoint.
 * signoutRedirectCallback: Returns promise to process response from the end session endpoint.
+* signoutPopup [1.4.0]: Returns promise to trigger a redirect of a popup window window to the end session endpoint.
+* signoutPopupCallback [1.4.0]: Returns promise to process response from the end session endpoint from a popup window.
 * querySessionStatus [1.1.0]: Returns promise to query OP for user's current signin status. Returns object with session_state and subject identifier.
+* startSilentRenew [1.4.0]: Enables silent renew for the `UserManager`.
+* stopSilentRenew [1.4.0]: Disables silent renew for the `UserManager`.
+* clearStaleState: Removes stale state entries in storage for incomplete authorize requests.
 
 ### Properties
 * settings: Returns the settings used to configure the `UserManager`.
@@ -85,7 +92,7 @@ The `UserManager` will raise various events about the user's session:
 * accessTokenExpiring: Raised prior to the access token expiring.
 * accessTokenExpired: Raised after the access token has expired.
 * silentRenewError: Raised when the automatic silent renew has failed.
-* userSignedOut [1.1.0]: Raised when the user's signin status at the OP has changed.
+* userSignedOut [1.1.0]: Raised when the user's sign-in status at the OP has changed.
 
 To register for the events, there is an `events` property on the `UserManager` with `addXxx` and `removeXxx` APIs to add/remove callbacks for the events. An example:
 
