@@ -60,6 +60,7 @@ The `authority` URL setting is used to make HTTP requests to discover more infor
 * revokeAccessTokenOnSignout [1.2.1] (default: `false`): Will invoke the revocation endpoint on signout if there is an access token for the user.
 * includeIdTokenInSilentRenew [1.4.0] (default: `true`): Flag to control if `id_token` is included as `id_token_hint` in silent renew calls.
 * staleStateAge (default: `300`): Number (in seconds) indicating the age of state entries in storage for authorize requests that are considered abandoned and thus can be cleaned up.
+* extraQueryParams: (object): An object containing additional query string parameters to be including in the authorization request. E.g, when using Azure AD to obtain an access token an additional resource parameter is required. extraQueryParams: `{resource:"some_identifier"}`
 
 ### Methods
 * getUser: Returns promise to load the `User` object for the currently authenticated user. 
