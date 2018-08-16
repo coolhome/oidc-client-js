@@ -137,3 +137,7 @@ Also, logging has levels so you can control the verbosity by setting the `Oidc.L
 * [ReactJS & Redux](https://github.com/maxmantz/redux-oidc)
 * [Blog post on Angular](https://www.scottbrady91.com/Angular/SPA-Authentiction-using-OpenID-Connect-Angular-CLI-and-oidc-client)
 * [Vue.js](https://github.com/joaojosefilho/vuejsOidcClient)
+
+## Training
+
+* [Securing Angular Apps with OpenID and OAuth2](https://noyes.me/ng-openid-oauth2)
