@@ -138,6 +138,7 @@ Also, logging has levels so you can control the verbosity by setting the `Oidc.L
 * [Blog post on Angular](https://www.scottbrady91.com/Angular/SPA-Authentiction-using-OpenID-Connect-Angular-CLI-and-oidc-client)
 * [Vue.js](https://github.com/joaojosefilho/vuejsOidcClient)
 * [Quasar Framework](https://github.com/patrickmonteiro/quasarOidcClient)
+* [Angular2](https://github.com/fileless/ng-oidc-client)
 
 ## Training
 
