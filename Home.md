@@ -139,6 +139,8 @@ Also, logging has levels so you can control the verbosity by setting the `Oidc.L
 * [Vue.js](https://github.com/joaojosefilho/vuejsOidcClient)
 * [Quasar Framework](https://github.com/patrickmonteiro/quasarOidcClient)
 * [Angular2](https://github.com/fileless/ng-oidc-client)
+* [Vue/Vuex](https://github.com/perarnborg/vuex-oidc)
+
 
 ## Training
 
