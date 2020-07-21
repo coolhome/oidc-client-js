@@ -142,6 +142,7 @@ Also, logging has levels so you can control the verbosity by setting the `Oidc.L
 * [Vue/Vuex](https://github.com/perarnborg/vuex-oidc)
 * [React Context & React Redux](https://github.com/AxaGuilDEv/react-oidc)
 * [Angular and Keycloak](https://robferguson.org/blog/2019/12/29/angular-openid-connect-keycloak/)
+* [React Helper Library](https://github.com/bjerkio/oidc-react)
 
 ## Training
 
