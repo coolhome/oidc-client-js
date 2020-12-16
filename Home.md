@@ -90,10 +90,13 @@ The `UserManager` will raise various events about the user's session:
 
 * userLoaded: Raised when a user session has been established (or re-established).
 * userUnloaded: Raised when a user session has been terminated.
+* silentRenewError: Raised when the automatic silent renew has failed.
+* userSignedIn [1.9.0]: Raised when the user is signed in.
+* userSignedOut [1.1.0]: Raised when the user's sign-in status at the OP has changed.
+* userSessionChanged: Raised when `monitorSession` subscribe to events raised when the user session changed
 * accessTokenExpiring: Raised prior to the access token expiring.
 * accessTokenExpired: Raised after the access token has expired.
-* silentRenewError: Raised when the automatic silent renew has failed.
-* userSignedOut [1.1.0]: Raised when the user's sign-in status at the OP has changed.
+
 
 To register for the events, there is an `events` property on the `UserManager` with `addXxx` and `removeXxx` APIs to add/remove callbacks for the events. An example:
 
@@ -120,7 +123,7 @@ The `User` type is returned from the `UserManager`'s `getUser` API. It contains 
 
 ## Logging
 
-The oidc-client-js library supports logging. You can set a logger by assigning `Oidc.Log.logger` to anything that supports a `info`, `warn`, and `error` methods that accept a params array. By default, no logger is configured.
+The oidc-client-js library supports logging. You can set a logger by assigning `Oidc.Log.logger` to anything that supports a `debug`, `info`, `warn`, and `error` methods that accept a params array. By default, no logger is configured.
 
 The `console` object in the browser supports these, so a common way to easily enable logging in the browser is to simply add this code:
 
