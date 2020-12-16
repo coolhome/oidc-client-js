@@ -115,6 +115,7 @@ The `User` type is returned from the `UserManager`'s `getUser` API. It contains 
 * profile: The claims represented by a combination of the `id_token` and the user info endpoint.
 * session_state: The session state value returned from the OIDC provider. 
 * access_token: The access token returned from the OIDC provider. 
+* refresh_token: The refresh token returned from the OIDC provider. 
 * scope: The scope returned from the OIDC provider. 
 * expires_at: The expires at returned from the OIDC provider. 
 * expires_in: Calculated number of seconds the access token has remaining.
