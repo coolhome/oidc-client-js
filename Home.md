@@ -68,21 +68,45 @@ The `authority` URL setting is used to make HTTP requests to discover more infor
 
 ### Methods
 * getUser: Returns promise to load the `User` object for the currently authenticated user. 
+* storeUser: Takes the pass in `User` object to be stored  in the configured `userStore`.
 * removeUser: Returns promise to remove from any storage the currently authenticated user.
-* signinRedirect: Returns promise to trigger a redirect of the current window to the authorization endpoint.
-* signinRedirectCallback: Returns promise to process response from the authorization endpoint. The result of the promise is the authenticated `User`.
-* signinSilent: Returns promise to trigger a silent request (via an iframe) to the authorization endpoint. The result of the promise is the authenticated `User`.
-* signinSilentCallback: Returns promise to notify the parent window of response from the authorization endpoint.
-* signinPopup: Returns promise to trigger a request (via a popup window) to the authorization endpoint. The result of the promise is the authenticated `User`.
-* signinPopupCallback: Returns promise to notify the opening window of response from the authorization endpoint.
-* signoutRedirect: Returns promise to trigger a redirect of the current window to the end session endpoint.
-* signoutRedirectCallback: Returns promise to process response from the end session endpoint.
-* signoutPopup [1.4.0]: Returns promise to trigger a redirect of a popup window window to the end session endpoint.
-* signoutPopupCallback [1.4.0]: Returns promise to process response from the end session endpoint from a popup window.
+* clearStaleState: Removes stale state entries in storage for incomplete authorize requests.
+
+#### Signin
+Perform a user signin using a `redirect`, `silent`, or `popup` methods and the corresponding callback methods. For examples take a look at the [samples](https://github.com/IdentityModel/oidc-client-js/tree/dev/samples/VanillaJS/public) folder.
+
+* signinRedirect(args): Returns promise to trigger a redirect of the current window to the authorization endpoint.
+* signinRedirectCallback(url): Returns promise to process response from the authorization endpoint. The result of the promise is the authenticated `User`.
+* signinSilent(args): Returns promise to trigger a silent request (via an iframe) to the authorization endpoint. The result of the promise is the authenticated `User`. 
+* signinSilentCallback(url): Returns promise to notify the parent window of response from the authorization endpoint. 
+* signinPopup(args): Returns promise to trigger a request (via a popup window) to the authorization endpoint. The result of the promise is the authenticated `User`. 
+* signinPopupCallback(url, keepOpen): Returns promise to notify the opening window of response from the authorization endpoint. `keepOpen` argument defaults to false.
+* signinCallback(url): Returns promise to proxy `redirect`, `popup`, and `silent` callbacks
+
+`signinRedirect`, `signinSilent`, and `signinPopup` accept an optional argument `args` object to set additional parameters for `OidcClient.createSigninRequest`.
+
+`signinRedirectCallback`, `signinSilentCallback`, `signinPopupCallback`, and `signinCallback` accept an optional argument `url` string that is passed to the `Navigator` to handle Redirection URI fragments.
+
+#### Signout Methods
+To signout the user, use one of the following methods:
+* signoutRedirect(args): Returns promise to trigger a redirect of the current window to the end session endpoint.
+* signoutRedirectCallback(url): Returns promise to process response from the end session endpoint.
+* signoutPopup(args) [1.4.0]: Returns promise to trigger a redirect of a popup window window to the end session endpoint.
+* signoutPopupCallback(url, keepOpen), signoutPopupCallback(keepOpen) [1.4.0]: Returns promise to process response from the end session endpoint from a popup window. `keepOpen` argument defaults to false.
+* signoutCallback(url): Returns promise to proxy `redirect` and `popup` callbacks
+
+The signin methods `signoutRedirect` and`signoutPopup` accept an optional argument `args` object to set additional parameters for `OidcClient.createSignoutRequest`.
+
+The signin callback methods `signoutRedirectCallback`, `signoutPopupCallback`, `signoutCallback` accept an optional argument `url` string that is passed to the `Navigator` to handle Redirection URI fragments.
+
+#### Session Mangement
 * querySessionStatus [1.1.0]: Returns promise to query OP for user's current signin status. Returns object with session_state and subject identifier.
+* revokeAccessToken: Returns promise to revoke the current user access token.
+
+#### Silent Renew
 * startSilentRenew [1.4.0]: Enables silent renew for the `UserManager`.
 * stopSilentRenew [1.4.0]: Disables silent renew for the `UserManager`.
-* clearStaleState: Removes stale state entries in storage for incomplete authorize requests.
+
 
 ### Properties
 * settings: Returns the settings used to configure the `UserManager`.
