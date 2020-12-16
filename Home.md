@@ -136,7 +136,7 @@ The `console` object in the browser supports these, so a common way to easily en
 Oidc.Log.logger = console;
 ```
 
-You may also adjust the `Oidc.Log.level` to control the verbosity. By default the level set is to `Log.INFO`. Below are the supported log levels:
+You may also adjust the `Oidc.Log.level` to control the verbosity. The default is `Log.INFO`. Below are the supported log levels:
 
 * `Log.NONE`
 * `Log.ERROR`
