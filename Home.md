@@ -128,7 +128,18 @@ The `console` object in the browser supports these, so a common way to easily en
 Oidc.Log.logger = console;
 ```
 
-Also, logging has levels so you can control the verbosity by setting the `Oidc.Log.level` to one of `Oidc.Log.NONE`, `Oidc.Log.ERROR`, `Oidc.Log.WARN`, or `Oidc.Log.INFO`. The default is `Oidc.Log.INFO`.
+You may also adjust the `Oidc.Log.level` to control the verbosity. By default the level set is to `Log.INFO`. Below are the supported log levels:
+
+* `Log.NONE`
+* `Log.ERROR`
+* `Log.WARN`
+* `Log.INFO`
+* `Log.DEBUG`
+
+```
+Oidc.Log.level = Oidc.Log.WARN;
+```
+
 
 ## Samples using oidc-client
 
