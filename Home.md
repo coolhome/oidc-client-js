@@ -57,6 +57,7 @@ The `authority` URL setting is used to make HTTP requests to discover more infor
 * automaticSilentRenew (boolean, default: `false`): Flag to indicate if there should be an automatic attempt to renew the access token prior to its expiration. The attempt is made as a result of the `accessTokenExpiring` event being raised.
 * silentRequestTimeout (number, default: `10000`): Number of milliseconds to wait for the silent renew to return before assuming it has failed or timed out. 
 * accessTokenExpiringNotificationTime (number, default: `60`): The number of seconds before an access token is to expire to raise the `accessTokenExpiring` event.
+* stateStore: (default: local storage): Storage object used to persist interaction state. E.g. `userStore: new WebStorageStateStore({ store: window.localStorage })`
 * userStore: (default: session storage): Storage object used to persist `User` for currently authenticated user. E.g. `userStore: new WebStorageStateStore({ store: window.localStorage })`
 * monitorSession [1.1.0]: (default: `true`): Will raise events for when user has performed a signout at the OP.
 * checkSessionInterval: (default: `2000`): Interval, in ms, to check the user's session.
