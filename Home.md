@@ -87,7 +87,7 @@ Perform a user signin using a `redirect`, `silent`, or `popup` methods and the c
 
 `signinRedirectCallback`, `signinSilentCallback`, `signinPopupCallback`, and `signinCallback` accept an optional argument `url` string that is passed to the `Navigator` to handle Redirection URI fragments.
 
-#### Signout Methods
+#### Signout
 To signout the user, use one of the following methods:
 * signoutRedirect(args): Returns promise to trigger a redirect of the current window to the end session endpoint.
 * signoutRedirectCallback(url): Returns promise to process response from the end session endpoint.
@@ -95,7 +95,7 @@ To signout the user, use one of the following methods:
 * signoutPopupCallback(url, keepOpen), signoutPopupCallback(keepOpen) [1.4.0]: Returns promise to process response from the end session endpoint from a popup window. `keepOpen` argument defaults to false.
 * signoutCallback(url): Returns promise to proxy `redirect` and `popup` callbacks
 
-The signin methods `signoutRedirect` and`signoutPopup` accept an optional argument `args` object to set additional parameters for `OidcClient.createSignoutRequest`.
+The signin methods `signoutRedirect` and `signoutPopup` accept an optional argument `args` object to set additional parameters for `OidcClient.createSignoutRequest`.
 
 The signin callback methods `signoutRedirectCallback`, `signoutPopupCallback`, `signoutCallback` accept an optional argument `url` string that is passed to the `Navigator` to handle Redirection URI fragments.
 
