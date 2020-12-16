@@ -30,7 +30,10 @@ The `authority` URL setting is used to make HTTP requests to discover more infor
    * issuer
    * authorization_endpoint
    * userinfo_endpoint
+   * token_endpoint
+   * check_session_iframe
    * end_session_endpoint
+   * revocation_endpoint
    * jwks_uri
 * signingKeys (which is the `keys` property of the `jwks_uri` endpoint) 
 
