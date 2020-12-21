@@ -5,6 +5,9 @@ import { Log } from './Log';
 import { Global } from './Global';
 
 export class WebStorageStateStore {
+    private _store: Storage;
+    private _prefix: string;
+    
     constructor({prefix = "oidc.", store = Global.localStorage} = {}) {
         this._store = store;
         this._prefix = prefix;
