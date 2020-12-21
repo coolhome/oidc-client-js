@@ -6,6 +6,12 @@ import { AccessTokenEvents } from './AccessTokenEvents';
 import { Event } from './Event';
 
 export class UserManagerEvents extends AccessTokenEvents {
+    private _userLoaded: Event;
+    private _userUnloaded: Event;
+    private _silentRenewError: Event;
+    private _userSignedIn: Event;
+    private _userSignedOut: Event;
+    private _userSessionChanged: Event;
 
     constructor(settings) {
         super(settings);
