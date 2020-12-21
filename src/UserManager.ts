@@ -288,7 +288,7 @@ export class UserManager extends OidcClient {
     }
 
     signinCallback(url) {
-        return this.readSigninResponseState(url).then(({state, response}) => {
+        return this.readSigninResponseState(url, undefined).then(({state, response}) => {
             if (state.request_type === "si:r") {
                 return this.signinRedirectCallback(url);
             }
@@ -303,7 +303,7 @@ export class UserManager extends OidcClient {
     }
 
     signoutCallback(url, keepOpen) {
-        return this.readSignoutResponseState(url).then(({state, response}) => {
+        return this.readSignoutResponseState(url, undefined).then(({state, response}) => {
             if (state) {
                 if (state.request_type === "so:r") {
                     return this.signoutRedirectCallback(url);
@@ -337,7 +337,7 @@ export class UserManager extends OidcClient {
             startUrl: url,
             silentRequestTimeout: args.silentRequestTimeout || this.settings.silentRequestTimeout
         }).then(navResponse => {
-            return this.processSigninResponse(navResponse.url).then(signinResponse => {
+            return this.processSigninResponse(navResponse.url, undefined).then(signinResponse => {
                 Log.debug("UserManager.querySessionStatus: got signin response");
 
                 if (signinResponse.session_state && signinResponse.profile.sub) {
@@ -381,7 +381,7 @@ export class UserManager extends OidcClient {
         return navigator.prepare(navigatorParams).then(handle => {
             Log.debug("UserManager._signinStart: got navigator window handle");
 
-            return this.createSigninRequest(args).then(signinRequest => {
+            return this.createSigninRequest(args, undefined).then(signinRequest => {
                 Log.debug("UserManager._signinStart: got signin request");
 
                 navigatorParams.url = signinRequest.url;
@@ -398,7 +398,7 @@ export class UserManager extends OidcClient {
         });
     }
     _signinEnd(url, args = {}) {
-        return this.processSigninResponse(url).then(signinResponse => {
+        return this.processSigninResponse(url, undefined).then(signinResponse => {
             Log.debug("UserManager._signinEnd: got signin response");
 
             let user = new User(signinResponse);
@@ -497,7 +497,7 @@ export class UserManager extends OidcClient {
             return this._loadUser().then(user => {
                 Log.debug("UserManager._signoutStart: loaded current user from storage");
 
-                var revokePromise = this._settings.revokeAccessTokenOnSignout ? this._revokeInternal(user) : Promise.resolve();
+                var revokePromise = this._settings.revokeAccessTokenOnSignout ? this._revokeInternal(user, undefined) : Promise.resolve();
                 return revokePromise.then(() => {
 
                     var id_token = args.id_token_hint || user && user.id_token;
@@ -509,7 +509,7 @@ export class UserManager extends OidcClient {
                     return this.removeUser().then(() => {
                         Log.debug("UserManager._signoutStart: user removed, creating signout request");
 
-                        return this.createSignoutRequest(args).then(signoutRequest => {
+                        return this.createSignoutRequest(args, undefined).then(signoutRequest => {
                             Log.debug("UserManager._signoutStart: got signout request");
 
                             navigatorParams.url = signoutRequest.url;
@@ -530,7 +530,7 @@ export class UserManager extends OidcClient {
         });
     }
     _signoutEnd(url) {
-        return this.processSignoutResponse(url).then(signoutResponse => {
+        return this.processSignoutResponse(url, undefined).then(signoutResponse => {
             Log.debug("UserManager._signoutEnd: got signout response");
 
             return signoutResponse;
