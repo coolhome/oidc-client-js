@@ -14,6 +14,13 @@ import { JoseUtil } from './JoseUtil';
 
 
 export class UserManager extends OidcClient {
+    private _events: UserManagerEvents;
+    private _silentRenewService: SilentRenewService;
+    private _sessionMonitor: SessionMonitor;
+    private _tokenRevocationClient: TokenRevocationClient;
+    private _tokenClient: TokenClient;
+    private _joseUtil: typeof JoseUtil;
+    
     constructor(settings = {},
         SilentRenewServiceCtor = SilentRenewService,
         SessionMonitorCtor = SessionMonitor,

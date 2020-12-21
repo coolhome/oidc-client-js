@@ -4,18 +4,30 @@
 import { Log } from './Log';
 import random from './random';
 
-export class State {
-    constructor({id, data, created, request_type} = {}) {
-        this._id = id || random();
-        this._data = data;
+export interface StateOptions {
+    id?: any;
+    data?: any;
+    created?: number;
+    request_type?: any;
+}
 
-        if (typeof created === 'number' && created > 0) {
-            this._created = created;
+export class State {
+    protected _id: any;
+    protected _data: any;
+    protected _created: number;
+    protected _request_type: any;
+
+    constructor(options: StateOptions = {}) {
+        this._id = options.id || random();
+        this._data = options.data;
+
+        if (typeof options.created === 'number' && options.created > 0) {
+            this._created = options.created;
         }
         else {
-            this._created = parseInt(Date.now() / 1000);
+            this._created = new Date().getTime() / 1000 | 0;
         }
-        this._request_type =  request_type;
+        this._request_type = options.request_type;
     }
 
     get id() {

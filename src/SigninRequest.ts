@@ -6,6 +6,8 @@ import { UrlUtility } from './UrlUtility';
 import { SigninState } from './SigninState';
 
 export class SigninRequest {
+    state: SigninState;
+
     constructor({
         // mandatory
         url, client_id, redirect_uri, response_type, scope, authority,

@@ -7,6 +7,12 @@ const DefaultPopupFeatures = 'location=no,toolbar=no,zoom=no';
 const DefaultPopupTarget = "_blank";
 
 export class CordovaPopupWindow {
+    private _promise: Promise<unknown>;
+    private _resolve: (value: unknown) => void;
+    private _reject: (reason?: any) => void;
+    features: any;
+    target: any;
+    redirect_uri: any;
 
     constructor(params) {
         this._promise = new Promise((resolve, reject) => {

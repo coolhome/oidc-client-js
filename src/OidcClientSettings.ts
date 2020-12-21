@@ -15,14 +15,56 @@ const DefaultStaleStateAge = 60 * 15; // seconds
 const DefaultClockSkewInSeconds = 60 * 5;
 
 export class OidcClientSettings {
+    private _authority: any;
+    private _metadataUrl: any;
+    private _metadata: any;
+    private _signingKeys: any;
+    private _client_id: any;
+    private _client_secret: any;
+    private _response_type: string;
+    private _scope: string;
+    private _redirect_uri: any;
+    private _post_logout_redirect_uri: any;
+    private _prompt: any;
+    private _display: any;
+    private _max_age: any;
+    private _ui_locales: any;
+    private _acr_values: any;
+    private _resource: any;
+    private _response_mode: any;
+    private _filterProtocolClaims: boolean;
+    private _loadUserInfo: boolean;
+    private _staleStateAge: number;
+    private _clockSkew: number;
+    private _clockService: ClockService;
+    private _userInfoJwtIssuer: string;
+    private _stateStore: WebStorageStateStore;
+    private _validator: ResponseValidator;
+    private _metadataService: MetadataService;
+    private _extraQueryParams: {};
+    private _extraTokenParams: {};
+    
     constructor({
         // metadata related
-        authority, metadataUrl, metadata, signingKeys,
+        authority = undefined, 
+        metadataUrl = undefined, 
+        metadata = undefined,
+         signingKeys = undefined,
         // client related
-        client_id, client_secret, response_type = DefaultResponseType, scope = DefaultScope,
-        redirect_uri, post_logout_redirect_uri,
+        client_id = undefined, 
+        client_secret = undefined, 
+        response_type = DefaultResponseType, 
+        scope = DefaultScope,
+        redirect_uri = undefined, 
+        post_logout_redirect_uri = undefined,
         // optional protocol
-        prompt, display, max_age, ui_locales, acr_values, resource, response_mode,
+        prompt = undefined, 
+        display = undefined, 
+        max_age = undefined, 
+        ui_locales = undefined, 
+        acr_values = undefined, 
+        resource = undefined, 
+        response_mode = undefined,
         // behavior flags
         filterProtocolClaims = true, loadUserInfo = true,
         staleStateAge = DefaultStaleStateAge, 

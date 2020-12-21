@@ -4,7 +4,19 @@
 import { Log } from './Log';
 
 export class ErrorResponse extends Error {
-    constructor({error, error_description, error_uri, state, session_state}={}
+    error: any;
+    error_description: any;
+    error_uri: any;
+    state: any;
+    session_state: any;
+
+    constructor({
+        error = undefined,
+        error_description = undefined,
+        error_uri = undefined,
+        state = undefined,
+        session_state = undefined
+    }={}
     ) {
          if (!error){
             Log.error("No error passed to ErrorResponse");

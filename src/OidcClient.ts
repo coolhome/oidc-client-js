@@ -12,6 +12,7 @@ import { SigninState } from './SigninState';
 import { State } from './State';
 
 export class OidcClient {
+    private _settings: OidcClientSettings;
     constructor(settings = {}) {
         if (settings instanceof OidcClientSettings) {
             this._settings = settings;
@@ -39,12 +40,30 @@ export class OidcClient {
     }
 
     createSigninRequest({
-        response_type, scope, redirect_uri,
+        response_type = undefined,
+        scope = undefined,
+        redirect_uri = undefined,
         // data was meant to be the place a caller could indicate the data to
         // have round tripped, but people were getting confused, so i added state (since that matches the spec)
         // and so now if data is not passed, but state is then state will be used
-        data, state, prompt, display, max_age, ui_locales, id_token_hint, login_hint, acr_values,
-        resource, request, request_uri, response_mode, extraQueryParams, extraTokenParams, request_type, skipUserInfo } = {},
+        data = undefined,
+        state = undefined,
+        prompt = undefined,
+        display = undefined,
+        max_age = undefined,
+        ui_locales = undefined,
+        id_token_hint = undefined,
+        login_hint = undefined,
+        acr_values = undefined,
+        resource = undefined,
+        request = undefined,
+        request_uri = undefined,
+        response_mode = undefined,
+        extraQueryParams = undefined,
+        extraTokenParams = undefined,
+        request_type = undefined,
+        skipUserInfo = undefined
+    } = {},
         stateStore
     ) {
         Log.debug("OidcClient.createSigninRequest");
@@ -100,7 +119,7 @@ export class OidcClient {
     readSigninResponseState(url, stateStore, removeState = false) {
         Log.debug("OidcClient.readSigninResponseState");
 
-        let useQuery = this._settings.response_mode === "query" || 
+        let useQuery = this._settings.response_mode === "query" ||
             (!this._settings.response_mode && SigninRequest.isCode(this._settings.response_type));
         let delimiter = useQuery ? "?" : "#";
 
@@ -122,20 +141,20 @@ export class OidcClient {
             }
 
             let state = SigninState.fromStorageString(storedStateString);
-            return {state, response};
+            return { state, response };
         });
     }
 
     processSigninResponse(url, stateStore) {
         Log.debug("OidcClient.processSigninResponse");
 
-        return this.readSigninResponseState(url, stateStore, true).then(({state, response}) => {
+        return this.readSigninResponseState(url, stateStore, true).then(({ state, response }) => {
             Log.debug("OidcClient.processSigninResponse: Received state from storage; validating response");
             return this._validator.validateSigninResponse(state, response);
         });
     }
 
-    createSignoutRequest({id_token_hint, data, state, post_logout_redirect_uri, extraQueryParams, request_type } = {},
+    createSignoutRequest({ id_token_hint, data, state, post_logout_redirect_uri, extraQueryParams, request_type } = {},
         stateStore
     ) {
         Log.debug("OidcClient.createSignoutRequest");
@@ -184,7 +203,7 @@ export class OidcClient {
                 return Promise.reject(new ErrorResponse(response));
             }
 
-            return Promise.resolve({state: undefined, response});
+            return Promise.resolve({ state: undefined, response });
         }
 
         var stateKey = response.state;
@@ -200,14 +219,14 @@ export class OidcClient {
 
             let state = State.fromStorageString(storedStateString);
 
-            return {state, response};
+            return { state, response };
         });
     }
 
     processSignoutResponse(url, stateStore) {
         Log.debug("OidcClient.processSignoutResponse");
 
-        return this.readSignoutResponseState(url, stateStore, true).then(({state, response}) => {
+        return this.readSignoutResponseState(url, stateStore, true).then(({ state, response }) => {
             if (state) {
                 Log.debug("OidcClient.processSignoutResponse: Received state from storage; validating response");
                 return this._validator.validateSignoutResponse(state, response);
