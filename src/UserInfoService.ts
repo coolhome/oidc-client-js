@@ -7,6 +7,10 @@ import { Log } from './Log';
 import { JoseUtil } from './JoseUtil';
 
 export class UserInfoService {
+    private _settings: any;
+    private _jsonService: JsonService;
+    private _metadataService: MetadataService;
+    private _joseUtil: typeof JoseUtil;
     constructor(
         settings, 
         JsonServiceCtor = JsonService, 
@@ -113,7 +117,8 @@ export class UserInfoService {
         }
         catch (e) {
             Log.error("UserInfoService._getClaimsFromJwt: Error parsing JWT response", e.message);
-            reject(e);
+            // bug: did not have method `reject()` in scope
+            Promise.reject(e);
             return;
         }
     }
