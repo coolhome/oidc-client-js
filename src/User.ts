@@ -4,6 +4,15 @@
 import { Log } from './Log';
 
 export class User {
+    id_token: any;
+    session_state: any;
+    access_token: any;
+    refresh_token: any;
+    token_type: any;
+    scope: any;
+    profile: any;
+    expires_at: any;
+    state: any;
     constructor({id_token, session_state, access_token, refresh_token, token_type, scope, profile, expires_at, state}) {
         this.id_token = id_token;
         this.session_state = session_state;
@@ -18,15 +27,17 @@ export class User {
 
     get expires_in() {
         if (this.expires_at) {
-            let now = parseInt(Date.now() / 1000);
+            let now = new Date().getTime() / 1000 | 0;
             return this.expires_at - now;
         }
         return undefined;
     }
-    set expires_in(value) {
-        let expires_in = parseInt(value);
+
+    // todo: only accept number?
+    set expires_in(value: number|string) {
+        let expires_in = typeof value === 'number' ? value : parseInt(value);
         if (typeof expires_in === 'number' && expires_in > 0) {
-            let now = parseInt(Date.now() / 1000);
+            let now = new Date().getTime() / 1000 | 0;
             this.expires_at = now + expires_in;
         }
     }
