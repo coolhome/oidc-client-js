@@ -14,13 +14,33 @@ const DefaultAccessTokenExpiringNotificationTime = 60;
 const DefaultCheckSessionInterval = 2000;
 
 export class UserManagerSettings extends OidcClientSettings {
+    _popup_redirect_uri: any;
+    private _popup_post_logout_redirect_uri: any;
+    private _popupWindowFeatures: any;
+    private _popupWindowTarget: any;
+    private _silent_redirect_uri: any;
+    private _silentRequestTimeout: any;
+    private _automaticSilentRenew: boolean;
+    private _validateSubOnSilentRenew: boolean;
+    private _includeIdTokenInSilentRenew: boolean;
+    private _accessTokenExpiringNotificationTime: number;
+    private _monitorSession: boolean;
+    private _monitorAnonymousSession: boolean;
+    private _checkSessionInterval: number;
+    private _stopCheckSessionOnError: boolean;
+    private _query_status_response_type: string|boolean;
+    private _revokeAccessTokenOnSignout: boolean;
+    private _redirectNavigator: RedirectNavigator;
+    private _popupNavigator: PopupNavigator;
+    private _iframeNavigator: IFrameNavigator;
+    private _userStore: WebStorageStateStore;
     constructor({
-        popup_redirect_uri,
-        popup_post_logout_redirect_uri,
-        popupWindowFeatures,
-        popupWindowTarget,
-        silent_redirect_uri,
-        silentRequestTimeout,
+        popup_redirect_uri = undefined,
+        popup_post_logout_redirect_uri = undefined,
+        popupWindowFeatures = undefined,
+        popupWindowTarget = undefined,
+        silent_redirect_uri = undefined,
+        silentRequestTimeout = undefined,
         automaticSilentRenew = false,
         validateSubOnSilentRenew = false,
         includeIdTokenInSilentRenew = true,
@@ -28,7 +48,7 @@ export class UserManagerSettings extends OidcClientSettings {
         monitorAnonymousSession = false,
         checkSessionInterval = DefaultCheckSessionInterval,
         stopCheckSessionOnError = true,
-        query_status_response_type,
+        query_status_response_type = undefined,
         revokeAccessTokenOnSignout = false,
         accessTokenExpiringNotificationTime = DefaultAccessTokenExpiringNotificationTime,
         redirectNavigator = new RedirectNavigator(),
