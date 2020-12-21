@@ -53,6 +53,10 @@ export class UserManager extends OidcClient {
         this._joseUtil = joseUtil;
     }
 
+    get settings(): UserManagerSettings  {
+        return this._settings as UserManagerSettings;
+    }
+
     get _redirectNavigator() {
         return this.settings.redirectNavigator;
     }

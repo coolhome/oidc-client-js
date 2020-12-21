@@ -12,7 +12,7 @@ import { SigninState } from './SigninState';
 import { State } from './State';
 
 export class OidcClient {
-    private _settings: OidcClientSettings;
+    protected _settings: OidcClientSettings;
     constructor(settings = {}) {
         if (settings instanceof OidcClientSettings) {
             this._settings = settings;
