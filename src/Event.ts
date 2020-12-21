@@ -4,6 +4,8 @@
 import { Log } from './Log';
 
 export class Event {
+    protected _name: any;
+    protected _callbacks: any[];
 
     constructor(name) {
         this._name = name;

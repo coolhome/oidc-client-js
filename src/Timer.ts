@@ -8,6 +8,13 @@ import { Event } from './Event';
 const TimerDuration = 5; // seconds
 
 export class Timer extends Event {
+    private _nowFunc: () => number|string; // todo: only accept number?
+    private _timer: { 
+        setInterval: (cb: any, duration: any) => NodeJS.Timeout; 
+        clearInterval: (handle: any) => void;
+    };
+    private _timerHandle: NodeJS.Timeout;
+    private _expiration: number;
 
     constructor(name, timer = Global.timer, nowFunc = undefined) {
         super(name);
@@ -22,15 +29,17 @@ export class Timer extends Event {
     }
 
     get now() {
-        return parseInt(this._nowFunc());
+        const now = this._nowFunc();
+        return typeof now === 'number' ? now : parseInt(now);
     }
 
-    init(duration) {
+    // todo: only accept number?
+    init(rawDuration: number|string) {
+        let duration = typeof rawDuration === 'number' ? rawDuration : parseInt(rawDuration);
         if (duration <= 0) {
             duration = 1;
         }
-        duration = parseInt(duration);
-
+    
         var expiration = this.now + duration;
         if (this.expiration === expiration && this._timerHandle) {
             // no need to reinitialize to same expiration, so bail out
