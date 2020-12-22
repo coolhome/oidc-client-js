@@ -3,6 +3,12 @@
 
 import { Log } from './Log';
 
+// declare global {
+//     interface Window {
+//         cordova: Cordova | undefined;
+//     }
+// }
+
 const DefaultPopupFeatures = 'location=no,toolbar=no,zoom=no';
 const DefaultPopupTarget = "_blank";
 
@@ -10,9 +16,12 @@ export class CordovaPopupWindow {
     private _promise: Promise<unknown>;
     private _resolve: (value: unknown) => void;
     private _reject: (reason?: any) => void;
-    features: any;
-    target: any;
-    redirect_uri: any;
+    features: string;
+    target: string;
+    redirect_uri: string;
+    private _exitCallbackEvent: any;
+    private _loadStartCallbackEvent: any;
+    private _popup: any;
 
     constructor(params) {
         this._promise = new Promise((resolve, reject) => {
@@ -22,7 +31,7 @@ export class CordovaPopupWindow {
 
         this.features = params.popupWindowFeatures || DefaultPopupFeatures;
         this.target = params.popupWindowTarget || DefaultPopupTarget;
-        
+
         this.redirect_uri = params.startUrl;
         Log.debug("CordovaPopupWindow.ctor: redirect_uri: " + this.redirect_uri);
     }
@@ -32,7 +41,7 @@ export class CordovaPopupWindow {
             return cordovaMetadata.hasOwnProperty(name)
         })
     }
-    
+
     navigate(params) {
         if (!params || !params.url) {
             this._error("No url provided");
@@ -40,7 +49,9 @@ export class CordovaPopupWindow {
             if (!window.cordova) {
                 return this._error("cordova is undefined")
             }
-            
+
+            const cordova = (window as any).cordova;
+
             var cordovaMetadata = window.cordova.require("cordova/plugin_list").metadata;
             if (this._isInAppBrowserInstalled(cordovaMetadata) === false) {
                 return this._error("InAppBrowser plugin not found")
@@ -48,10 +59,10 @@ export class CordovaPopupWindow {
             this._popup = cordova.InAppBrowser.open(params.url, this.target, this.features);
             if (this._popup) {
                 Log.debug("CordovaPopupWindow.navigate: popup successfully created");
-                
-                this._exitCallbackEvent = this._exitCallback.bind(this); 
+
+                this._exitCallbackEvent = this._exitCallback.bind(this);
                 this._loadStartCallbackEvent = this._loadStartCallback.bind(this);
-                
+
                 this._popup.addEventListener("exit", this._exitCallbackEvent, false);
                 this._popup.addEventListener("loadstart", this._loadStartCallbackEvent, false);
             } else {
@@ -68,12 +79,12 @@ export class CordovaPopupWindow {
     _loadStartCallback(event) {
         if (event.url.indexOf(this.redirect_uri) === 0) {
             this._success({ url: event.url });
-        }    
+        }
     }
     _exitCallback(message) {
-        this._error(message);    
+        this._error(message);
     }
-    
+
     _success(data) {
         this._cleanup();
 
@@ -92,7 +103,7 @@ export class CordovaPopupWindow {
     }
 
     _cleanup() {
-        if (this._popup){
+        if (this._popup) {
             Log.debug("CordovaPopupWindow: cleaning up popup");
             this._popup.removeEventListener("exit", this._exitCallbackEvent, false);
             this._popup.removeEventListener("loadstart", this._loadStartCallbackEvent, false);

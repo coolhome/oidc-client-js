@@ -4,6 +4,7 @@
 import { Log } from './Log';
 
 export class InMemoryWebStorage{
+    private _data: {};
     constructor(){
         this._data = {};
     }

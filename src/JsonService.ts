@@ -5,6 +5,10 @@ import { Log } from './Log';
 import { Global } from './Global';
 
 export class JsonService {
+    private _contentTypes: string[];
+    private _XMLHttpRequest: typeof XMLHttpRequest;
+    private _jwtHandler: any;
+    
     constructor(
         additionalContentTypes = null, 
         XMLHttpRequestCtor = Global.XMLHttpRequest, 
@@ -27,7 +31,7 @@ export class JsonService {
         this._jwtHandler = jwtHandler;
     }
 
-    getJson(url, token) {
+    getJson(url, token?: any): Promise<any> {
         if (!url){
             Log.error("JsonService.getJson: No url passed");
             throw new Error("url");
@@ -36,7 +40,6 @@ export class JsonService {
         Log.debug("JsonService.getJson, url: ", url);
 
         return new Promise((resolve, reject) => {
-
             var req = new this._XMLHttpRequest();
             req.open('GET', url);
 
@@ -96,7 +99,7 @@ export class JsonService {
         });
     }
 
-    postForm(url, payload) {
+    postForm(url, payload): Promise<any> {
         if (!url){
             Log.error("JsonService.postForm: No url passed");
             throw new Error("url");

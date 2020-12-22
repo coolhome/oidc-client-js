@@ -4,12 +4,17 @@
 import { Log } from './Log';
 import { MetadataService } from './MetadataService';
 import { Global } from './Global';
+import { OidcClientSettings } from './OidcClientSettings';
 
 const AccessTokenTypeHint = "access_token";
 const RefreshTokenTypeHint = "refresh_token";
 
 export class TokenRevocationClient {
-    constructor(settings, XMLHttpRequestCtor = Global.XMLHttpRequest, MetadataServiceCtor = MetadataService) {
+    private _settings: OidcClientSettings;
+    private _XMLHttpRequestCtor: any;
+    private _metadataService: MetadataService;
+
+    constructor(settings: OidcClientSettings, XMLHttpRequestCtor = Global.XMLHttpRequest, MetadataServiceCtor = MetadataService) {
         if (!settings) {
             Log.error("TokenRevocationClient.ctor: No settings provided");
             throw new Error("No settings provided.");
@@ -60,7 +65,7 @@ export class TokenRevocationClient {
                 Log.debug("TokenRevocationClient.revoke: HTTP response received, status", xhr.status);
 
                 if (xhr.status === 200) {
-                    resolve();
+                    resolve(undefined);
                 }
                 else {
                     reject(Error(xhr.statusText + " (" + xhr.status + ")"));

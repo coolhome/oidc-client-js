@@ -4,9 +4,13 @@
 import { JsonService } from './JsonService';
 import { MetadataService } from './MetadataService';
 import { Log } from './Log';
+import { OidcClientSettings } from './OidcClientSettings';
 
 export class TokenClient {
-    constructor(settings, JsonServiceCtor = JsonService, MetadataServiceCtor = MetadataService) {
+    private _settings: OidcClientSettings;
+    private _jsonService: JsonService;
+    private _metadataService: MetadataService;
+    constructor(settings: OidcClientSettings, JsonServiceCtor = JsonService, MetadataServiceCtor = MetadataService) {
         if (!settings) {
             Log.error("TokenClient.ctor: No settings passed");
             throw new Error("settings");
@@ -17,7 +21,7 @@ export class TokenClient {
         this._metadataService = new MetadataServiceCtor(this._settings);
     }
 
-    exchangeCode(args = {}) {
+    exchangeCode(args: any = {}) {
         args = Object.assign({}, args);
 
         args.grant_type = args.grant_type || "authorization_code";
@@ -51,7 +55,7 @@ export class TokenClient {
         });
     }
 
-    exchangeRefreshToken(args = {}) {
+    exchangeRefreshToken(args: any = {}) {
         args = Object.assign({}, args);
 
         args.grant_type = args.grant_type || "refresh_token";

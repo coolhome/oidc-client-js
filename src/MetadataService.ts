@@ -3,11 +3,15 @@
 
 import { Log } from './Log';
 import { JsonService } from './JsonService';
+import { OidcClientSettings } from './OidcClientSettings';
 
 const OidcMetadataUrlPath = '.well-known/openid-configuration';
 
 export class MetadataService {
-    constructor(settings, JsonServiceCtor = JsonService) {
+    private _settings: OidcClientSettings;
+    private _jsonService: JsonService;
+    private _metadataUrl: any;
+    constructor(settings: OidcClientSettings, JsonServiceCtor = JsonService) {
         if (!settings) {
             Log.error("MetadataService: No settings passed to MetadataService");
             throw new Error("settings");
@@ -38,7 +42,8 @@ export class MetadataService {
     }
 
     resetSigningKeys() {
-        this._settings = this._settings || {}
+        // TODO: Investigate if this line is required, hard to default an object with required params
+        // this._settings = this._settings || {}
         this._settings.signingKeys = undefined
     }
 

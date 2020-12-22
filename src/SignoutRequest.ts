@@ -6,7 +6,17 @@ import { UrlUtility } from './UrlUtility';
 import { State } from './State';
 
 export class SignoutRequest {
-    constructor({url, id_token_hint, post_logout_redirect_uri, data, extraQueryParams, request_type}) {
+    state: State;
+    url: any;
+    
+    constructor({
+        url,
+        id_token_hint,
+        post_logout_redirect_uri,
+        data,
+        extraQueryParams,
+        request_type
+    }) {
         if (!url) {
             Log.error("SignoutRequest.ctor: No url passed");
             throw new Error("url");

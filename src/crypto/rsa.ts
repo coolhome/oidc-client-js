@@ -168,7 +168,7 @@ function getAlgorithmFromDigest(hDigestInfo) {
             };
         }
     }
-    return [];
+    return;
 }
 
 
@@ -186,7 +186,7 @@ RSAVerifier.prototype.verify = function (msg, encsig) {
     var digest = decryptedSig.toString(16).replace(/^1f+00/, '');
     var digestInfo = getAlgorithmFromDigest(digest);
 
-    if (digestInfo.length === 0) {
+    if (digestInfo === undefined) {
         return false;
     }
 

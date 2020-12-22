@@ -2,10 +2,13 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 import { Log } from './Log';
+import { UserManager } from './UserManager';
 
 export class SilentRenewService {
+    private _userManager: UserManager;
+    private _callback: any;
 
-    constructor(userManager) {
+    constructor(userManager: UserManager) {
         this._userManager = userManager;
     }
 
