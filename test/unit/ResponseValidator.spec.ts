@@ -7,22 +7,27 @@ import { JoseUtil } from '../../src/JoseUtil';
 
 import { StubMetadataService } from './StubMetadataService';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
-let expect = chai.expect;
+import { assert, expect } from 'chai';
 
 class MockJoseUtility {
-    parseJwt(...args) {
+    parseJwtWasCalled: boolean;
+    parseJwtResult: any;
+    validateJwtWasCalled: boolean;
+    validateJwtResult: any;
+    hashStringWasCalled: boolean;
+    hashStringResult: any;
+    hexToBase64UrlCalled: boolean;
+    hexToBase64UrlResult: any;
+    parseJwt(...args: Parameters<typeof JoseUtil.parseJwt>) {
         this.parseJwtWasCalled = true;
         if (this.parseJwtResult) {
             Log.debug("MockJoseUtility.parseJwt", this.parseJwtResult)
             return this.parseJwtResult;
         }
-        return JoseUtil.parseJwt(...args);
+        return JoseUtil.parseJwt(args);
     }
 
-    validateJwt(...args) {
+    validateJwt(...args: Parameters<typeof JoseUtil.validateJwt>) {
         this.validateJwtWasCalled = true;
         if (this.validateJwtResult) {
             Log.debug("MockJoseUtility.validateJwt", this.validateJwtResult)
@@ -31,7 +36,7 @@ class MockJoseUtility {
         return JoseUtil.validateJwt(...args);
     }
 
-    hashString(...args) {
+    hashString(...args: Parameters<typeof JoseUtil.hashString>) {
         this.hashStringWasCalled = true;
         if (this.hashStringResult) {
             Log.debug("MockJoseUtility.hashString", this.hashStringResult)
@@ -40,7 +45,7 @@ class MockJoseUtility {
         return JoseUtil.hashString(...args);
     }
 
-    hexToBase64Url(...args) {
+    hexToBase64Url(...args: Parameters<typeof JoseUtil.hexToBase64Url>) {
         this.hexToBase64UrlCalled = true;
         if (this.hexToBase64UrlResult) {
             Log.debug("MockJoseUtility.hexToBase64Url", this.hexToBase64UrlResult)
@@ -51,6 +56,9 @@ class MockJoseUtility {
 }
 
 class StubUserInfoService {
+    getClaimsWasCalled: boolean;
+    getClaimsResult: any;
+
     constructor() {
         this.getClaimsWasCalled = false;
     }
@@ -62,6 +70,7 @@ class StubUserInfoService {
 }
 
 class MockResponseValidator extends ResponseValidator {
+    _getSigningKeyForJwtSignedCalledCount: any;
     constructor(settings, MetadataServiceCtor, UserInfoServiceCtor, joseUtil) {
         super(settings, MetadataServiceCtor, UserInfoServiceCtor, joseUtil);
     }
@@ -127,10 +136,10 @@ describe("ResponseValidator", function () {
     let at_hash = "JgDUCyoatJyEmGiiWbwOhA";
 
     let settings;
-    let subject;
-    let stubMetadataService;
-    let stubUserInfoService;
-    let mockJoseUtility;
+    let subject: MockResponseValidator;
+    let stubMetadataService: StubMetadataService;
+    let stubUserInfoService: StubUserInfoService;
+    let mockJoseUtility: MockJoseUtility;
 
     let stubState;
     let stubResponse;
@@ -418,7 +427,7 @@ describe("ResponseValidator", function () {
             });
 
         });
-        
+
         it("should fail if request was not code flow no code in response", function (done) {
 
             stubResponse.id_token = id_token;
@@ -549,10 +558,10 @@ describe("ResponseValidator", function () {
 
         it("should merge claims when claim types are objects", function () {
 
-            var c1 = { custom: {'apple': 'foo', 'pear': 'bar'} };
-            var c2 = { custom: {'apple': 'foo', 'orange': 'peel'}, b: 'banana' };
+            var c1 = { custom: { 'apple': 'foo', 'pear': 'bar' } };
+            var c2 = { custom: { 'apple': 'foo', 'orange': 'peel' }, b: 'banana' };
             var result = subject._mergeClaims(c1, c2);
-            result.should.deep.equal({ custom: {'apple': 'foo', 'pear': 'bar', 'orange': 'peel'}, b: 'banana' });
+            result.should.deep.equal({ custom: { 'apple': 'foo', 'pear': 'bar', 'orange': 'peel' }, b: 'banana' });
         });
 
         it("should merge same claim types into array", function () {
@@ -567,20 +576,26 @@ describe("ResponseValidator", function () {
 
         it("should merge arrays of same claim types into array", function () {
 
-            var c1 = { a: 'apple', b: 'banana' };
-            var c2 = { a: ['carrot', 'durian'] };
-            var result = subject._mergeClaims(c1, c2);
-            result.should.deep.equal({ a: ['apple', 'carrot', 'durian'], b: 'banana' });
+            (() => {
+                var c1 = { a: 'apple', b: 'banana' };
+                var c2 = { a: ['carrot', 'durian'] };
+                var result = subject._mergeClaims(c1, c2);
+                result.should.deep.equal({ a: ['apple', 'carrot', 'durian'], b: 'banana' });
+            })();
 
-            var c1 = { a: ['apple', 'carrot'], b: 'banana' };
-            var c2 = { a: ['durian'] };
-            var result = subject._mergeClaims(c1, c2);
-            result.should.deep.equal({ a: ['apple', 'carrot', 'durian'], b: 'banana' });
+            (() => {
+                var c1 = { a: ['apple', 'carrot'], b: 'banana' };
+                var c2 = { a: ['durian'] };
+                var result = subject._mergeClaims(c1, c2);
+                result.should.deep.equal({ a: ['apple', 'carrot', 'durian'], b: 'banana' });
+            })();
 
-            var c1 = { a: ['apple', 'carrot'], b: 'banana' };
-            var c2 = { a: 'durian' };
-            var result = subject._mergeClaims(c1, c2);
-            result.should.deep.equal({ a: ['apple', 'carrot', 'durian'], b: 'banana' });
+            (() => {
+                var c1 = { a: ['apple', 'carrot'], b: 'banana' };
+                var c2 = { a: 'durian' };
+                var result = subject._mergeClaims(c1, c2);
+                result.should.deep.equal({ a: ['apple', 'carrot', 'durian'], b: 'banana' });
+            })();
         });
 
         it("should remove duplicates when producing arrays", function () {
@@ -729,23 +744,23 @@ describe("ResponseValidator", function () {
 
         it("should fail if loading keys fails.", function (done) {
 
-            const jwt = { header: { kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' }};
+            const jwt = { header: { kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' } };
             stubMetadataService.getSigningKeysResult = Promise.reject(new Error("keys"));
 
             subject._getSigningKeyForJwt(jwt).then(null, err => {
-              err.message.should.contain('keys');
-              done();
+                err.message.should.contain('keys');
+                done();
             })
         })
 
         it("should fetch suitable signing key for the jwt.", function (done) {
 
-            const jwt = { header: { kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' }};
-            stubMetadataService.getSigningKeysResult = Promise.resolve([{ kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' }, { kid: 'other_key' } ])
+            const jwt = { header: { kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' } };
+            stubMetadataService.getSigningKeysResult = Promise.resolve([{ kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' }, { kid: 'other_key' }])
 
             subject._getSigningKeyForJwt(jwt).then(key => {
-              key.should.deep.equal({ kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' })
-              done();
+                key.should.deep.equal({ kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' })
+                done();
             })
         })
     })
@@ -754,25 +769,25 @@ describe("ResponseValidator", function () {
 
         it("should retry once if suitable signing key is not found.", function (done) {
 
-            const jwt = { header: { kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' }};
+            const jwt = { header: { kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' } };
             var callCount = 0
-            stubMetadataService.getSigningKeysResult = Promise.resolve([ { kid: 'other_key' } ])
+            stubMetadataService.getSigningKeysResult = Promise.resolve([{ kid: 'other_key' }])
 
             subject._getSigningKeyForJwtWithSingleRetry(jwt).then(key => {
-              subject._getSigningKeyForJwtSignedCalledCount.should.equal(2);
-              done();
+                subject._getSigningKeyForJwtSignedCalledCount.should.equal(2);
+                done();
             })
         })
 
         it("should not retry if suitable signing key is found.", function (done) {
 
-            const jwt = { header: { kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' }};
+            const jwt = { header: { kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' } };
             var callCount = 0
-            stubMetadataService.getSigningKeysResult = Promise.resolve([ { kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' } ])
+            stubMetadataService.getSigningKeysResult = Promise.resolve([{ kid: 'a3rMUgMFv9tPclLa6yF3zAkfquE' }])
 
             subject._getSigningKeyForJwtWithSingleRetry(jwt).then(key => {
-              subject._getSigningKeyForJwtSignedCalledCount.should.equal(1);
-              done();
+                subject._getSigningKeyForJwtSignedCalledCount.should.equal(1);
+                done();
             })
         })
     })
