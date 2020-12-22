@@ -21,7 +21,7 @@ export class UrlUtility {
         return url;
     }
 
-    static parseUrlFragment(value, delimiter = "#", global = Global): any {
+    static parseUrlFragment(value, delimiter = "#", global: Window = window): any {
         if (typeof value !== 'string'){
             value = global.location.href;
         }

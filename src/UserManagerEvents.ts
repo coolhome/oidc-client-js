@@ -13,7 +13,7 @@ export class UserManagerEvents extends AccessTokenEvents {
     private _userSignedOut: Event;
     private _userSessionChanged: Event;
 
-    constructor(settings) {
+    constructor(settings?: any) {
         super(settings);
         this._userLoaded = new Event("User loaded");
         this._userUnloaded = new Event("User unloaded");

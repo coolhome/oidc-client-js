@@ -262,17 +262,17 @@ describe("OidcClientSettings", function () {
         it("should return value from initial settings", function () {
             let subject = new OidcClientSettings({
                 client_id: 'client',
-                signingKeys: "test"
+                signingKeys: [ { k: "test" }]
             });
-            subject.signingKeys.should.equal("test");
+            subject.signingKeys[0].k.should.equal("test");
         });
 
         it("should store value", function () {
             let subject = new OidcClientSettings({
                 client_id: 'client',
             });
-            subject.signingKeys = "test";
-            subject.signingKeys.should.equal("test");
+            subject.signingKeys = [ { k: "test" }];
+            subject.signingKeys[0].k.should.equal("test");
         });
 
     });

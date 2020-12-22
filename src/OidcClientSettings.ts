@@ -14,109 +14,132 @@ const DefaultScope = "openid";
 const DefaultStaleStateAge = 60 * 15; // seconds
 const DefaultClockSkewInSeconds = 60 * 5;
 
+export interface OidcClientSettingsOptions {
+    // metadata related
+    authority?: string,
+    metadataUrl?: string,
+    metadata?: string,
+    signingKeys?: JsonWebKey[],
+
+    // client related
+    client_id?: string,
+    client_secret?: string,
+    response_type?: string,
+    scope?: string,
+    redirect_uri?: string,
+    post_logout_redirect_uri?: string,
+    // optional protocol
+    prompt?: any,
+    display?: any,
+    max_age?: any,
+    ui_locales?: any,
+    acr_values?: any,
+    resource?: any,
+    response_mode?: any,
+    // behavior flags
+    filterProtocolClaims?: boolean,
+    loadUserInfo?: boolean,
+    staleStateAge?: number,
+    clockSkew?: number,
+    clockService?: ClockService,
+    userInfoJwtIssuer?: any,
+    // other behavior
+    stateStore?: WebStorageStateStore,
+    ResponseValidatorCtor?: (settings: OidcClientSettings) => ResponseValidatorType,
+    MetadataServiceCtor?: (settings: OidcClientSettings) => MetadataServiceType,
+    // extra query params
+    extraQueryParams?: any,
+    extraTokenParams?: any,
+}
+
 export class OidcClientSettings {
-    private _authority: any;
-    private _metadataUrl: any;
-    private _metadata: any;
-    private _signingKeys: JsonWebKey[];
-    private _client_id: any;
-    private _client_secret: any;
-    private _response_type: string;
-    private _scope: string;
-    private _redirect_uri: any;
-    private _post_logout_redirect_uri: any;
-    private _prompt: any;
-    private _display: any;
-    private _max_age: any;
-    private _ui_locales: any;
-    private _acr_values: any;
-    private _resource: any;
-    private _response_mode: any;
-    private _filterProtocolClaims: boolean;
-    private _loadUserInfo: boolean;
-    private _staleStateAge: number;
-    private _clockSkew: number;
-    private _clockService: ClockService;
-    private _userInfoJwtIssuer: string;
-    private _stateStore: WebStorageStateStoreType;
-    private _validator: ResponseValidatorType;
-    private _metadataService: MetadataServiceType;
-    private _extraQueryParams: {};
-    private _extraTokenParams: {};
+    protected _authority: string;
+    protected _metadataUrl: string;
+    protected _metadata: string;
+    protected _signingKeys: JsonWebKey[];
+    protected _client_id: any;
+    protected _client_secret: any;
+    protected _response_type: string;
+    protected _scope: string;
+    protected _redirect_uri: any;
+    protected _post_logout_redirect_uri: any;
+    protected _prompt: any;
+    protected _display: any;
+    protected _max_age: any;
+    protected _ui_locales: any;
+    protected _acr_values: any;
+    protected _resource: any;
+    protected _response_mode: any;
+    protected _filterProtocolClaims: boolean;
+    protected _loadUserInfo: boolean;
+    protected _staleStateAge: number;
+    protected _clockSkew: number;
+    protected _clockService: ClockService;
+    protected _userInfoJwtIssuer: string;
+    protected _stateStore: WebStorageStateStoreType;
+    protected _validator: ResponseValidatorType;
+    protected _metadataService: MetadataServiceType;
+    protected _extraQueryParams: {};
+    protected _extraTokenParams: {};
 
-    constructor({
-        // metadata related
-        authority = undefined,
-        metadataUrl = undefined,
-        metadata = undefined,
-        signingKeys = [] as JsonWebKey[],
-        // client related
-        client_id = undefined,
-        client_secret = undefined,
-        response_type = DefaultResponseType,
-        scope = DefaultScope,
-        redirect_uri = undefined,
-        post_logout_redirect_uri = undefined,
-        // optional protocol
-        prompt = undefined,
-        display = undefined,
-        max_age = undefined,
-        ui_locales = undefined,
-        acr_values = undefined,
-        resource = undefined,
-        response_mode = undefined,
-        // behavior flags
-        filterProtocolClaims = true, loadUserInfo = true,
-        staleStateAge = DefaultStaleStateAge,
-        clockSkew = DefaultClockSkewInSeconds,
-        clockService = new ClockService(),
-        userInfoJwtIssuer = 'OP',
-        // other behavior
-        stateStore = new WebStorageStateStore(),
-        ResponseValidatorCtor = (settings: OidcClientSettings) => new ResponseValidator(settings) as ResponseValidatorType,
-        MetadataServiceCtor = (settings: OidcClientSettings) => new MetadataService(settings) as MetadataServiceType,
-        // extra query params
-        extraQueryParams = {},
-        extraTokenParams = {}
-    } = {
-            stateStore: new WebStorageStateStore() as WebStorageStateStoreType,
-            ResponseValidatorCtor: (settings: OidcClientSettings) => new ResponseValidator(settings) as ResponseValidatorType,
-            MetadataServiceCtor: (settings: OidcClientSettings) => new MetadataService(settings) as MetadataServiceType,
-        }) {
+    constructor(options: OidcClientSettingsOptions) {
+        options = {
+            ...{
+                // metadata related
+                signingKeys: [],
+                response_type: DefaultResponseType,
+                scope: DefaultScope,
+                // behavior flags
+                filterProtocolClaims: true,
+                loadUserInfo: true,
+                staleStateAge: DefaultStaleStateAge,
+                clockSkew: DefaultClockSkewInSeconds,
+                clockService: new ClockService(),
+                userInfoJwtIssuer: 'OP',
+                // other behavior
+                stateStore: new WebStorageStateStore(),
+                ResponseValidatorCtor: (settings: OidcClientSettings) => new ResponseValidator(settings) as ResponseValidatorType,
+                MetadataServiceCtor: (settings: OidcClientSettings) => new MetadataService(settings) as MetadataServiceType,
+                // extra query params
+                extraQueryParams: {},
+                extraTokenParams: {}
+            },
+            ...options
+        }
 
-        this._authority = authority;
-        this._metadataUrl = metadataUrl;
-        this._metadata = metadata;
-        this._signingKeys = signingKeys;
+        this._authority = options.authority;
+        this._metadataUrl = options.metadataUrl;
+        this._metadata = options.metadata;
+        this._signingKeys = options.signingKeys;
 
-        this._client_id = client_id;
-        this._client_secret = client_secret;
-        this._response_type = response_type;
-        this._scope = scope;
-        this._redirect_uri = redirect_uri;
-        this._post_logout_redirect_uri = post_logout_redirect_uri;
+        this._client_id = options.client_id;
+        this._client_secret = options.client_secret;
+        this._response_type = options.response_type;
+        this._scope = options.scope;
+        this._redirect_uri = options.redirect_uri;
+        this._post_logout_redirect_uri = options.post_logout_redirect_uri;
 
-        this._prompt = prompt;
-        this._display = display;
-        this._max_age = max_age;
-        this._ui_locales = ui_locales;
-        this._acr_values = acr_values;
-        this._resource = resource;
-        this._response_mode = response_mode;
+        this._prompt = options.prompt;
+        this._display = options.display;
+        this._max_age = options.max_age;
+        this._ui_locales = options.ui_locales;
+        this._acr_values = options.acr_values;
+        this._resource = options.resource;
+        this._response_mode = options.response_mode;
 
-        this._filterProtocolClaims = !!filterProtocolClaims;
-        this._loadUserInfo = !!loadUserInfo;
-        this._staleStateAge = staleStateAge;
-        this._clockSkew = clockSkew;
-        this._clockService = clockService;
-        this._userInfoJwtIssuer = userInfoJwtIssuer;
+        this._filterProtocolClaims = !!options.filterProtocolClaims;
+        this._loadUserInfo = !!options.loadUserInfo;
+        this._staleStateAge = options.staleStateAge;
+        this._clockSkew = options.clockSkew;
+        this._clockService = options.clockService;
+        this._userInfoJwtIssuer = options.userInfoJwtIssuer;
 
-        this._stateStore = stateStore;
-        this._validator = ResponseValidatorCtor(this);
-        this._metadataService = MetadataServiceCtor(this);
+        this._stateStore = options.stateStore;
+        this._validator = options.ResponseValidatorCtor(this);
+        this._metadataService = options.MetadataServiceCtor(this);
 
-        this._extraQueryParams = typeof extraQueryParams === 'object' ? extraQueryParams : {};
-        this._extraTokenParams = typeof extraTokenParams === 'object' ? extraTokenParams : {};
+        this._extraQueryParams = typeof options.extraQueryParams === 'object' ? options.extraQueryParams : {};
+        this._extraTokenParams = typeof options.extraTokenParams === 'object' ? options.extraTokenParams : {};
     }
 
     // client config

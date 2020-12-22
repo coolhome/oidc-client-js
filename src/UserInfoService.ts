@@ -13,7 +13,7 @@ export class UserInfoService {
     private _metadataService: MetadataServiceType;
     private _joseUtil: typeof JoseUtil;
     constructor(
-        settings, 
+        settings?: OidcClientSettings, 
         JsonServiceCtor = (settings: OidcClientSettings) => new JsonService(settings) as JsonService, 
         MetadataServiceCtor = (settings: OidcClientSettings) => new MetadataService(settings) as MetadataServiceType, 
         joseUtil = JoseUtil

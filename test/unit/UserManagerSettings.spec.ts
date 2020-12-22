@@ -1,10 +1,11 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+import { IFrameWindow } from '../../src/IFrameWindow';
 import { Log } from '../../src/Log';
+import { PopupWindow } from '../../src/PopupWindow';
 import { UserManagerSettings } from '../../src/UserManagerSettings';
-
-import { assert } from 'chai';
+import { WebStorageStateStoreType } from '../../src/WebStorageStateStore';
 
 describe("UserManagerSettings", function () {
 
@@ -146,7 +147,11 @@ describe("UserManagerSettings", function () {
 
     describe("redirectNavigator", function() {
         it("should return value from initial settings", function() {
-            let temp = {};
+            let temp = {
+                prepare: () => Promise.resolve(undefined),
+                navigate: (params) => Promise.resolve(),
+                url: '' as string
+            };
             let subject = new UserManagerSettings({
                 redirectNavigator : temp
             });
@@ -156,7 +161,10 @@ describe("UserManagerSettings", function () {
 
     describe("popupNavigator", function() {
         it("should return value from initial settings", function() {
-            let temp = {};
+            let temp = {
+                prepare: (params) => Promise.resolve(undefined as PopupWindow),
+                callback: (url, keepOpen, delimiter) => Promise.resolve(),
+            };
             let subject = new UserManagerSettings({
                 popupNavigator : temp
             });
@@ -166,7 +174,10 @@ describe("UserManagerSettings", function () {
 
     describe("iframeNavigator", function() {
         it("should return value from initial settings", function() {
-            let temp = {};
+            let temp = {
+                prepare: (params) => Promise.resolve(undefined as IFrameWindow),
+                callback: (url) => Promise.resolve(),
+            };
             let subject = new UserManagerSettings({
                 iframeNavigator : temp
             });

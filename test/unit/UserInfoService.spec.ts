@@ -19,7 +19,7 @@ describe("UserInfoService", function() {
         settings = {};
         stubJsonService = new StubJsonService();
         stubMetadataService = new StubMetadataService();
-        subject = new UserInfoService(settings, () => stubJsonService, () => stubMetadataService);
+        subject = new UserInfoService(settings, () => new StubJsonService(), () => stubMetadataService);
     });
 
     describe("constructor", function() {

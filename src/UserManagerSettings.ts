@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 import { Log } from './Log';
-import { OidcClientSettings } from './OidcClientSettings';
+import { OidcClientSettings, OidcClientSettingsOptions } from './OidcClientSettings';
 import { RedirectNavigator } from './RedirectNavigator';
 import { PopupNavigator } from './PopupNavigator';
 import { IFrameNavigator } from './IFrameNavigator';
@@ -58,7 +58,7 @@ export class UserManagerSettings extends OidcClientSettings {
     private _iframeNavigator: IFrameNavigator;
     private _userStore: WebStorageStateStore;
 
-    constructor(options: UserManagerSettingsOptions = {}) {
+    constructor(options: UserManagerSettingsOptions & OidcClientSettingsOptions = {}) {
         options = {
             ...{
                 automaticSilentRenew: false,

@@ -17,28 +17,29 @@ describe("UserManagerEvents", function () {
     describe("silent renew error", function () {
 
         it("should allow callback", function () {
+            let wasCalled = false;
             var cb = function () {
-                cb.wasCalled = true;
+                wasCalled = true;
             };
             subject.addSilentRenewError(cb);
 
             subject._raiseSilentRenewError(new Error("boom"));
 
-            cb.wasCalled.should.be.true;
+            wasCalled.should.be.true;
         });
 
         it("should allow unregistering callback", function () {
+            let wasCalled = false;
             var cb = function () {
-                cb.wasCalled = true;
+                wasCalled = true;
             };
-            cb.wasCalled = false;
-
+            
             subject.addSilentRenewError(cb);
             subject.removeSilentRenewError(cb);
 
             subject._raiseSilentRenewError(new Error("boom"));
 
-            cb.wasCalled.should.be.false;
+            wasCalled.should.be.false;
         });
 
         it("should pass error to callback", function () {

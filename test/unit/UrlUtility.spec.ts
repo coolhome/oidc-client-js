@@ -63,7 +63,7 @@ describe("UrlUtility", function () {
                 location: {
                     href: "a=apple&b=banana&c=carrot"
                 }
-            };
+            } as Window;
             let result = UrlUtility.parseUrlFragment(null, "#", w);
             result.should.deep.equal({ a: "apple", b: "banana", c: "carrot" });
         });

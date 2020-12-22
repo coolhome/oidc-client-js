@@ -71,6 +71,7 @@ class StubUserInfoService {
 
 class MockResponseValidator extends ResponseValidator {
     _getSigningKeyForJwtSignedCalledCount: any;
+    
     constructor(settings, MetadataServiceCtor, UserInfoServiceCtor, joseUtil) {
         super(settings, MetadataServiceCtor, UserInfoServiceCtor, joseUtil);
     }

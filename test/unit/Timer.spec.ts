@@ -6,6 +6,9 @@ import { Timer } from '../../src/Timer';
 import { assert } from 'chai';
 
 class StubWindowTimer {
+    clearTimeoutWasCalled: boolean;
+    callback: any;
+    duration: any;
 
     constructor() {
         this.clearTimeoutWasCalled = false;
@@ -65,7 +68,7 @@ describe("Timer", function () {
 
             stubWindowTimer.clearTimeoutWasCalled.should.be.true;
         });
-        
+
         it("should not cancel previous timer if new time is same", function () {
             subject.init(10);
             stubWindowTimer.clearTimeoutWasCalled.should.be.false;
@@ -78,10 +81,10 @@ describe("Timer", function () {
     describe("_callback", function () {
 
         it("should fire when timer expires", function () {
+            let wasCalled = false
             var cb = function () {
-                cb.wasCalled = true;
+                wasCalled = true;
             };
-            cb.wasCalled = false;
             subject.addHandler(cb);
 
             subject._nowFunc = () => 100;
@@ -89,19 +92,20 @@ describe("Timer", function () {
 
             subject._nowFunc = () => 109;
             stubWindowTimer.callback();
-            cb.wasCalled.should.be.false;
+            wasCalled.should.be.false;
 
             subject._nowFunc = () => 110;
             stubWindowTimer.callback();
-            cb.wasCalled.should.be.true;
+            wasCalled.should.be.true;
         });
 
 
         it("should fire if timer late", function () {
+            let wasCalled = false;
             var cb = function () {
-                cb.wasCalled = true;
+                wasCalled = true;
             };
-            cb.wasCalled = false;
+            wasCalled = false;
             subject.addHandler(cb);
 
             subject._nowFunc = () => 100;
@@ -109,11 +113,11 @@ describe("Timer", function () {
 
             subject._nowFunc = () => 109;
             stubWindowTimer.callback();
-            cb.wasCalled.should.be.false;
+            wasCalled.should.be.false;
 
             subject._nowFunc = () => 111;
             stubWindowTimer.callback();
-            cb.wasCalled.should.be.true;
+            wasCalled.should.be.true;
         });
 
         it("should cancel window timer", function () {
@@ -148,8 +152,9 @@ describe("Timer", function () {
     describe("addHandler", function () {
 
         it("should allow callback to be invoked", function () {
+            let wasCalled = false;
             var cb = function () {
-                cb.wasCalled = true;
+                wasCalled = true;
             };
             subject.addHandler(cb);
 
@@ -158,7 +163,7 @@ describe("Timer", function () {
             subject._nowFunc = () => 110;
             stubWindowTimer.callback();
 
-            cb.wasCalled.should.be.true;
+            wasCalled.should.be.true;
         });
 
         it("should allow multiple callbacks", function () {
@@ -184,11 +189,10 @@ describe("Timer", function () {
     describe("removeHandler", function () {
 
         it("should remove callback from being invoked", function () {
+            let wasCalled = false;
             var cb = function () {
-                cb.wasCalled = true;
+                wasCalled = true;
             };
-            cb.wasCalled = false;
-
             subject._nowFunc = () => 100;
             subject.addHandler(cb);
             subject.init(10);
@@ -197,7 +201,7 @@ describe("Timer", function () {
             subject._nowFunc = () => 110;
             stubWindowTimer.callback();
 
-            cb.wasCalled.should.be.false;
+            wasCalled.should.be.false;
         });
 
         it("should remove individual callback", function () {
@@ -205,8 +209,9 @@ describe("Timer", function () {
             var cb1 = function () {
                 count++;
             };
+            let wasCalled = false
             var cb2 = function () {
-                cb2.wasCalled = true;
+                wasCalled = true;
             };
 
             subject.addHandler(cb1);
@@ -222,7 +227,7 @@ describe("Timer", function () {
             stubWindowTimer.callback();
 
             count.should.equal(0);
-            cb2.wasCalled.should.be.true;
+            wasCalled.should.be.true;
         });
 
     });
