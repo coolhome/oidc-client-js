@@ -5,9 +5,8 @@ import { Log } from '../../src/Log';
 import { OidcClientSettings } from '../../src/OidcClientSettings';
 import { Global } from '../../src/Global';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
+import { assert } from 'chai';
+import { WebStorageStateStoreType } from '../../src/WebStorageStateStore';
 
 describe("OidcClientSettings", function () {
 
@@ -363,9 +362,13 @@ describe("OidcClientSettings", function () {
     });
 
     describe("stateStore", function () {
-
         it("should return value from initial settings", function () {
-            let temp = {};
+            let temp: WebStorageStateStoreType = {
+                set: (key, value) => Promise.resolve(undefined),
+                get: (key) => Promise.resolve(""),
+                remove: (key) => Promise.resolve(""),
+                getAllKeys: () => Promise.resolve([]),
+            };
             let subject = new OidcClientSettings({
                 client_id: 'client',
                 stateStore: temp
@@ -377,7 +380,12 @@ describe("OidcClientSettings", function () {
     describe("stateStore", function () {
 
         it("should return value from initial settings", function () {
-            let temp = {};
+            let temp: WebStorageStateStoreType = {
+                set: (key, value) => Promise.resolve(undefined),
+                get: (key) => Promise.resolve(""),
+                remove: (key) => Promise.resolve(""),
+                getAllKeys: () => Promise.resolve([]),
+            };
             let subject = new OidcClientSettings({
                 client_id: 'client',
                 stateStore: temp
@@ -390,7 +398,10 @@ describe("OidcClientSettings", function () {
 
         it("should return value from initial settings", function () {
 
-            let temp = {};
+            let temp = {
+                validateSigninResponse: (state, response) => Promise.resolve(undefined),
+                validateSignoutResponse: (state, response) => Promise.resolve(undefined),
+            };
             let subject = new OidcClientSettings({
                 client_id: 'client',
                 ResponseValidatorCtor: function () { return temp }
@@ -403,16 +414,29 @@ describe("OidcClientSettings", function () {
 
         it("should return value from initial settings", function () {
 
-            let temp = {};
+            let temp = {
+                resetSigningKeys: () => undefined,
+                getMetadata: () => undefined,
+                getIssuer: () => undefined,
+                getAuthorizationEndpoint: () => undefined,
+                getUserInfoEndpoint: () => undefined,
+                getTokenEndpoint: (optional: boolean) => undefined,
+                getCheckSessionIframe: () => undefined,
+                getEndSessionEndpoint: () => undefined,
+                getRevocationEndpoint: () => undefined,
+                getKeysEndpoint: () => undefined,
+                _getMetadataProperty: (name: string, optional: boolean) => undefined,
+                getSigningKeys: () => undefined,
+            };
             let subject = new OidcClientSettings({
                 client_id: 'client',
-                MetadataServiceCtor: function () { return temp }
+                MetadataServiceCtor: (settings: OidcClientSettings) => temp
             });
             subject.metadataService.should.equal(temp);
         });
     });
 
-    describe("extraQueryParams", function() {
+    describe("extraQueryParams", function () {
 
         it("should use default value", function () {
             let subject = new OidcClientSettings({
@@ -447,7 +471,7 @@ describe("OidcClientSettings", function () {
             subject.extraQueryParams.should.deep.equal({ 'hd': 'domain.com' });
         });
 
-        it("should clear it if not object", function() {
+        it("should clear it if not object", function () {
             let subject = new OidcClientSettings({
                 client_id: 'client',
                 extraQueryParams: {
@@ -459,7 +483,7 @@ describe("OidcClientSettings", function () {
         });
     })
 
-    describe("extraTokenParams", function() {
+    describe("extraTokenParams", function () {
 
         it("should use default value", function () {
             let subject = new OidcClientSettings({
@@ -494,7 +518,7 @@ describe("OidcClientSettings", function () {
             subject.extraTokenParams.should.deep.equal({ 'resourceServer': 'abc' });
         });
 
-        it("should clear it if not object", function() {
+        it("should clear it if not object", function () {
             let subject = new OidcClientSettings({
                 client_id: 'client',
                 extraTokenParams: {

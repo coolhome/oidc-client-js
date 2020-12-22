@@ -3,9 +3,7 @@
 
 import { JsonService } from '../../src/JsonService';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
+import { assert } from 'chai';
 
 describe("JsonService", function() {
     let subject;
@@ -131,6 +129,11 @@ describe("JsonService", function() {
 });
 
 class StubXMLHttpRequest {
+    headers: Map<any, any>;
+    responseHeaders: Map<any, any>;
+    method: any;
+    url: any;
+    
     constructor() {
         this.headers = new Map();
         this.responseHeaders = new Map();

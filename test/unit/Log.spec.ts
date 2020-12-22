@@ -3,9 +3,7 @@
 
 import { Log } from '../../src/Log';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
+import { assert } from 'chai';
 
 describe("Log", function() {
 
@@ -120,6 +118,12 @@ describe("Log", function() {
 });
 
 class StubLog {
+    infoWasCalled: boolean;
+    warnWasCalled: boolean;
+    errorWasCalled: boolean;
+    infoParam: any;
+    warnParam: any;
+    errorParam: any;
     constructor(){
         this.infoWasCalled = false;
         this.warnWasCalled = false;

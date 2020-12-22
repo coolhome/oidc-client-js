@@ -4,31 +4,23 @@
 import { Global } from '../../src/Global';
 import { OidcClient } from '../../src/OidcClient';
 import { SigninRequest } from '../../src/SigninRequest';
-import { SigninResponse } from '../../src/SigninResponse';
-import { ErrorResponse } from '../../src/ErrorResponse';
 import { SignoutRequest } from '../../src/SignoutRequest';
-import { SignoutResponse } from '../../src/SignoutResponse';
 import { State } from '../../src/State';
 import { SigninState } from '../../src/SigninState';
 import { OidcClientSettings } from '../../src/OidcClientSettings';
-import { MetadataService } from '../../src/MetadataService';
-
 import { Log } from '../../src/Log';
-
 import { StubMetadataService } from './StubMetadataService';
 import { StubStateStore } from './StubStateStore';
 import { StubResponseValidator } from './StubResponseValidator';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
+import { assert } from 'chai';
 
 describe("OidcClient", function () {
     let settings;
-    let subject;
-    let stubMetadataService;
-    let stubStore;
-    let stubValidator;
+    let subject: OidcClient;
+    let stubMetadataService: StubMetadataService;
+    let stubStore: StubStateStore;
+    let stubValidator: StubResponseValidator;
 
     beforeEach(function () {
 
@@ -65,13 +57,10 @@ describe("OidcClient", function () {
         });
 
         it("should accept OidcClientSettings", function () {
-            let settings = new OidcClientSettings({ client_id: "client" });
-
-            let subject = new OidcClient(settings, {
-                stateStore: stubStore,
-                ResponseValidatorCtor: () => stubValidator,
-                MetadataServiceCtor: () => stubMetadataService
+            let settings = new OidcClientSettings({
+                client_id: "client"
             });
+            let subject = new OidcClient(settings);
 
             subject.settings.should.equal(settings);
         });
@@ -98,15 +87,15 @@ describe("OidcClient", function () {
 
         it("should return a promise", function () {
             stubMetadataService.getAuthorizationEndpointResult = Promise.resolve("http://sts/authorize");
-            var p = subject.createSigninRequest();
+            var p = subject.createSigninRequest(undefined, undefined);
             p.should.be.instanceof(Promise);
-            p.catch(e=>{});
+            p.catch(e => { });
         });
 
         it("should return SigninRequest", function (done) {
             stubMetadataService.getAuthorizationEndpointResult = Promise.resolve("http://sts/authorize");
 
-            var p = subject.createSigninRequest();
+            var p = subject.createSigninRequest(undefined, undefined);
 
             p.then(request => {
                 request.should.be.instanceof(SigninRequest);
@@ -133,7 +122,7 @@ describe("OidcClient", function () {
                 resource: 'res',
                 request: 'req',
                 request_uri: 'req_uri'
-            });
+            }, undefined);
 
             p.then(request => {
                 request.state.data.should.equal('foo');
@@ -175,7 +164,7 @@ describe("OidcClient", function () {
                 login_hint: 'lh',
                 acr_values: 'av',
                 resource: 'res'
-            });
+            }, undefined);
 
             p.then(request => {
                 request.state.data.should.equal('foo');
@@ -199,7 +188,7 @@ describe("OidcClient", function () {
         });
 
         it("should fail if hybrid code id_token requested", function (done) {
-            var p = subject.createSigninRequest({response_type:"code id_token"});
+            var p = subject.createSigninRequest({ response_type: "code id_token" }, undefined);
             p.then(null, err => {
                 err.message.should.contain("hybrid");
                 done();
@@ -207,7 +196,7 @@ describe("OidcClient", function () {
         });
 
         it("should fail if hybrid code token requested", function (done) {
-            var p = subject.createSigninRequest({response_type:"code token"});
+            var p = subject.createSigninRequest({ response_type: "code token" }, undefined);
             p.then(null, err => {
                 err.message.should.contain("hybrid");
                 done();
@@ -215,7 +204,7 @@ describe("OidcClient", function () {
         });
 
         it("should fail if hybrid code id_token token requested", function (done) {
-            var p = subject.createSigninRequest({response_type:"code id_token token"});
+            var p = subject.createSigninRequest({ response_type: "code id_token token" }, undefined);
             p.then(null, err => {
                 err.message.should.contain("hybrid");
                 done();
@@ -226,7 +215,7 @@ describe("OidcClient", function () {
 
             stubMetadataService.getAuthorizationEndpointResult = Promise.reject(new Error("test"));
 
-            var p = subject.createSigninRequest();
+            var p = subject.createSigninRequest(undefined, undefined);
 
             p.then(null, err => {
                 err.message.should.contain("test");
@@ -238,7 +227,7 @@ describe("OidcClient", function () {
             stubMetadataService.getAuthorizationEndpointResult = Promise.resolve("http://sts/authorize");
             stubStore.error = "foo";
 
-            var p = subject.createSigninRequest();
+            var p = subject.createSigninRequest(undefined, undefined);
 
             p.then(null, err => {
                 err.message.should.contain("foo");
@@ -249,7 +238,7 @@ describe("OidcClient", function () {
         it("should store state", function (done) {
             stubMetadataService.getAuthorizationEndpointResult = Promise.resolve("http://sts/authorize");
 
-            var p = subject.createSigninRequest();
+            var p = subject.createSigninRequest(undefined, undefined);
 
             p.then(request => {
                 stubStore.item.should.be.ok;
@@ -262,14 +251,14 @@ describe("OidcClient", function () {
     describe("readSigninResponseState", function () {
 
         it("should return a promise", function () {
-            var p = subject.readSigninResponseState("state=state");
+            var p = subject.readSigninResponseState("state=state", undefined);
             p.should.be.instanceof(Promise);
-            p.catch(e=>{});
+            p.catch(e => { });
         });
 
         it("should fail if no state on response", function (done) {
             stubStore.item = "state";
-            subject.readSigninResponseState("").then(null, err => {
+            subject.readSigninResponseState("", undefined).then(null, err => {
                 err.message.should.contain('state');
                 done();
             });
@@ -277,16 +266,16 @@ describe("OidcClient", function () {
 
         it("should fail if storage fails", function (done) {
             stubStore.error = "fail";
-            subject.readSigninResponseState("state=state").then(null, err => {
+            subject.readSigninResponseState("state=state", undefined).then(null, err => {
                 err.message.should.contain('fail');
                 done();
             });
         });
 
         it("should deserialize stored state and return state and response", function (done) {
-            stubStore.item = new SigninState({ id: '1', nonce: '2', authority:'authority', client_id:'client', request_type:'type' }).toStorageString();
+            stubStore.item = new SigninState({ id: '1', nonce: '2', authority: 'authority', client_id: 'client', request_type: 'type' }).toStorageString();
 
-            subject.readSigninResponseState("state=1").then(({state, response}) => {
+            subject.readSigninResponseState("state=1", undefined).then(({ state, response }) => {
                 state.id.should.equal('1');
                 state.nonce.should.equal('2');
                 state.authority.should.equal('authority');
@@ -302,14 +291,14 @@ describe("OidcClient", function () {
     describe("processSigninResponse", function () {
 
         it("should return a promise", function () {
-            var p = subject.processSigninResponse("state=state");
+            var p = subject.processSigninResponse("state=state", undefined);
             p.should.be.instanceof(Promise);
-            p.catch(e=>{});
+            p.catch(e => { });
         });
 
         it("should fail if no state on response", function (done) {
             stubStore.item = "state";
-            subject.processSigninResponse("").then(null, err => {
+            subject.processSigninResponse("", undefined).then(null, err => {
                 err.message.should.contain('state');
                 done();
             });
@@ -317,16 +306,21 @@ describe("OidcClient", function () {
 
         it("should fail if storage fails", function (done) {
             stubStore.error = "fail";
-            subject.processSigninResponse("state=state").then(null, err => {
+            subject.processSigninResponse("state=state", undefined).then(null, err => {
                 err.message.should.contain('fail');
                 done();
             });
         });
 
         it("should deserialize stored state and call validator", function (done) {
-            stubStore.item = new SigninState({ id: '1', nonce: '2', authority:'authority', client_id:'client' }).toStorageString();
+            stubStore.item = new SigninState({
+                id: '1',
+                nonce: '2',
+                authority: 'authority',
+                client_id: 'client',
+            }).toStorageString();
 
-            subject.processSigninResponse("state=1").then(response => {
+            subject.processSigninResponse("state=1", undefined).then(response => {
                 stubValidator.signinState.id.should.equal('1');
                 stubValidator.signinState.nonce.should.equal('2');
                 stubValidator.signinState.authority.should.equal('authority');
@@ -344,7 +338,7 @@ describe("OidcClient", function () {
             stubMetadataService.getEndSessionEndpointResult = Promise.resolve("http://sts/signout");
             var p = subject.createSignoutRequest();
             p.should.be.instanceof(Promise);
-            p.catch(e=>{});
+            p.catch(e => { });
         });
 
         it("should return SignoutRequest", function (done) {
@@ -422,7 +416,7 @@ describe("OidcClient", function () {
             stubMetadataService.getEndSessionEndpointResult = Promise.resolve("http://sts/signout");
 
             var p = subject.createSignoutRequest({
-                data:"foo", id_token_hint:'hint'
+                data: "foo", id_token_hint: 'hint'
             });
 
             p.then(request => {
@@ -446,20 +440,20 @@ describe("OidcClient", function () {
     describe("readSignoutResponseState", function () {
 
         it("should return a promise", function () {
-            var p = subject.readSignoutResponseState("state=state");
+            var p = subject.readSignoutResponseState("state=state", undefined);
             p.should.be.instanceof(Promise);
-            p.catch(e=>{});
+            p.catch(e => { });
         });
 
         it("should return result if no state on response", function (done) {
-            subject.readSignoutResponseState("").then(({state, response}) => {
+            subject.readSignoutResponseState("", undefined).then(({ state, response }) => {
                 response.should.be.ok;
                 done();
             });
         });
 
         it("should return error", function (done) {
-            subject.readSignoutResponseState("error=foo").then(null, err => {
+            subject.readSignoutResponseState("error=foo", undefined).then(null, err => {
                 err.error.should.equal("foo");
                 done();
             });
@@ -467,7 +461,7 @@ describe("OidcClient", function () {
 
         it("should fail if storage fails", function (done) {
             stubStore.error = "fail";
-            subject.readSignoutResponseState("state=state").then(null, err => {
+            subject.readSignoutResponseState("state=state", undefined).then(null, err => {
                 err.message.should.contain('fail');
                 done();
             });
@@ -475,9 +469,9 @@ describe("OidcClient", function () {
 
         it("should deserialize stored state and return state and response", function (done) {
 
-            stubStore.item = new State({ id: '1', request_type:'type' }).toStorageString();
+            stubStore.item = new State({ id: '1', request_type: 'type' }).toStorageString();
 
-            subject.readSignoutResponseState("state=1").then(({state, response}) => {
+            subject.readSignoutResponseState("state=1", undefined).then(({ state, response }) => {
                 state.id.should.equal('1');
                 state.request_type.should.equal('type');
                 response.state.should.be.equal('1');
@@ -487,9 +481,9 @@ describe("OidcClient", function () {
 
         it("should call validator with state even if error in response", function (done) {
 
-            stubStore.item = new State({ id: '1', data:"bar" }).toStorageString();
+            stubStore.item = new State({ id: '1', data: "bar" }).toStorageString();
 
-            subject.processSignoutResponse("state=1&error=foo").then(response => {
+            subject.processSignoutResponse("state=1&error=foo", undefined).then(response => {
                 stubValidator.signoutState.id.should.equal('1');
                 stubValidator.signoutResponse.should.be.deep.equal(response);
                 done();
@@ -501,20 +495,20 @@ describe("OidcClient", function () {
     describe("processSignoutResponse", function () {
 
         it("should return a promise", function () {
-            var p = subject.processSignoutResponse("state=state");
+            var p = subject.processSignoutResponse("state=state", undefined);
             p.should.be.instanceof(Promise);
-            p.catch(e=>{});
+            p.catch(e => { });
         });
 
         it("should return result if no state on response", function (done) {
-            subject.processSignoutResponse("").then(response => {
+            subject.processSignoutResponse("", undefined).then(response => {
                 response.should.be.ok;
                 done();
             });
         });
 
         it("should return error", function (done) {
-            subject.processSignoutResponse("error=foo").then(null, err => {
+            subject.processSignoutResponse("error=foo", undefined).then(null, err => {
                 err.error.should.equal("foo");
                 done();
             });
@@ -522,7 +516,7 @@ describe("OidcClient", function () {
 
         it("should fail if storage fails", function (done) {
             stubStore.error = "fail";
-            subject.processSignoutResponse("state=state").then(null, err => {
+            subject.processSignoutResponse("state=state", undefined).then(null, err => {
                 err.message.should.contain('fail');
                 done();
             });
@@ -532,7 +526,7 @@ describe("OidcClient", function () {
 
             stubStore.item = new State({ id: '1' }).toStorageString();
 
-            subject.processSignoutResponse("state=1").then(response => {
+            subject.processSignoutResponse("state=1", undefined).then(response => {
                 stubValidator.signoutState.id.should.equal('1');
                 stubValidator.signoutResponse.should.be.deep.equal(response);
                 done();
@@ -541,9 +535,9 @@ describe("OidcClient", function () {
 
         it("should call validator with state even if error in response", function (done) {
 
-            stubStore.item = new State({ id: '1', data:"bar" }).toStorageString();
+            stubStore.item = new State({ id: '1', data: "bar" }).toStorageString();
 
-            subject.processSignoutResponse("state=1&error=foo").then(response => {
+            subject.processSignoutResponse("state=1&error=foo", undefined).then(response => {
                 stubValidator.signoutState.id.should.equal('1');
                 stubValidator.signoutResponse.should.be.deep.equal(response);
                 done();
@@ -555,24 +549,28 @@ describe("OidcClient", function () {
     describe("clearStaleState", function () {
 
         it("should return a promise", function () {
-            var p = subject.clearStaleState();
+            var p = subject.clearStaleState(undefined);
             p.should.be.instanceof(Promise);
-            p.catch(e=>{});
+            p.catch(e => { });
         });
 
         it("should call State.clearStaleState", function () {
             var oldState = State.clearStaleState;
 
-            State.clearStaleState = function (store, age) {
-                State.clearStaleState.wasCalled = true;
-                State.clearStaleState.store = store;
-                State.clearStaleState.age = age;
-            };
-            subject.clearStaleState();
+            let wasCalled = false;
+            let store: any;
+            let age: any;
 
-            State.clearStaleState.wasCalled.should.be.true;
-            State.clearStaleState.store.should.equal(subject._stateStore);
-            State.clearStaleState.age.should.equal(subject.settings.staleStateAge);
+            State.clearStaleState = function (store, age) {
+                wasCalled = true;
+                store = store;
+                age = age;
+            };
+            subject.clearStaleState(undefined);
+
+            wasCalled.should.be.true;
+            store.should.equal(subject._stateStore);
+            age.should.equal(subject.settings.staleStateAge);
 
             State.clearStaleState = oldState;
         });

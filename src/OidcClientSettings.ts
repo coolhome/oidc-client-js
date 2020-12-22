@@ -3,9 +3,9 @@
 
 import { Log } from './Log';
 import { ClockService } from './ClockService';
-import { WebStorageStateStore } from './WebStorageStateStore';
-import { ResponseValidator } from './ResponseValidator';
-import { MetadataService } from './MetadataService';
+import { WebStorageStateStore, WebStorageStateStoreType } from './WebStorageStateStore';
+import { ResponseValidator, ResponseValidatorType } from './ResponseValidator';
+import { MetadataService, MetadataServiceType } from './MetadataService';
 
 const OidcMetadataUrlPath = '.well-known/openid-configuration';
 
@@ -38,47 +38,51 @@ export class OidcClientSettings {
     private _clockSkew: number;
     private _clockService: ClockService;
     private _userInfoJwtIssuer: string;
-    private _stateStore: WebStorageStateStore;
-    private _validator: ResponseValidator;
-    private _metadataService: MetadataService;
+    private _stateStore: WebStorageStateStoreType;
+    private _validator: ResponseValidatorType;
+    private _metadataService: MetadataServiceType;
     private _extraQueryParams: {};
     private _extraTokenParams: {};
-    
+
     constructor({
         // metadata related
-        authority = undefined, 
-        metadataUrl = undefined, 
+        authority = undefined,
+        metadataUrl = undefined,
         metadata = undefined,
-         signingKeys = undefined,
+        signingKeys = undefined,
         // client related
-        client_id = undefined, 
-        client_secret = undefined, 
-        response_type = DefaultResponseType, 
+        client_id = undefined,
+        client_secret = undefined,
+        response_type = DefaultResponseType,
         scope = DefaultScope,
-        redirect_uri = undefined, 
+        redirect_uri = undefined,
         post_logout_redirect_uri = undefined,
         // optional protocol
-        prompt = undefined, 
-        display = undefined, 
-        max_age = undefined, 
-        ui_locales = undefined, 
-        acr_values = undefined, 
-        resource = undefined, 
+        prompt = undefined,
+        display = undefined,
+        max_age = undefined,
+        ui_locales = undefined,
+        acr_values = undefined,
+        resource = undefined,
         response_mode = undefined,
         // behavior flags
         filterProtocolClaims = true, loadUserInfo = true,
-        staleStateAge = DefaultStaleStateAge, 
+        staleStateAge = DefaultStaleStateAge,
         clockSkew = DefaultClockSkewInSeconds,
         clockService = new ClockService(),
         userInfoJwtIssuer = 'OP',
         // other behavior
         stateStore = new WebStorageStateStore(),
-        ResponseValidatorCtor = ResponseValidator,
-        MetadataServiceCtor = MetadataService,
+        ResponseValidatorCtor = (settings: OidcClientSettings) => new ResponseValidator(settings) as ResponseValidatorType,
+        MetadataServiceCtor = (settings: OidcClientSettings) => new MetadataService(settings) as MetadataServiceType,
         // extra query params
         extraQueryParams = {},
         extraTokenParams = {}
-    } = {}) {
+    } = {
+            stateStore: new WebStorageStateStore() as WebStorageStateStoreType,
+            ResponseValidatorCtor: (settings: OidcClientSettings) => new ResponseValidator(settings) as ResponseValidatorType,
+            MetadataServiceCtor: (settings: OidcClientSettings) => new MetadataService(settings) as MetadataServiceType,
+        }) {
 
         this._authority = authority;
         this._metadataUrl = metadataUrl;
@@ -108,8 +112,8 @@ export class OidcClientSettings {
         this._userInfoJwtIssuer = userInfoJwtIssuer;
 
         this._stateStore = stateStore;
-        this._validator = new ResponseValidatorCtor(this);
-        this._metadataService = new MetadataServiceCtor(this);
+        this._validator = ResponseValidatorCtor(this);
+        this._metadataService = MetadataServiceCtor(this);
 
         this._extraQueryParams = typeof extraQueryParams === 'object' ? extraQueryParams : {};
         this._extraTokenParams = typeof extraTokenParams === 'object' ? extraTokenParams : {};
@@ -246,7 +250,7 @@ export class OidcClientSettings {
         return this._extraQueryParams;
     }
     set extraQueryParams(value) {
-        if (typeof value === 'object'){
+        if (typeof value === 'object') {
             this._extraQueryParams = value;
         } else {
             this._extraQueryParams = {};
@@ -258,7 +262,7 @@ export class OidcClientSettings {
         return this._extraTokenParams;
     }
     set extraTokenParams(value) {
-        if (typeof value === 'object'){
+        if (typeof value === 'object') {
             this._extraTokenParams = value;
         } else {
             this._extraTokenParams = {};

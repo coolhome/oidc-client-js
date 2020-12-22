@@ -7,7 +7,7 @@
     "build": "gulp",
     "start": "node samples/VanillaJS/server.js",
     "test": "mocha --compilers js:babel-register test/unit/*.spec.js",
-    "test-new": "mocha -r ts-node/register ./test/unit/*.spec.js",
+    "test-new": "mocha -r ts-node/register ./test/unit/*.spec.ts",
     "all": "gulp build & mocha --compilers js:babel-register test/unit/*.spec.js",
     "all-new": "mocha -r ts-node/register ./test/unit/*.spec.ts"
   },
@@ -41,6 +41,8 @@
     "serialize-javascript": "^4.0.0"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.2.0",
     "babel-core": "^6.7.2",
     "babel-loader": "^7.1.5",
     "babel-plugin-add-module-exports": "^0.2.1",
@@ -55,10 +57,11 @@
     "gulp-rename": "^1.4.0",
     "jsbn": "^1.1.0",
     "jsrsasign": "^8.0.12",
-    "mocha": "^5.2.0",
+    "mocha": "^8.2.1",
     "natives": "^1.1.6",
     "open": "^6.1.0",
     "terser-webpack-plugin": "^4.0.0",
+    "ts-node": "^9.1.1",
     "typescript": "^4.1.3",
     "vinyl-source-stream": "^2.0.0",
     "webpack": "^4.29.6",

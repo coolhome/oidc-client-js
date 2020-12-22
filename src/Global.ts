@@ -37,18 +37,6 @@ export class Global {
         }
     }
 
-    // TODO: remove?
-    static setXMLHttpRequest(newRequest) {
-        request = newRequest;
-    }
-
-    // TODO: remove?
-    static get XMLHttpRequest(): typeof XMLHttpRequest {
-        if (!testing && typeof window !== 'undefined') {
-            return request || XMLHttpRequest;
-        }
-    }
-
     static get timer() {
         if (!testing) {
             return timer;

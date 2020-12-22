@@ -7,11 +7,28 @@ import { OidcClientSettings } from './OidcClientSettings';
 
 const OidcMetadataUrlPath = '.well-known/openid-configuration';
 
-export class MetadataService {
+export interface MetadataServiceType {
+    resetSigningKeys();
+    getMetadata();
+    getIssuer();
+    getAuthorizationEndpoint();
+    getUserInfoEndpoint();
+    getTokenEndpoint(optional: boolean);
+    getCheckSessionIframe();
+    getEndSessionEndpoint();
+    getRevocationEndpoint();
+    getKeysEndpoint();
+    _getMetadataProperty(name: string, optional: boolean);
+    getSigningKeys();
+}
+
+export class MetadataService implements MetadataServiceType {
     private _settings: OidcClientSettings;
     private _jsonService: JsonService;
     private _metadataUrl: any;
-    constructor(settings: OidcClientSettings, JsonServiceCtor = JsonService) {
+    constructor(
+        settings: OidcClientSettings = undefined,
+        JsonServiceCtor = JsonService) {
         if (!settings) {
             Log.error("MetadataService: No settings passed to MetadataService");
             throw new Error("settings");
@@ -80,7 +97,7 @@ export class MetadataService {
         return this._getMetadataProperty("userinfo_endpoint");
     }
 
-    getTokenEndpoint(optional=true) {
+    getTokenEndpoint(optional = true) {
         return this._getMetadataProperty("token_endpoint", optional);
     }
 
@@ -100,7 +117,7 @@ export class MetadataService {
         return this._getMetadataProperty("jwks_uri", true);
     }
 
-    _getMetadataProperty(name, optional=false) {
+    _getMetadataProperty(name, optional = false) {
         Log.debug("MetadataService.getMetadataProperty for: " + name);
 
         return this.getMetadata().then(metadata => {

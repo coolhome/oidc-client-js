@@ -2,24 +2,21 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 import { Log } from './Log';
-import { Global } from './Global';
 
 export class JsonService {
     private _contentTypes: string[];
-    private _XMLHttpRequest: typeof XMLHttpRequest;
     private _jwtHandler: any;
-    
+    private _XMLHttpRequest: () => XMLHttpRequest;
+
     constructor(
-        additionalContentTypes = null, 
-        XMLHttpRequestCtor = Global.XMLHttpRequest, 
+        additionalContentTypes = null,
+        XMLHttpRequestCtor = () => new window.XMLHttpRequest,
         jwtHandler = null
     ) {
-        if (additionalContentTypes && Array.isArray(additionalContentTypes))
-        {
+        if (additionalContentTypes && Array.isArray(additionalContentTypes)) {
             this._contentTypes = additionalContentTypes.slice();
         }
-        else
-        {
+        else {
             this._contentTypes = [];
         }
         this._contentTypes.push('application/json');
@@ -32,7 +29,7 @@ export class JsonService {
     }
 
     getJson(url, token?: any): Promise<any> {
-        if (!url){
+        if (!url) {
             Log.error("JsonService.getJson: No url passed");
             throw new Error("url");
         }
@@ -40,13 +37,13 @@ export class JsonService {
         Log.debug("JsonService.getJson, url: ", url);
 
         return new Promise((resolve, reject) => {
-            var req = new this._XMLHttpRequest();
+            var req = this._XMLHttpRequest()
             req.open('GET', url);
 
             var allowedContentTypes = this._contentTypes;
             var jwtHandler = this._jwtHandler;
 
-            req.onload = function() {
+            req.onload = function () {
                 Log.debug("JsonService.getJson: HTTP response received, status", req.status);
 
                 if (req.status === 200) {
@@ -54,7 +51,7 @@ export class JsonService {
                     var contentType = req.getResponseHeader("Content-Type");
                     if (contentType) {
 
-                        var found = allowedContentTypes.find(item=>{
+                        var found = allowedContentTypes.find(item => {
                             if (contentType.startsWith(item)) {
                                 return true;
                             }
@@ -85,7 +82,7 @@ export class JsonService {
                 }
             };
 
-            req.onerror = function() {
+            req.onerror = function () {
                 Log.error("JsonService.getJson: network error");
                 reject(Error("Network Error"));
             };
@@ -99,8 +96,8 @@ export class JsonService {
         });
     }
 
-    postForm(url, payload): Promise<any> {
-        if (!url){
+    postForm(url, payload) {
+        if (!url) {
             Log.error("JsonService.postForm: No url passed");
             throw new Error("url");
         }
@@ -109,12 +106,12 @@ export class JsonService {
 
         return new Promise((resolve, reject) => {
 
-            var req = new this._XMLHttpRequest();
+            var req = this._XMLHttpRequest();
             req.open('POST', url);
 
             var allowedContentTypes = this._contentTypes;
 
-            req.onload = function() {
+            req.onload = function () {
                 Log.debug("JsonService.postForm: HTTP response received, status", req.status);
 
                 if (req.status === 200) {
@@ -122,7 +119,7 @@ export class JsonService {
                     var contentType = req.getResponseHeader("Content-Type");
                     if (contentType) {
 
-                        var found = allowedContentTypes.find(item=>{
+                        var found = allowedContentTypes.find(item => {
                             if (contentType.startsWith(item)) {
                                 return true;
                             }
@@ -150,7 +147,7 @@ export class JsonService {
                     var contentType = req.getResponseHeader("Content-Type");
                     if (contentType) {
 
-                        var found = allowedContentTypes.find(item=>{
+                        var found = allowedContentTypes.find(item => {
                             if (contentType.startsWith(item)) {
                                 return true;
                             }
@@ -177,13 +174,13 @@ export class JsonService {
                 reject(Error(req.statusText + " (" + req.status + ")"));
             };
 
-            req.onerror = function() {
+            req.onerror = function () {
                 Log.error("JsonService.postForm: network error");
                 reject(Error("Network Error"));
             };
 
             let body = "";
-            for(let key in payload) {
+            for (let key in payload) {
 
                 let value = payload[key];
 

@@ -21,7 +21,7 @@ export class TokenClient {
         this._metadataService = new MetadataServiceCtor(this._settings);
     }
 
-    exchangeCode(args: any = {}) {
+    exchangeCode(args: any = {}): Promise<any> {
         args = Object.assign({}, args);
 
         args.grant_type = args.grant_type || "authorization_code";

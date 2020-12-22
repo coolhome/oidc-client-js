@@ -2,6 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 export class StubStateStore {
+    item: any;
+    error: any;
+
     set(key, value) {
         if (this.error) {
             return Promise.reject(new Error(this.error));
@@ -24,13 +27,14 @@ export class StubStateStore {
         return Promise.resolve(this.item);
     }
 
-    getAllKeys(){
-        if (this.item){
+    getAllKeys() {
+        if (this.item) {
             return Promise.resolve(["key"]);
         }
-            return Promise.resolve([]);
+        return Promise.resolve([]);
     }
-    get length(){
+    
+    get length() {
         return this.item ? 1 : 0;
     }
 }

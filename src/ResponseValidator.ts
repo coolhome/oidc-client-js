@@ -11,7 +11,12 @@ import { OidcClientSettings } from './OidcClientSettings';
 
 const ProtocolClaims = ["nonce", "at_hash", "iat", "nbf", "exp", "aud", "iss", "c_hash"];
 
-export class ResponseValidator {
+export interface ResponseValidatorType {
+    validateSigninResponse(state, response): Promise<any>;
+    validateSignoutResponse(state, response): Promise<any>;
+}
+
+export class ResponseValidator implements ResponseValidatorType {
     private _settings: OidcClientSettings;
     private _metadataService: MetadataService;
     private _userInfoService: UserInfoService;

@@ -7,12 +7,10 @@ import { Log } from '../../src/Log';
 
 // Node.js does not provide global atob/btoa functions that are widely supported by browsers (incl IE10)
 // https://caniuse.com/#feat=atob-btoa
-global.atob = (val) => { return Buffer.from(val, 'base64') };
+global.atob = (val) => { return Buffer.from(val, 'base64').toString(`binary`) };
 global.btoa = (val) => { return Buffer.from(val).toString('base64') };
 
-import chai from 'chai';
-chai.should();
-let expect = chai.expect;
+import { expect } from 'chai';
 
 [JoseUtilJsrsasign, JoseUtilRsa].forEach(JoseUtil => {
     const isRSA = JoseUtil === JoseUtilRsa;
@@ -114,11 +112,11 @@ let expect = chai.expect;
         describe("validateJwt", function () {
 
             if(!isRSA) {
-                it("should validate from RSA X509 key (jsrsasign only)", function (done, fail) {
+                it("should validate from RSA X509 key (jsrsasign only)", function (done) {
                     delete rsaKey.n;
                     delete rsaKey.e;
 
-                    JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 0, expectedNow).then(()=>{
+                    JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 0, expectedNow, false).then(()=>{
                         done();
                     });
 
@@ -129,7 +127,7 @@ let expect = chai.expect;
 
                 delete rsaKey.x5c;
 
-                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 0, expectedNow).then(()=>{
+                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 0, expectedNow, false).then(()=>{
                     done();
                 })
 
@@ -139,7 +137,7 @@ let expect = chai.expect;
 
                 rsaKey.kty = "foo";
 
-                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 0, expectedNow).catch(e => {
+                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 0, expectedNow, false).catch(e => {
                     e.message.should.contain("foo");
                     done();
                 });
@@ -148,7 +146,7 @@ let expect = chai.expect;
 
             it("should fail for mismatched keys", function (done) {
 
-                JoseUtil.validateJwt(jwtFromRsa, ecKey, expectedIssuer, expectedAudience, 0, expectedNow).catch(e => {
+                JoseUtil.validateJwt(jwtFromRsa, ecKey, expectedIssuer, expectedAudience, 0, expectedNow, false).catch(e => {
                     e.message.should.contain("signature");
                     done();
                 });
@@ -157,7 +155,7 @@ let expect = chai.expect;
 
             it("should not validate before nbf", function (done) {
 
-                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 0, notBefore - 1).catch(e => {
+                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 0, notBefore - 1, false).catch(e => {
                     e.message.should.contain("iat");
                     done();
                 });
@@ -166,8 +164,8 @@ let expect = chai.expect;
 
             it("should allow nbf within clock skew", function (done) {
 
-                var p1 = JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, notBefore - 1);
-                var p2 = JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, notBefore - 10);
+                var p1 = JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, notBefore - 1, false);
+                var p2 = JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, notBefore - 10, false);
                 Promise.all([p1, p2]).then(()=>{
                     done();
                 });
@@ -175,7 +173,7 @@ let expect = chai.expect;
 
             it("should now allow nbf outside clock skew", function (done) {
 
-                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, notBefore - 11).catch(e => {
+                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, notBefore - 11, false).catch(e => {
                     e.message.should.contain("iat");
                     done();
                 });
@@ -184,7 +182,7 @@ let expect = chai.expect;
 
             it("should not validate before iat", function (done) {
 
-                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 0, issuedAt - 1).catch(e => {
+                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 0, issuedAt - 1, false).catch(e => {
                     e.message.should.contain("iat");
                     done();
                 });
@@ -193,8 +191,8 @@ let expect = chai.expect;
 
             it("should allow iat within clock skew", function (done) {
 
-                var p1 = JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, issuedAt - 1);
-                var p2 = JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, issuedAt - 10);
+                var p1 = JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, issuedAt - 1, false);
+                var p2 = JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, issuedAt - 10, false);
                 Promise.all([p1, p2]).then(()=>{
                     done();
                 });
@@ -202,7 +200,7 @@ let expect = chai.expect;
 
             it("should now allow iat outside clock skew", function (done) {
 
-                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, issuedAt - 11).catch(e => {
+                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, issuedAt - 11, false).catch(e => {
                     e.message.should.contain("iat");
                     done();
                 });
@@ -211,7 +209,7 @@ let expect = chai.expect;
 
             it("should not validate after exp", function (done) {
 
-                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 0, expires + 1).catch(e => {
+                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 0, expires + 1, false).catch(e => {
                     e.message.should.contain("exp");
                     done();
                 });
@@ -220,8 +218,8 @@ let expect = chai.expect;
 
             it("should allow exp within clock skew", function (done) {
 
-                var p1 = JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, expires + 1);
-                var p2 = JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, expires + 10)
+                var p1 = JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, expires + 1, false);
+                var p2 = JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, expires + 10, false)
                 Promise.all([p1, p2]).then(()=>{
                     done();
                 });
@@ -229,7 +227,7 @@ let expect = chai.expect;
 
             it("should now allow exp outside clock skew", function (done) {
 
-                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, expires + 11).catch(e => {
+                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, expectedAudience, 10, expires + 11, false).catch(e => {
                     e.message.should.contain("exp");
                     done();
                 });
@@ -238,7 +236,7 @@ let expect = chai.expect;
 
             it("should not validate for invalid audience", function (done) {
 
-                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, "invalid aud", 0, expectedNow).catch(e => {
+                JoseUtil.validateJwt(jwtFromRsa, rsaKey, expectedIssuer, "invalid aud", 0, expectedNow, false).catch(e => {
                     e.message.should.contain("aud");
                     done();
                 });
@@ -246,7 +244,7 @@ let expect = chai.expect;
 
             it("should not validate for invalid issuer", function (done) {
 
-                JoseUtil.validateJwt(jwtFromRsa, rsaKey, "invalid issuer", expectedAudience, 0, expectedNow).catch(e => {
+                JoseUtil.validateJwt(jwtFromRsa, rsaKey, "invalid issuer", expectedAudience, 0, expectedNow, false).catch(e => {
                     e.message.should.contain("issuer");
                     done();
                 });

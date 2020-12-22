@@ -10,7 +10,7 @@ import { SignoutRequest } from './SignoutRequest';
 import { SignoutResponse } from './SignoutResponse';
 import { SigninState } from './SigninState';
 import { State } from './State';
-import { WebStorageStateStore } from './WebStorageStateStore';
+import { WebStorageStateStore, WebStorageStateStoreType } from './WebStorageStateStore';
 
 export class OidcClient {
     protected _settings: OidcClientSettings;
@@ -164,7 +164,7 @@ export class OidcClient {
             extraQueryParams = undefined,
             request_type = undefined,
         }: any = {},
-        stateStore: WebStorageStateStore = undefined
+        stateStore: WebStorageStateStoreType = undefined
     ) {
         Log.debug("OidcClient.createSignoutRequest");
 

@@ -3,17 +3,17 @@
 
 import { AccessTokenEvents } from '../../src/AccessTokenEvents';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
+import { assert } from 'chai';
 
 class StubTimer {
+    cancelWasCalled: boolean;
+    duration: number;
 
     constructor() {
         this.cancelWasCalled = false;
     }
 
-    init(duration) {
+    init(duration: number) {
         this.duration = duration;
     }
 

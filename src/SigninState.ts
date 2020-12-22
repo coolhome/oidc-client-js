@@ -7,16 +7,16 @@ import { JoseUtil } from './JoseUtil';
 import random from './random';
 
 type SigninStateOptions = StateOptions & {
-    nonce: any,
-    authority: any,
-    client_id: any,
-    redirect_uri: any,
-    code_verifier: any,
-    response_mode: any,
-    client_secret: any,
-    scope: any,
-    extraTokenParams: any,
-    skipUserInfo: any,
+    nonce?: any,
+    authority?: any,
+    client_id?: any,
+    redirect_uri?: any,
+    code_verifier?: any,
+    response_mode?: any,
+    client_secret?: any,
+    scope?: any,
+    extraTokenParams?: any,
+    skipUserInfo?: any,
 }
 
 export class SigninState extends State {

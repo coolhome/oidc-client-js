@@ -4,9 +4,7 @@
 
 import { Event } from '../../src/Event';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
+import { assert } from 'chai';
 
 describe("Event", function () {
 
@@ -19,14 +17,15 @@ describe("Event", function () {
     describe("addHandler", function () {
 
         it("should allow callback to be invoked", function () {
+            let wasCalled = false;
             var cb = function () {
-                cb.wasCalled = true;
-            };
+                wasCalled = true;
+            }
             subject.addHandler(cb);
 
             subject.raise();
 
-            cb.wasCalled.should.be.true;
+            wasCalled.should.be.true;
         });
 
         it("should allow multiple callbacks", function () {
@@ -49,16 +48,17 @@ describe("Event", function () {
     describe("removeHandler", function () {
 
         it("should remove callback from being invoked", function () {
+            let wasCalled = false;
             var cb = function () {
-                cb.wasCalled = true;
+                wasCalled = true;
             };
-            cb.wasCalled = false;
+            wasCalled = false;
 
             subject.addHandler(cb);
             subject.removeHandler(cb);
             subject.raise();
 
-            cb.wasCalled.should.be.false;
+            wasCalled.should.be.false;
         });
 
         it("should remove individual callback", function () {
@@ -66,8 +66,9 @@ describe("Event", function () {
             var cb1 = function () {
                 count++;
             };
+            let wasCalled = false;
             var cb2 = function () {
-                cb2.wasCalled = true;
+                wasCalled = true;
             };
 
             subject.addHandler(cb1);
@@ -79,7 +80,7 @@ describe("Event", function () {
             subject.raise();
 
             count.should.equal(0);
-            cb2.wasCalled.should.be.true;
+            wasCalled.should.be.true;
         });
 
     });

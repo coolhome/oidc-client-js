@@ -4,7 +4,14 @@
 import { Log } from './Log';
 import { Global } from './Global';
 
-export class WebStorageStateStore {
+export interface WebStorageStateStoreType {
+    set(key, value): Promise<void>;
+    get(key): Promise<string|null>;
+    remove(key): Promise<string>;
+    getAllKeys(): Promise<string[]>;
+}
+
+export class WebStorageStateStore implements WebStorageStateStoreType {
     private _store: Storage;
     private _prefix: string;
     
@@ -47,7 +54,7 @@ export class WebStorageStateStore {
     getAllKeys() {
         Log.debug("WebStorageStateStore.getAllKeys");
 
-        var keys = [];
+        var keys: string[] = [];
 
         for (let index = 0; index < this._store.length; index++) {
             let key = this._store.key(index);
