@@ -180,7 +180,7 @@ export class UserManager extends OidcClient {
             }
             else {
                 args.id_token_hint = args.id_token_hint || (this.settings.includeIdTokenInSilentRenew && user && user.id_token);
-                if (user && this._settings.validateSubOnSilentRenew) {
+                if (user && this.settings.validateSubOnSilentRenew) {
                     Log.debug("UserManager.signinSilent, subject prior to silent renew: ", user.profile.sub);
                     args.current_sub = user.profile.sub;
                 }
@@ -508,7 +508,7 @@ export class UserManager extends OidcClient {
             return this._loadUser().then(user => {
                 Log.debug("UserManager._signoutStart: loaded current user from storage");
 
-                var revokePromise = this._settings.revokeAccessTokenOnSignout ? this._revokeInternal(user, undefined) : Promise.resolve();
+                var revokePromise = this.settings.revokeAccessTokenOnSignout ? this._revokeInternal(user, undefined) : Promise.resolve(true); // added true to match _revokeInternal return type, which is not used
                 return revokePromise.then(() => {
 
                     var id_token = args.id_token_hint || user && user.id_token;
@@ -632,12 +632,13 @@ export class UserManager extends OidcClient {
         });
     }
 
-    storeUser(user) {
+    storeUser(user): Promise<string> {
         if (user) {
             Log.debug("UserManager.storeUser: storing user");
 
             var storageString = user.toStorageString();
-            return this._userStore.set(this._userStoreKey, storageString);
+            this._userStore.set(this._userStoreKey, storageString);
+            return; // TODO: Investigate the cost of always returning string
         }
         else {
             Log.debug("storeUser.storeUser: removing user");

@@ -10,6 +10,7 @@ import { SignoutRequest } from './SignoutRequest';
 import { SignoutResponse } from './SignoutResponse';
 import { SigninState } from './SigninState';
 import { State } from './State';
+import { WebStorageStateStore } from './WebStorageStateStore';
 
 export class OidcClient {
     protected _settings: OidcClientSettings;
@@ -154,8 +155,16 @@ export class OidcClient {
         });
     }
 
-    createSignoutRequest({ id_token_hint, data, state, post_logout_redirect_uri, extraQueryParams, request_type } = {},
-        stateStore
+    createSignoutRequest(
+        {
+            id_token_hint = undefined,
+            data = undefined,
+            state = undefined,
+            post_logout_redirect_uri = undefined,
+            extraQueryParams = undefined,
+            request_type = undefined,
+        }: any = {},
+        stateStore: WebStorageStateStore = undefined
     ) {
         Log.debug("OidcClient.createSignoutRequest");
 
