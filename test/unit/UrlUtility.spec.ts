@@ -3,7 +3,7 @@
 
 import { UrlUtility } from '../../src/UrlUtility';
 
-import { assert } from 'chai';
+import 'chai/register-should';
 
 describe("UrlUtility", function () {
 

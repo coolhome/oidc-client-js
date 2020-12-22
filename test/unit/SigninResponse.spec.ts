@@ -4,7 +4,8 @@
 import { Log } from '../../src/Log';
 import { SigninResponse } from '../../src/SigninResponse';
 
-import { assert, expect } from 'chai';
+import {expect } from 'chai';
+import 'chai/register-should';
 
 describe("SigninResponse", function () {
 

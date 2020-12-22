@@ -5,6 +5,7 @@ import { Log } from '../../src/Log';
 import { SignoutRequest } from '../../src/SignoutRequest';
 
 import { assert } from 'chai';
+import 'chai/register-should';
 
 describe("SignoutRequest", function() {
 

@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 import { Log } from './Log';
-import { Global } from './Global';
 
 export interface WebStorageStateStoreType {
     set(key, value): Promise<void>;
@@ -27,7 +26,7 @@ export class WebStorageStateStore implements WebStorageStateStoreType {
 
         this._store.setItem(key, value);
 
-        return Promise.resolve();
+        return Promise.resolve(undefined);
     }
 
     get(key) {

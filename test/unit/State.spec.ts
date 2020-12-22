@@ -7,7 +7,7 @@ import { State } from '../../src/State';
 import { InMemoryWebStorage } from '../../src/InMemoryWebStorage';
 import { WebStorageStateStore } from '../../src/WebStorageStateStore';
 
-import { assert } from 'chai';
+import 'chai/register-should';
 
 describe("State", function() {
 

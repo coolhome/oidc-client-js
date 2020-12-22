@@ -5,6 +5,7 @@ import { Log } from '../../src/Log';
 import { SigninState } from '../../src/SigninState';
 
 import { assert } from 'chai';
+import 'chai/register-should';
 
 describe("SigninState", function() {
 

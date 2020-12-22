@@ -4,6 +4,7 @@
 import { JsonService } from '../../src/JsonService';
 
 import { assert } from 'chai';
+import 'chai/register-should';
 
 describe("JsonService", function() {
     let subject;

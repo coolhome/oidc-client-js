@@ -8,6 +8,7 @@ import { JoseUtil } from '../../src/JoseUtil';
 import { StubMetadataService } from './StubMetadataService';
 
 import { assert, expect } from 'chai';
+import 'chai/register-should';
 import { OidcClientSettings } from '../../src/OidcClientSettings';
 import { UserInfoService } from '../../src/UserInfoService';
 

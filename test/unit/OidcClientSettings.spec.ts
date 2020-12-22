@@ -6,6 +6,7 @@ import { OidcClientSettings } from '../../src/OidcClientSettings';
 import { Global } from '../../src/Global';
 
 import { assert } from 'chai';
+import 'chai/register-should';
 import { WebStorageStateStoreType } from '../../src/WebStorageStateStore';
 
 describe("OidcClientSettings", function () {

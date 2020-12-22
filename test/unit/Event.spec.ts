@@ -5,6 +5,7 @@
 import { Event } from '../../src/Event';
 
 import { assert } from 'chai';
+import 'chai/register-should';
 
 describe("Event", function () {
 

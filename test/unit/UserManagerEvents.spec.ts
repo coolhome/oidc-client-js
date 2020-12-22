@@ -3,7 +3,7 @@
 
 import { UserManagerEvents } from '../../src/UserManagerEvents';
 
-import { assert } from 'chai';
+import 'chai/register-should';
 
 
 describe("UserManagerEvents", function () {

@@ -3,7 +3,7 @@
 
 import { Timer } from '../../src/Timer';
 
-import { assert } from 'chai';
+import 'chai/register-should';
 
 class StubWindowTimer {
     clearTimeoutWasCalled: boolean;

@@ -5,6 +5,7 @@ import { Log } from '../../src/Log';
 import { ErrorResponse } from '../../src/ErrorResponse';
 
 import { assert } from 'chai';
+import 'chai/register-should';
 
 describe("ErrorResponse", function() {
 

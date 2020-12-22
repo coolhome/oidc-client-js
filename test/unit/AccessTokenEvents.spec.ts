@@ -4,6 +4,7 @@
 import { AccessTokenEvents } from '../../src/AccessTokenEvents';
 
 import { assert } from 'chai';
+import 'chai/register-should';
 
 class StubTimer {
     cancelWasCalled: boolean;

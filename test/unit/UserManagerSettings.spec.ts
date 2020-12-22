@@ -6,6 +6,7 @@ import { Log } from '../../src/Log';
 import { PopupWindow } from '../../src/PopupWindow';
 import { UserManagerSettings } from '../../src/UserManagerSettings';
 import { WebStorageStateStoreType } from '../../src/WebStorageStateStore';
+import 'chai/register-should';
 
 describe("UserManagerSettings", function () {
 

@@ -14,6 +14,7 @@ import { StubStateStore } from './StubStateStore';
 import { StubResponseValidator } from './StubResponseValidator';
 
 import { assert } from 'chai';
+import 'chai/register-should';
 
 describe("OidcClient", function () {
     let settings;

@@ -11,6 +11,7 @@ global.atob = (val) => { return Buffer.from(val, 'base64').toString(`binary`) };
 global.btoa = (val) => { return Buffer.from(val).toString('base64') };
 
 import { expect } from 'chai';
+import 'chai/register-should';
 
 [JoseUtilJsrsasign, JoseUtilRsa].forEach(JoseUtil => {
     const isRSA = JoseUtil === JoseUtilRsa;

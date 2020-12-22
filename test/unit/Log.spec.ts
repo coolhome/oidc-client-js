@@ -3,7 +3,7 @@
 
 import { Log } from '../../src/Log';
 
-import { assert } from 'chai';
+import 'chai/register-should';
 
 describe("Log", function() {
 
