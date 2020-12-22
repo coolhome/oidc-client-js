@@ -2,19 +2,20 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 import { JsonService } from './JsonService';
-import { MetadataService } from './MetadataService';
+import { MetadataService, MetadataServiceType } from './MetadataService';
 import { Log } from './Log';
 import { JoseUtil } from './JoseUtil';
+import { OidcClientSettings } from './OidcClientSettings';
 
 export class UserInfoService {
     private _settings: any;
     private _jsonService: JsonService;
-    private _metadataService: MetadataService;
+    private _metadataService: MetadataServiceType;
     private _joseUtil: typeof JoseUtil;
     constructor(
         settings, 
-        JsonServiceCtor = JsonService, 
-        MetadataServiceCtor = MetadataService, 
+        JsonServiceCtor = (settings: OidcClientSettings) => new JsonService(settings) as JsonService, 
+        MetadataServiceCtor = (settings: OidcClientSettings) => new MetadataService(settings) as MetadataServiceType, 
         joseUtil = JoseUtil
     ) {
         if (!settings) {
@@ -23,8 +24,8 @@ export class UserInfoService {
         }
 
         this._settings = settings;
-        this._jsonService = new JsonServiceCtor(undefined, undefined, this._getClaimsFromJwt.bind(this));
-        this._metadataService = new MetadataServiceCtor(this._settings, undefined);
+        this._jsonService = JsonServiceCtor(this._getClaimsFromJwt.bind(this));
+        this._metadataService = MetadataServiceCtor(this._settings, undefined);
         this._joseUtil = joseUtil;
     }
 

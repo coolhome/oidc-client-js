@@ -18,7 +18,7 @@ export class OidcClientSettings {
     private _authority: any;
     private _metadataUrl: any;
     private _metadata: any;
-    private _signingKeys: any;
+    private _signingKeys: JsonWebKey[];
     private _client_id: any;
     private _client_secret: any;
     private _response_type: string;
@@ -49,7 +49,7 @@ export class OidcClientSettings {
         authority = undefined,
         metadataUrl = undefined,
         metadata = undefined,
-        signingKeys = undefined,
+        signingKeys = [] as JsonWebKey[],
         // client related
         client_id = undefined,
         client_secret = undefined,

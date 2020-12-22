@@ -19,8 +19,10 @@ export interface MetadataServiceType {
     getRevocationEndpoint();
     getKeysEndpoint();
     _getMetadataProperty(name: string, optional: boolean);
-    getSigningKeys();
+    getSigningKeys(): Promise<JsonWebKey[]>;
 }
+
+export interface JsonWebKeyStore { keys: JsonWebKey[] }
 
 export class MetadataService implements MetadataServiceType {
     private _settings: OidcClientSettings;
@@ -145,10 +147,10 @@ export class MetadataService implements MetadataServiceType {
             return Promise.resolve(this._settings.signingKeys);
         }
 
-        return this._getMetadataProperty("jwks_uri").then(jwks_uri => {
+        return this._getMetadataProperty("jwks_uri").then((jwks_uri: string) => {
             Log.debug("MetadataService.getSigningKeys: jwks_uri received", jwks_uri);
 
-            return this._jsonService.getJson(jwks_uri).then(keySet => {
+            return this._jsonService.getJson(jwks_uri).then((keySet: JsonWebKeyStore) => {
                 Log.debug("MetadataService.getSigningKeys: key set received", keySet);
 
                 if (!keySet.keys) {
