@@ -44,7 +44,7 @@ export interface OidcClientSettingsOptions {
     clockService?: ClockService,
     userInfoJwtIssuer?: any,
     // other behavior
-    stateStore?: WebStorageStateStore,
+    stateStore?: WebStorageStateStoreType,
     ResponseValidatorCtor?: (settings: OidcClientSettings) => ResponseValidatorType,
     MetadataServiceCtor?: (settings: OidcClientSettings) => MetadataServiceType,
     // extra query params
@@ -82,7 +82,7 @@ export class OidcClientSettings {
     protected _extraQueryParams: {};
     protected _extraTokenParams: {};
 
-    constructor(options: OidcClientSettingsOptions) {
+    constructor(options: OidcClientSettingsOptions = {}) {
         options = {
             ...{
                 // metadata related

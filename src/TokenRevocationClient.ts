@@ -14,7 +14,7 @@ export class TokenRevocationClient {
     private _XMLHttpRequestCtor: any;
     private _metadataService: MetadataService;
 
-    constructor(settings: OidcClientSettings, XMLHttpRequestCtor = Global.XMLHttpRequest, MetadataServiceCtor = MetadataService) {
+    constructor(settings: OidcClientSettings, XMLHttpRequestCtor = window.XMLHttpRequest, MetadataServiceCtor = MetadataService) {
         if (!settings) {
             Log.error("TokenRevocationClient.ctor: No settings provided");
             throw new Error("No settings provided.");

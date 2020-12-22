@@ -3,6 +3,18 @@
 
 import { Log } from './Log';
 
+export interface UserOptions {
+    id_token?: any,
+    session_state?: any,
+    access_token?: any,
+    refresh_token?: any,
+    token_type?: any,
+    scope?: any,
+    profile?: any,
+    expires_at?: any, 
+    state?: any,
+}
+
 export class User {
     id_token: any;
     session_state: any;
@@ -13,16 +25,16 @@ export class User {
     profile: any;
     expires_at: any;
     state: any;
-    constructor({id_token, session_state, access_token, refresh_token, token_type, scope, profile, expires_at, state}) {
-        this.id_token = id_token;
-        this.session_state = session_state;
-        this.access_token = access_token;
-        this.refresh_token = refresh_token;
-        this.token_type = token_type;
-        this.scope = scope;
-        this.profile = profile;
-        this.expires_at = expires_at;
-        this.state = state;
+    constructor(options?: UserOptions) {
+        this.id_token = options.id_token;
+        this.session_state = options.session_state;
+        this.access_token = options.access_token;
+        this.refresh_token = options.refresh_token;
+        this.token_type = options.token_type;
+        this.scope = options.scope;
+        this.profile = options.profile;
+        this.expires_at = options.expires_at;
+        this.state = options.state;
     }
 
     get expires_in() {
@@ -34,7 +46,7 @@ export class User {
     }
 
     // todo: only accept number?
-    set expires_in(value: number|string) {
+    set expires_in(value: number | string) {
         let expires_in = typeof value === 'number' ? value : parseInt(value);
         if (typeof expires_in === 'number' && expires_in > 0) {
             let now = new Date().getTime() / 1000 | 0;

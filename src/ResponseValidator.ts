@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 import { Log } from './Log';
-import { MetadataService } from './MetadataService';
+import { MetadataService, MetadataServiceType } from './MetadataService';
 import { UserInfoService } from './UserInfoService';
 import { TokenClient } from './TokenClient';
 import { ErrorResponse } from './ErrorResponse';
@@ -17,15 +17,15 @@ export interface ResponseValidatorType {
 }
 
 export class ResponseValidator implements ResponseValidatorType {
-    private _settings: OidcClientSettings;
-    private _metadataService: MetadataService;
+    public _settings: OidcClientSettings;
+    private _metadataService: MetadataServiceType;
     private _userInfoService: UserInfoService;
     private _joseUtil: typeof JoseUtil;
     private _tokenClient: TokenClient;
 
-    constructor(settings: OidcClientSettings, 
-        MetadataServiceCtor = MetadataService,
-        UserInfoServiceCtor = UserInfoService, 
+    constructor(settings: OidcClientSettings,
+        MetadataServiceCtor?: (settings: OidcClientSettings) => MetadataServiceType,
+        UserInfoServiceCtor?: (settings: OidcClientSettings) => UserInfoService,
         joseUtil = JoseUtil,
         TokenClientCtor = TokenClient) {
         if (!settings) {
@@ -34,8 +34,8 @@ export class ResponseValidator implements ResponseValidatorType {
         }
 
         this._settings = settings;
-        this._metadataService = new MetadataServiceCtor(this._settings);
-        this._userInfoService = new UserInfoServiceCtor(this._settings);
+        this._metadataService = MetadataServiceCtor ? MetadataServiceCtor(this._settings) : new MetadataService(this._settings);
+        this._userInfoService = UserInfoServiceCtor ? UserInfoServiceCtor(this._settings) : new UserInfoService(this._settings);
         this._joseUtil = joseUtil;
         this._tokenClient = new TokenClientCtor(this._settings);
     }
@@ -205,7 +205,7 @@ export class ResponseValidator implements ResponseValidatorType {
                 else if (result[name] !== value) {
                     if (typeof value === 'object') {
                         result[name] = this._mergeClaims(result[name], value);
-                    } 
+                    }
                     else {
                         result[name] = [result[name], value];
                     }
@@ -259,18 +259,18 @@ export class ResponseValidator implements ResponseValidatorType {
         var request = {
             client_id: state.client_id,
             client_secret: state.client_secret,
-            code : response.code,
+            code: response.code,
             redirect_uri: state.redirect_uri,
             code_verifier: state.code_verifier
         };
 
-        if (state.extraTokenParams && typeof(state.extraTokenParams) === 'object') {
+        if (state.extraTokenParams && typeof (state.extraTokenParams) === 'object') {
             Object.assign(request, state.extraTokenParams);
         }
-        
+
         return this._tokenClient.exchangeCode(request).then(tokenResponse => {
-            
-            for(var key in tokenResponse) {
+
+            for (var key in tokenResponse) {
                 response[key] = tokenResponse[key];
             }
 
@@ -281,7 +281,7 @@ export class ResponseValidator implements ResponseValidatorType {
             else {
                 Log.debug("ResponseValidator._processCode: token response successful, returning response");
             }
-            
+
             return response;
         });
     }
@@ -295,17 +295,17 @@ export class ResponseValidator implements ResponseValidatorType {
 
             return this._settings.getEpochTime().then(now => {
                 return this._joseUtil.validateJwtAttributes(response.id_token, issuer, audience, clockSkewInSeconds, now, false).then(payload => {
-                
+
                     if (state.nonce && state.nonce !== payload.nonce) {
                         Log.error("ResponseValidator._validateIdTokenAttributes: Invalid nonce in id_token");
                         return Promise.reject(new Error("Invalid nonce in id_token"));
                     }
-    
+
                     if (!payload.sub) {
                         Log.error("ResponseValidator._validateIdTokenAttributes: No sub present in id_token");
                         return Promise.reject(new Error("No sub present in id_token"));
                     }
-    
+
                     response.profile = payload;
                     return response;
                 });
@@ -392,7 +392,7 @@ export class ResponseValidator implements ResponseValidatorType {
                 let clockSkewInSeconds = this._settings.clockSkew;
                 Log.debug("ResponseValidator._validateIdToken: Validaing JWT; using clock skew (in seconds) of: ", clockSkewInSeconds);
 
-                return this._joseUtil.validateJwt(response.id_token, key, issuer, audience, clockSkewInSeconds, undefined, undefined).then(()=>{
+                return this._joseUtil.validateJwt(response.id_token, key, issuer, audience, clockSkewInSeconds, undefined, undefined).then(() => {
                     Log.debug("ResponseValidator._validateIdToken: JWT validation successful");
 
                     if (!jwt.payload.sub) {
@@ -408,7 +408,7 @@ export class ResponseValidator implements ResponseValidatorType {
         });
     }
 
-    _filterByAlg(keys, alg){
+    _filterByAlg(keys, alg) {
         var kty = null;
         if (alg.startsWith("RS")) {
             kty = "RSA";

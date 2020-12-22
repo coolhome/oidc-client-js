@@ -8,6 +8,8 @@ import { JoseUtil } from '../../src/JoseUtil';
 import { StubMetadataService } from './StubMetadataService';
 
 import { assert, expect } from 'chai';
+import { OidcClientSettings } from '../../src/OidcClientSettings';
+import { UserInfoService } from '../../src/UserInfoService';
 
 class MockJoseUtility {
     parseJwtWasCalled: boolean;
@@ -55,11 +57,12 @@ class MockJoseUtility {
     }
 }
 
-class StubUserInfoService {
+class StubUserInfoService extends UserInfoService {
     getClaimsWasCalled: boolean;
     getClaimsResult: any;
 
     constructor() {
+        super();
         this.getClaimsWasCalled = false;
     }
 
@@ -69,9 +72,10 @@ class StubUserInfoService {
     }
 }
 
+
 class MockResponseValidator extends ResponseValidator {
     _getSigningKeyForJwtSignedCalledCount: any;
-    
+
     constructor(settings, MetadataServiceCtor, UserInfoServiceCtor, joseUtil) {
         super(settings, MetadataServiceCtor, UserInfoServiceCtor, joseUtil);
     }
@@ -89,41 +93,71 @@ class MockResponseValidator extends ResponseValidator {
         return super[name](...args);
     }
 
+    _processSigninParamsWasCalled: boolean;
+    _processSigninParamsResult: any;
     _processSigninParams(...args) {
         return this._mock("_processSigninParams", ...args);
     }
+
+    _validateTokensWasCalled: boolean;
+    _validateTokensResult: any;
     _validateTokens(...args) {
         return this._mock("_validateTokens", ...args);
     }
+
+    _processClaimsWasCalled: boolean;
+    _processClaimsResult: any;
     _processClaims(...args) {
         return this._mock("_processClaims", ...args);
     }
+
+
+    _mergeClaimsWasCalled: boolean;
+    _mergeClaimsResult: any;
     _mergeClaims(...args) {
         return this._mock("_mergeClaims", ...args);
     }
 
+    _getSigningKeyForJwtWasCalled: boolean;
+    _getSigningKeyForJwtResult: any;
     _getSigningKeyForJwt(...args) {
         this._getSigningKeyForJwtSignedCalledCount = (this._getSigningKeyForJwtSignedCalledCount || 0) + 1;
         return this._mock("_getSigningKeyForJwt", ...args);
     }
+
+    _getSigningKeyForJwtWithSingleRetryWasCalled: boolean;
+    _getSigningKeyForJwtWithSingleRetryResult: any;
     _getSigningKeyForJwtWithSingleRetry(...args) {
         this._getSigningKeyForJwtSignedCalledCount = 0;
         return this._mock("_getSigningKeyForJwtWithSingleRetry", ...args);
     }
 
+    _validateIdTokenAndAccessTokenWasCalled: boolean;
+    _validateIdTokenAndAccessTokenResult: any;
     _validateIdTokenAndAccessToken(...args) {
         return this._mock("_validateIdTokenAndAccessToken", ...args);
     }
+
+    _validateIdTokenWasCalled: boolean;
+    _validateIdTokenResult: any;
     _validateIdToken(...args) {
         return this._mock("_validateIdToken", ...args);
     }
+
+    validateJwtWasCalled: boolean;
+    validateJwtResult: any;
     validateJwt(...args) {
         return this._mock("validateJwt", ...args);
     }
+
+    _validateAccessTokenWasCalled: boolean;
+    _validateAccessTokenResult: any;
     _validateAccessToken(...args) {
         return this._mock("_validateAccessToken", ...args);
     }
 
+    _filterProtocolClaimsWasCalled: boolean;
+    _filterProtocolClaimsResult: any;
     _filterProtocolClaims(...args) {
         return this._mock("_filterProtocolClaims", ...args);
     }
@@ -176,7 +210,7 @@ describe("ResponseValidator", function () {
 
         it("should require a settings param", function () {
             try {
-                new ResponseValidator(undefined, () => stubMetadataService, () => stubUserInfoService);
+                new ResponseValidator(undefined, (settings: OidcClientSettings) => stubMetadataService, (settings: OidcClientSettings) => stubUserInfoService);
             }
             catch (e) {
                 e.message.should.contain('settings');
@@ -344,7 +378,8 @@ describe("ResponseValidator", function () {
             stubResponse.id_token = id_token;
 
             subject._processSigninParams(stubState, stubResponse).then(response => {
-                delete subject._settings.authority.should.equal("something different");
+                subject._settings.authority.should.equal("something different");
+                delete subject._settings.authority;
                 done();
             });
         });
@@ -357,7 +392,8 @@ describe("ResponseValidator", function () {
             stubResponse.id_token = id_token;
 
             subject._processSigninParams(stubState, stubResponse).then(response => {
-                delete subject._settings.client_id.should.equal("something different");
+                subject._settings.client_id.should.equal("something different");
+                delete subject._settings.client_id;
                 done();
             });
         });

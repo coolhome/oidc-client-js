@@ -56,7 +56,7 @@ export class UserManagerSettings extends OidcClientSettings {
     private _redirectNavigator: RedirectNavigator;
     private _popupNavigator: PopupNavigator;
     private _iframeNavigator: IFrameNavigator;
-    private _userStore: WebStorageStateStore;
+    private _userStore: WebStorageStateStoreType;
 
     constructor(options: UserManagerSettingsOptions & OidcClientSettingsOptions = {}) {
         options = {

@@ -19,10 +19,13 @@ export interface MetadataServiceType {
     getRevocationEndpoint();
     getKeysEndpoint();
     _getMetadataProperty(name: string, optional: boolean);
-    getSigningKeys(): Promise<JsonWebKey[]>;
+    getSigningKeys(): Promise<JsonWebKeyStoreKey[]>;
 }
 
-export interface JsonWebKeyStore { keys: JsonWebKey[] }
+export type JsonWebKeyStoreKey = JsonWebKey & { kid?: string } // todo: lol at name, maybe we should impl our own JsonWebKey?
+export interface JsonWebKeyStore {
+    keys: JsonWebKeyStoreKey[]
+}
 
 export class MetadataService implements MetadataServiceType {
     private _settings: OidcClientSettings;

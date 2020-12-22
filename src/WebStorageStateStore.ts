@@ -15,7 +15,7 @@ export class WebStorageStateStore implements WebStorageStateStoreType {
     private _store: Storage;
     private _prefix: string;
     
-    constructor({prefix = "oidc.", store = Global.localStorage} = {}) {
+    constructor({prefix = "oidc.", store = window.localStorage} = {}) {
         this._store = store;
         this._prefix = prefix;
     }

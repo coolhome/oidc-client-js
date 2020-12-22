@@ -44,7 +44,7 @@ describe("UserManager", function () {
         settings = {
             authority: 'http://sts/oidc',
             client_id: 'client',
-            monitorSession : false,
+            monitorSession: false,
             navigator: stubNavigator,
             userStore: stubUserStore,
             stateStore: stubStateStore,
@@ -78,7 +78,7 @@ describe("UserManager", function () {
 
         it("should be able to call getUser without recursion", function (done) {
 
-            stubUserStore.item = new User({id_token:"id_token"}).toStorageString();
+            stubUserStore.item = new User({ id_token: "id_token" }).toStorageString();
 
             subject.events.addUserLoaded(user => {
                 subject.getUser().then(user => {
@@ -91,17 +91,17 @@ describe("UserManager", function () {
 
     });
 
-    describe("signinSilent", function(){
+    describe("signinSilent", function () {
 
-        it("should pass silentRequestTimeout from settings", function(done) {
+        it("should pass silentRequestTimeout from settings", function (done) {
 
-            stubUserStore.item = new User({id_token:"id_token"}).toStorageString();
+            stubUserStore.item = new User({ id_token: "id_token" }).toStorageString();
 
             settings.silentRequestTimeout = 123;
             settings.silent_redirect_uri = "http://client/silent_callback";
             subject = new UserManager(settings);
 
-            subject._signin = function(args, nav, navArgs){
+            subject._signin = function (args, nav, navArgs) {
                 Log.debug("_signin", args, nav, navArgs);
 
                 navArgs.silentRequestTimeout.should.equal(123);
@@ -111,45 +111,45 @@ describe("UserManager", function () {
             subject.signinSilent();
         });
 
-        it("should pass silentRequestTimeout from params", function(done){
+        it("should pass silentRequestTimeout from params", function (done) {
 
-            stubUserStore.item = new User({id_token:"id_token"}).toStorageString();
+            stubUserStore.item = new User({ id_token: "id_token" }).toStorageString();
 
             settings.silent_redirect_uri = "http://client/silent_callback";
             subject = new UserManager(settings);
 
-            subject._signin = function(args, nav, navArgs){
+            subject._signin = function (args, nav, navArgs) {
                 navArgs.silentRequestTimeout.should.equal(234);
                 done();
                 return Promise.resolve()
             }
-            subject.signinSilent({silentRequestTimeout:234});
+            subject.signinSilent({ silentRequestTimeout: 234 });
         });
 
-        it("should pass prompt from params", function(done){
+        it("should pass prompt from params", function (done) {
 
-            stubUserStore.item = new User({id_token:"id_token"}).toStorageString();
+            stubUserStore.item = new User({ id_token: "id_token" }).toStorageString();
 
             settings.silent_redirect_uri = "http://client/silent_callback";
             subject = new UserManager(settings);
 
-            subject._signin = function(args, nav, navArgs){
+            subject._signin = function (args, nav, navArgs) {
                 args.prompt.should.equal("foo");
                 done();
                 return Promise.resolve()
             }
-            subject.signinSilent({prompt:"foo"});
+            subject.signinSilent({ prompt: "foo" });
         });
 
-        it("should work when having no User present", function(done) {
+        it("should work when having no User present", function (done) {
             settings.silent_redirect_uri = "http://client/silent_callback";
             subject = new UserManager(settings);
 
-            subject._signin = function(){
+            subject._signin = function () {
                 done();
                 return Promise.resolve()
             }
-            subject.signinSilent({prompt:"foo"});
+            subject.signinSilent({ prompt: "foo" });
         })
     });
 

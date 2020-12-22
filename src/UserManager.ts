@@ -3,7 +3,7 @@
 
 import { Log } from './Log';
 import { OidcClient } from './OidcClient';
-import { UserManagerSettings } from './UserManagerSettings';
+import { UserManagerSettings, UserManagerSettingsOptions } from './UserManagerSettings';
 import { User } from './User';
 import { UserManagerEvents } from './UserManagerEvents';
 import { SilentRenewService } from './SilentRenewService';
@@ -11,6 +11,7 @@ import { SessionMonitor } from './SessionMonitor';
 import { TokenRevocationClient } from './TokenRevocationClient';
 import { TokenClient } from './TokenClient';
 import { JoseUtil } from './JoseUtil';
+import { OidcClientSettings, OidcClientSettingsOptions } from './OidcClientSettings';
 
 
 export class UserManager extends OidcClient {
@@ -20,22 +21,24 @@ export class UserManager extends OidcClient {
     private _tokenRevocationClient: TokenRevocationClient;
     private _tokenClient: TokenClient;
     private _joseUtil: typeof JoseUtil;
-    
-    constructor(settings = {},
-        SilentRenewServiceCtor = SilentRenewService,
-        SessionMonitorCtor = SessionMonitor,
-        TokenRevocationClientCtor = TokenRevocationClient,
-        TokenClientCtor = TokenClient,
-        joseUtil = JoseUtil
-    ) {
 
+    constructor(settings?: UserManagerSettingsOptions,
+        SilentRenewServiceCtor?: (settings: UserManager) => SilentRenewService,
+        SessionMonitorCtor?: (settings: UserManager) => SessionMonitor,
+        TokenRevocationClientCtor?: (settings: OidcClientSettings) => TokenRevocationClient,
+        TokenClientCtor?: (settings: OidcClientSettings) => TokenClient,
+        joseUtil?: typeof JoseUtil
+    ) {
+        // TODO: breaking change?
         if (!(settings instanceof UserManagerSettings)) {
             settings = new UserManagerSettings(settings);
         }
         super(settings);
 
         this._events = new UserManagerEvents(settings);
-        this._silentRenewService = new SilentRenewServiceCtor(this);
+        this._silentRenewService = SilentRenewServiceCtor
+            ? SilentRenewServiceCtor(this)
+            : new SilentRenewService(this);
 
         // order is important for the following properties; these services depend upon the events.
         if (this.settings.automaticSilentRenew) {
@@ -45,15 +48,21 @@ export class UserManager extends OidcClient {
 
         if (this.settings.monitorSession) {
             Log.debug("UserManager.ctor: monitorSession is configured, setting up session monitor");
-            this._sessionMonitor = new SessionMonitorCtor(this);
+            this._sessionMonitor = SessionMonitorCtor
+                ? SessionMonitorCtor(this)
+                : new SessionMonitor(this);
         }
 
-        this._tokenRevocationClient = new TokenRevocationClientCtor(this._settings);
-        this._tokenClient = new TokenClientCtor(this._settings);
+        this._tokenRevocationClient = TokenRevocationClientCtor
+            ? TokenRevocationClientCtor(this._settings)
+            : new TokenRevocationClient(this._settings)
+        this._tokenClient = TokenClientCtor
+            ? TokenClientCtor(this._settings)
+            : new TokenClient(this._settings);
         this._joseUtil = joseUtil;
     }
 
-    get settings(): UserManagerSettings  {
+    get settings(): UserManagerSettings {
         return this._settings as UserManagerSettings;
     }
 
@@ -102,9 +111,9 @@ export class UserManager extends OidcClient {
 
         args.request_type = "si:r";
         let navParams = {
-            useReplaceToNavigate : args.useReplaceToNavigate
+            useReplaceToNavigate: args.useReplaceToNavigate
         };
-        return this._signinStart(args, this._redirectNavigator, navParams).then(()=>{
+        return this._signinStart(args, this._redirectNavigator, navParams).then(() => {
             Log.info("UserManager.signinRedirect: successful");
         });
     }
@@ -163,7 +172,7 @@ export class UserManager extends OidcClient {
             }
 
             return user;
-        }).catch(err=>{
+        }).catch(err => {
             Log.error("UserManager.signinPopupCallback error: " + err && err.message);
         });
     }
@@ -214,7 +223,7 @@ export class UserManager extends OidcClient {
                         user.refresh_token = result.refresh_token || user.refresh_token;
                         user.expires_in = result.expires_in;
 
-                        return this.storeUser(user).then(()=>{
+                        return this.storeUser(user).then(() => {
                             this._events.load(user);
                             return user;
                         });
@@ -255,7 +264,7 @@ export class UserManager extends OidcClient {
             });
         });
     }
-    
+
     _signinSilentIframe(args: any = {}) {
         let url = args.redirect_uri || this.settings.silent_redirect_uri || this.settings.redirect_uri;
         if (!url) {
@@ -299,7 +308,7 @@ export class UserManager extends OidcClient {
     }
 
     signinCallback(url) {
-        return this.readSigninResponseState(url, undefined).then(({state, response}) => {
+        return this.readSigninResponseState(url, undefined).then(({ state, response }) => {
             if (state.request_type === "si:r") {
                 return this.signinRedirectCallback(url);
             }
@@ -314,7 +323,7 @@ export class UserManager extends OidcClient {
     }
 
     signoutCallback(url, keepOpen) {
-        return this.readSignoutResponseState(url, undefined).then(({state, response}) => {
+        return this.readSignoutResponseState(url, undefined).then(({ state, response }) => {
             if (state) {
                 if (state.request_type === "so:r") {
                     return this.signoutRedirectCallback(url);
@@ -352,7 +361,7 @@ export class UserManager extends OidcClient {
                 Log.debug("UserManager.querySessionStatus: got signin response");
 
                 if (signinResponse.session_state && signinResponse.profile.sub) {
-                    Log.info("UserManager.querySessionStatus: querySessionStatus success for sub: ",  signinResponse.profile.sub);
+                    Log.info("UserManager.querySessionStatus: querySessionStatus success for sub: ", signinResponse.profile.sub);
                     return {
                         session_state: signinResponse.session_state,
                         sub: signinResponse.profile.sub,
@@ -363,22 +372,22 @@ export class UserManager extends OidcClient {
                     Log.info("querySessionStatus successful, user not authenticated");
                 }
             })
-            .catch(err => {
-                if (err.session_state && this.settings.monitorAnonymousSession) {
-                    if (err.message == "login_required" || 
-                        err.message == "consent_required" || 
-                        err.message == "interaction_required" || 
-                        err.message == "account_selection_required"
-                    ) {
-                        Log.info("UserManager.querySessionStatus: querySessionStatus success for anonymous user");
-                        return {
-                            session_state: err.session_state
-                        };
+                .catch(err => {
+                    if (err.session_state && this.settings.monitorAnonymousSession) {
+                        if (err.message == "login_required" ||
+                            err.message == "consent_required" ||
+                            err.message == "interaction_required" ||
+                            err.message == "account_selection_required"
+                        ) {
+                            Log.info("UserManager.querySessionStatus: querySessionStatus success for anonymous user");
+                            return {
+                                session_state: err.session_state
+                            };
+                        }
                     }
-                }
 
-                throw err;
-            });
+                    throw err;
+                });
         });
     }
 
@@ -443,18 +452,18 @@ export class UserManager extends OidcClient {
 
         args.request_type = "so:r";
         let postLogoutRedirectUri = args.post_logout_redirect_uri || this.settings.post_logout_redirect_uri;
-        if (postLogoutRedirectUri){
+        if (postLogoutRedirectUri) {
             args.post_logout_redirect_uri = postLogoutRedirectUri;
         }
         let navParams = {
-            useReplaceToNavigate : args.useReplaceToNavigate
+            useReplaceToNavigate: args.useReplaceToNavigate
         };
-        return this._signoutStart(args, this._redirectNavigator, navParams).then(()=>{
+        return this._signoutStart(args, this._redirectNavigator, navParams).then(() => {
             Log.info("UserManager.signoutRedirect: successful");
         });
     }
     signoutRedirectCallback(url) {
-        return this._signoutEnd(url || this._redirectNavigator.url).then(response=>{
+        return this._signoutEnd(url || this._redirectNavigator.url).then(response => {
             Log.info("UserManager.signoutRedirectCallback: successful");
             return response;
         });
@@ -467,7 +476,7 @@ export class UserManager extends OidcClient {
         let url = args.post_logout_redirect_uri || this.settings.popup_post_logout_redirect_uri || this.settings.post_logout_redirect_uri;
         args.post_logout_redirect_uri = url;
         args.display = "popup";
-        if (args.post_logout_redirect_uri){
+        if (args.post_logout_redirect_uri) {
             // we're putting a dummy entry in here because we
             // need a unique id from the state for notification
             // to the parent window, which is necessary if we
@@ -485,7 +494,7 @@ export class UserManager extends OidcClient {
         });
     }
     signoutPopupCallback(url, keepOpen) {
-        if (typeof(keepOpen) === 'undefined' && typeof(url) === 'boolean') {
+        if (typeof (keepOpen) === 'undefined' && typeof (url) === 'boolean') {
             keepOpen = url;
             url = null;
         }
@@ -565,7 +574,7 @@ export class UserManager extends OidcClient {
                     });
                 }
             });
-        }).then(()=>{
+        }).then(() => {
             Log.info("UserManager.revokeAccessToken: access token revoked successfully");
         });
     }
@@ -582,7 +591,7 @@ export class UserManager extends OidcClient {
                             if (!atSuccess && !rtSuccess) {
                                 Log.debug("UserManager.revokeAccessToken: no need to revoke due to no token(s), or JWT format");
                             }
-                            
+
                             return atSuccess || rtSuccess;
                         });
                 });

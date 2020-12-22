@@ -262,7 +262,7 @@ describe("OidcClientSettings", function () {
         it("should return value from initial settings", function () {
             let subject = new OidcClientSettings({
                 client_id: 'client',
-                signingKeys: [ { k: "test" }]
+                signingKeys: [{ k: "test" }]
             });
             subject.signingKeys[0].k.should.equal("test");
         });
@@ -271,7 +271,7 @@ describe("OidcClientSettings", function () {
             let subject = new OidcClientSettings({
                 client_id: 'client',
             });
-            subject.signingKeys = [ { k: "test" }];
+            subject.signingKeys = [{ k: "test" }];
             subject.signingKeys[0].k.should.equal("test");
         });
 

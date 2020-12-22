@@ -67,7 +67,7 @@ describe("SigninResponse", function () {
 
         it("should calculate expires_at", function () {
             let subject = new SigninResponse("expires_in=10");
-            subject.expires_at.should.equal(parseInt((Date.now() / 1000) + 10));
+            subject.expires_at.should.equal((new Date().getTime() / 1000 | 0)  + 10);
         });
 
         it("should not read invalid expires_in", function () {

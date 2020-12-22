@@ -3,10 +3,16 @@
 
 import { Log } from './Log';
 
-export class InMemoryWebStorage{
+export class InMemoryWebStorage implements Storage {
     private _data: {};
-    constructor(){
+    constructor() {
         this._data = {};
+    }
+
+    [name: string]: any;
+
+    clear(): void {
+        throw new Error('Method not implemented.');
     }
 
     getItem(key) {
@@ -14,12 +20,12 @@ export class InMemoryWebStorage{
         return this._data[key];
     }
 
-    setItem(key, value){
+    setItem(key, value) {
         Log.debug("InMemoryWebStorage.setItem", key);
         this._data[key] = value;
     }
 
-    removeItem(key){
+    removeItem(key) {
         Log.debug("InMemoryWebStorage.removeItem", key);
         delete this._data[key];
     }

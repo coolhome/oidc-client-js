@@ -2,6 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 export class StubTokenRevocationClient {
+    accessToken: any;
+    error: string;
+    
     revoke(accessToken, required) {
         this.accessToken = accessToken;
         if (this.error) {

@@ -5,6 +5,7 @@ import { JsonService } from './JsonService';
 import { MetadataService } from './MetadataService';
 import { Log } from './Log';
 import { OidcClientSettings } from './OidcClientSettings';
+import { AccessTokenResponse } from './AccessTokenResponse';
 
 export class TokenClient {
     private _settings: OidcClientSettings;
@@ -74,7 +75,7 @@ export class TokenClient {
         return this._metadataService.getTokenEndpoint(false).then(url => {
             Log.debug("TokenClient.exchangeRefreshToken: Received token endpoint");
 
-            return this._jsonService.postForm(url, args).then(response => {
+            return this._jsonService.postForm(url, args).then((response: AccessTokenResponse) => {
                 Log.debug("TokenClient.exchangeRefreshToken: response received");
                 return response;
             });
