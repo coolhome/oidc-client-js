@@ -176,7 +176,12 @@ describe("UserManagerSettings", function () {
 
     describe("redirectNavigator", function() {
         it("should return value from initial settings", function() {
-            let temp = {};
+            let temp: WebStorageStateStoreType = {
+                set: (key, value) => Promise.resolve(undefined),
+                get: (key) => Promise.resolve(""),
+                remove: (key) => Promise.resolve(""),
+                getAllKeys: () => Promise.resolve([]),
+            };
             let subject = new UserManagerSettings({
                 userStore : temp
             });

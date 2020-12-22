@@ -6,76 +6,97 @@ import { OidcClientSettings } from './OidcClientSettings';
 import { RedirectNavigator } from './RedirectNavigator';
 import { PopupNavigator } from './PopupNavigator';
 import { IFrameNavigator } from './IFrameNavigator';
-import { WebStorageStateStore } from './WebStorageStateStore';
+import { WebStorageStateStore, WebStorageStateStoreType } from './WebStorageStateStore';
 import { Global } from './Global';
 import { SigninRequest } from './SigninRequest';
 
 const DefaultAccessTokenExpiringNotificationTime = 60;
 const DefaultCheckSessionInterval = 2000;
 
+export interface UserManagerSettingsOptions {
+    popup_redirect_uri?: string,
+    popup_post_logout_redirect_uri?: string,
+    popupWindowFeatures?: string,
+    popupWindowTarget?: string,
+    silent_redirect_uri?: string,
+    silentRequestTimeout?: number,
+    automaticSilentRenew?: boolean,
+    validateSubOnSilentRenew?: boolean,
+    includeIdTokenInSilentRenew?: boolean,
+    monitorSession?: boolean,
+    monitorAnonymousSession?: boolean,
+    checkSessionInterval?: number,
+    stopCheckSessionOnError?: boolean,
+    query_status_response_type?: string|boolean,
+    revokeAccessTokenOnSignout?: boolean,
+    accessTokenExpiringNotificationTime?: number,
+    redirectNavigator?: RedirectNavigator,
+    popupNavigator?: PopupNavigator,
+    iframeNavigator?: IFrameNavigator,
+    userStore?: WebStorageStateStoreType,
+}
+
 export class UserManagerSettings extends OidcClientSettings {
-    _popup_redirect_uri: any;
-    private _popup_post_logout_redirect_uri: any;
-    private _popupWindowFeatures: any;
-    private _popupWindowTarget: any;
-    private _silent_redirect_uri: any;
-    private _silentRequestTimeout: any;
+    private _popup_redirect_uri?: string;
+    private _popup_post_logout_redirect_uri?: string;
+    private _popupWindowFeatures?: string;
+    private _popupWindowTarget?: string;
+    private _silent_redirect_uri?: string;
+    private _silentRequestTimeout?: number;
     private _automaticSilentRenew: boolean;
     private _validateSubOnSilentRenew: boolean;
     private _includeIdTokenInSilentRenew: boolean;
-    private _accessTokenExpiringNotificationTime: number;
+    private _accessTokenExpiringNotificationTime?: number;
     private _monitorSession: boolean;
     private _monitorAnonymousSession: boolean;
     private _checkSessionInterval: number;
     private _stopCheckSessionOnError: boolean;
-    private _query_status_response_type: string|boolean;
+    private _query_status_response_type?: string|boolean;
     private _revokeAccessTokenOnSignout: boolean;
     private _redirectNavigator: RedirectNavigator;
     private _popupNavigator: PopupNavigator;
     private _iframeNavigator: IFrameNavigator;
     private _userStore: WebStorageStateStore;
-    constructor({
-        popup_redirect_uri = undefined,
-        popup_post_logout_redirect_uri = undefined,
-        popupWindowFeatures = undefined,
-        popupWindowTarget = undefined,
-        silent_redirect_uri = undefined,
-        silentRequestTimeout = undefined,
-        automaticSilentRenew = false,
-        validateSubOnSilentRenew = false,
-        includeIdTokenInSilentRenew = true,
-        monitorSession = true,
-        monitorAnonymousSession = false,
-        checkSessionInterval = DefaultCheckSessionInterval,
-        stopCheckSessionOnError = true,
-        query_status_response_type = undefined,
-        revokeAccessTokenOnSignout = false,
-        accessTokenExpiringNotificationTime = DefaultAccessTokenExpiringNotificationTime,
-        redirectNavigator = new RedirectNavigator(),
-        popupNavigator = new PopupNavigator(),
-        iframeNavigator = new IFrameNavigator(),
-        userStore = new WebStorageStateStore({ store: Global.sessionStorage })
-    } = {}) {
+
+    constructor(options: UserManagerSettingsOptions = {}) {
+        options = {
+            ...{
+                automaticSilentRenew: false,
+                validateSubOnSilentRenew: false,
+                includeIdTokenInSilentRenew: true,
+                monitorSession: true,
+                monitorAnonymousSession: false,
+                checkSessionInterval: DefaultCheckSessionInterval,
+                stopCheckSessionOnError: true,
+                revokeAccessTokenOnSignout: false,
+                accessTokenExpiringNotificationTime: DefaultAccessTokenExpiringNotificationTime,
+                redirectNavigator: new RedirectNavigator(),
+                popupNavigator: new PopupNavigator(),
+                iframeNavigator: new IFrameNavigator(),
+                userStore: new WebStorageStateStore({ store: Global.sessionStorage })
+            },
+            ...options,
+        };
         super(arguments[0]);
 
-        this._popup_redirect_uri = popup_redirect_uri;
-        this._popup_post_logout_redirect_uri = popup_post_logout_redirect_uri;
-        this._popupWindowFeatures = popupWindowFeatures;
-        this._popupWindowTarget = popupWindowTarget;
+        this._popup_redirect_uri = options.popup_redirect_uri;
+        this._popup_post_logout_redirect_uri = options.popup_post_logout_redirect_uri;
+        this._popupWindowFeatures = options.popupWindowFeatures;
+        this._popupWindowTarget = options.popupWindowTarget;
 
-        this._silent_redirect_uri = silent_redirect_uri;
-        this._silentRequestTimeout = silentRequestTimeout;
-        this._automaticSilentRenew = automaticSilentRenew;
-        this._validateSubOnSilentRenew = validateSubOnSilentRenew;
-        this._includeIdTokenInSilentRenew = includeIdTokenInSilentRenew;
-        this._accessTokenExpiringNotificationTime = accessTokenExpiringNotificationTime;
+        this._silent_redirect_uri = options.silent_redirect_uri;
+        this._silentRequestTimeout = options.silentRequestTimeout;
+        this._automaticSilentRenew = options.automaticSilentRenew;
+        this._validateSubOnSilentRenew = options.validateSubOnSilentRenew;
+        this._includeIdTokenInSilentRenew = options.includeIdTokenInSilentRenew;
+        this._accessTokenExpiringNotificationTime = options.accessTokenExpiringNotificationTime;
 
-        this._monitorSession = monitorSession;
-        this._monitorAnonymousSession = monitorAnonymousSession;
-        this._checkSessionInterval = checkSessionInterval;
-        this._stopCheckSessionOnError = stopCheckSessionOnError;
-        if (query_status_response_type) {
-            this._query_status_response_type = query_status_response_type;
+        this._monitorSession = options.monitorSession;
+        this._monitorAnonymousSession = options.monitorAnonymousSession;
+        this._checkSessionInterval = options.checkSessionInterval;
+        this._stopCheckSessionOnError = options.stopCheckSessionOnError;
+        if (options.query_status_response_type) {
+            this._query_status_response_type = options.query_status_response_type;
         } 
         else if (arguments[0] && arguments[0].response_type) {
             this._query_status_response_type = SigninRequest.isOidc(arguments[0].response_type) ? "id_token" : "code";
@@ -83,13 +104,13 @@ export class UserManagerSettings extends OidcClientSettings {
         else {
             this._query_status_response_type = "id_token";
         }
-        this._revokeAccessTokenOnSignout = revokeAccessTokenOnSignout;
+        this._revokeAccessTokenOnSignout = options.revokeAccessTokenOnSignout;
 
-        this._redirectNavigator = redirectNavigator;
-        this._popupNavigator = popupNavigator;
-        this._iframeNavigator = iframeNavigator;
+        this._redirectNavigator = options.redirectNavigator;
+        this._popupNavigator = options.popupNavigator;
+        this._iframeNavigator = options.iframeNavigator;
 
-        this._userStore = userStore;
+        this._userStore = options.userStore;
     }
 
     get popup_redirect_uri() {

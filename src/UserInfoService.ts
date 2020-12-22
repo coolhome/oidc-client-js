@@ -25,7 +25,7 @@ export class UserInfoService {
 
         this._settings = settings;
         this._jsonService = JsonServiceCtor(this._getClaimsFromJwt.bind(this));
-        this._metadataService = MetadataServiceCtor(this._settings, undefined);
+        this._metadataService = MetadataServiceCtor(this._settings);
         this._joseUtil = joseUtil;
     }
 
