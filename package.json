@@ -7,7 +7,9 @@
     "build": "gulp",
     "start": "node samples/VanillaJS/server.js",
     "test": "mocha --compilers js:babel-register test/unit/*.spec.js",
-    "all": "gulp build & mocha --compilers js:babel-register test/unit/*.spec.js"
+    "test-new": "mocha -r ts-node/register ./test/unit/*.spec.js",
+    "all": "gulp build & mocha --compilers js:babel-register test/unit/*.spec.js",
+    "all-new": "mocha -r ts-node/register ./test/unit/*.spec.ts"
   },
   "repository": {
     "type": "git",
