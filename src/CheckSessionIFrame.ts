@@ -6,6 +6,16 @@ import { Log } from './Log';
 const DefaultInterval = 2000;
 
 export class CheckSessionIFrame {
+    private _callback: any;
+    private _client_id: any;
+    private _url: any;
+    private _interval: any;
+    private _stopOnError: boolean;
+    private _frame_origin: any;
+    private _frame: HTMLIFrameElement;
+    private _boundMessageEvent: any;
+    private _timer: number;
+    private _session_state: any;
     constructor(callback, client_id, url, interval, stopOnError = true) {
         this._callback = callback;
         this._client_id = client_id;
@@ -22,15 +32,15 @@ export class CheckSessionIFrame {
         this._frame.style.visibility = "hidden";
         this._frame.style.position = "absolute";
         this._frame.style.display = "none";
-        this._frame.style.width = 0;
-        this._frame.style.height = 0;
+        this._frame.style.width = "0";
+        this._frame.style.height = "0";
 
         this._frame.src = url;
     }
     load() {
         return new Promise((resolve) => {
             this._frame.onload = () => {
-                resolve();
+                resolve(undefined);
             }
 
             window.document.body.appendChild(this._frame);
@@ -58,7 +68,7 @@ export class CheckSessionIFrame {
             }
         }
     }
-    start(session_state) {
+    start(session_state: any) {
         if (this._session_state !== session_state) {
             Log.debug("CheckSessionIFrame.start");
 

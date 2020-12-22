@@ -7,6 +7,9 @@ import { Timer } from './Timer';
 const DefaultAccessTokenExpiringNotificationTime = 60; // seconds
 
 export class AccessTokenEvents {
+    private _accessTokenExpiringNotificationTime: number;
+    private _accessTokenExpiring: Timer;
+    private _accessTokenExpired: Timer;
 
     constructor({
         accessTokenExpiringNotificationTime = DefaultAccessTokenExpiringNotificationTime,

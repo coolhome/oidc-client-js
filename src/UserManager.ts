@@ -97,7 +97,7 @@ export class UserManager extends OidcClient {
         });
     }
 
-    signinRedirect(args = {}) {
+    signinRedirect(args: any = {}) {
         args = Object.assign({}, args);
 
         args.request_type = "si:r";
@@ -121,7 +121,7 @@ export class UserManager extends OidcClient {
         });
     }
 
-    signinPopup(args = {}) {
+    signinPopup(args: any = {}) {
         args = Object.assign({}, args);
 
         args.request_type = "si:p";
@@ -168,7 +168,7 @@ export class UserManager extends OidcClient {
         });
     }
 
-    signinSilent(args = {}) {
+    signinSilent(args: any = {}) {
         args = Object.assign({}, args);
 
         args.request_type = "si:s";
@@ -189,7 +189,7 @@ export class UserManager extends OidcClient {
         });
     }
 
-    _useRefreshToken(args = {}) {
+    _useRefreshToken(args: any = {}) {
         return this._tokenClient.exchangeRefreshToken(args).then(result => {
             if (!result) {
                 Log.error("UserManager._useRefreshToken: No response returned from token endpoint");
@@ -256,7 +256,7 @@ export class UserManager extends OidcClient {
         });
     }
     
-    _signinSilentIframe(args = {}) {
+    _signinSilentIframe(args: any = {}) {
         let url = args.redirect_uri || this.settings.silent_redirect_uri || this.settings.redirect_uri;
         if (!url) {
             Log.error("UserManager.signinSilent: No silent_redirect_uri configured");
@@ -328,7 +328,7 @@ export class UserManager extends OidcClient {
         });
     }
 
-    querySessionStatus(args = {}) {
+    querySessionStatus(args: any = {}) {
         args = Object.assign({}, args);
 
         args.request_type = "si:s"; // this acts like a signin silent
@@ -382,12 +382,12 @@ export class UserManager extends OidcClient {
         });
     }
 
-    _signin(args, navigator, navigatorParams = {}) {
+    _signin(args: any, navigator, navigatorParams = {}) {
         return this._signinStart(args, navigator, navigatorParams).then(navResponse => {
             return this._signinEnd(navResponse.url, args);
         });
     }
-    _signinStart(args, navigator, navigatorParams = {}) {
+    _signinStart(args: any, navigator, navigatorParams: any = {}) {
 
         return navigator.prepare(navigatorParams).then(handle => {
             Log.debug("UserManager._signinStart: got navigator window handle");
@@ -408,7 +408,7 @@ export class UserManager extends OidcClient {
             });
         });
     }
-    _signinEnd(url, args = {}) {
+    _signinEnd(url, args: any = {}) {
         return this.processSigninResponse(url, undefined).then(signinResponse => {
             Log.debug("UserManager._signinEnd: got signin response");
 
@@ -438,7 +438,7 @@ export class UserManager extends OidcClient {
         return navigator.callback(url);
     }
 
-    signoutRedirect(args = {}) {
+    signoutRedirect(args: any = {}) {
         args = Object.assign({}, args);
 
         args.request_type = "so:r";
@@ -460,7 +460,7 @@ export class UserManager extends OidcClient {
         });
     }
 
-    signoutPopup(args = {}) {
+    signoutPopup(args: any = {}) {
         args = Object.assign({}, args);
 
         args.request_type = "so:p";
@@ -496,12 +496,12 @@ export class UserManager extends OidcClient {
         });
     }
 
-    _signout(args, navigator, navigatorParams = {}) {
+    _signout(args: any, navigator, navigatorParams = {}) {
         return this._signoutStart(args, navigator, navigatorParams).then(navResponse => {
             return this._signoutEnd(navResponse.url);
         });
     }
-    _signoutStart(args = {}, navigator, navigatorParams = {}) {
+    _signoutStart(args: any = {}, navigator, navigatorParams: any = {}) {
         return navigator.prepare(navigatorParams).then(handle => {
             Log.debug("UserManager._signoutStart: got navigator window handle");
 

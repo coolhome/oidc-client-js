@@ -6,6 +6,12 @@ import { Log } from './Log';
 const DefaultTimeout = 10000;
 
 export class IFrameWindow {
+    private _promise: Promise<unknown>;
+    private _resolve: (value: unknown) => void;
+    private _reject: (reason?: any) => void;
+    private _boundMessageEvent: any;
+    private _frame: HTMLIFrameElement;
+    private _timer: number;
 
     constructor(params) {
         this._promise = new Promise((resolve, reject) => {
@@ -21,8 +27,8 @@ export class IFrameWindow {
         // shotgun approach
         this._frame.style.visibility = "hidden";
         this._frame.style.position = "absolute";
-        this._frame.style.width = 0;
-        this._frame.style.height = 0;
+        this._frame.style.width = "0";
+        this._frame.style.height = "0";
 
         window.document.body.appendChild(this._frame);
     }
