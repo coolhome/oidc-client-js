@@ -11,6 +11,12 @@ const DefaultPopupFeatures = 'location=no,toolbar=no,width=500,height=500,left=1
 const DefaultPopupTarget = "_blank";
 
 export class PopupWindow {
+    private _promise: Promise<unknown>;
+    private _resolve: (value: unknown) => void;
+    private _reject: (reason?: any) => void;
+    private _popup: Window;
+    private _checkForPopupClosedTimer: number;
+    private _id: any;
 
     constructor(params) {
         this._promise = new Promise((resolve, reject) => {
@@ -58,13 +64,13 @@ export class PopupWindow {
     _success(data) {
         Log.debug("PopupWindow.callback: Successful response from popup window");
 
-        this._cleanup();
+        this._cleanup(false);
         this._resolve(data);
     }
     _error(message) {
         Log.error("PopupWindow.error: ", message);
         
-        this._cleanup();
+        this._cleanup(false);
         this._reject(new Error(message));
     }
 

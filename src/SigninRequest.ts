@@ -7,6 +7,7 @@ import { SigninState } from './SigninState';
 
 export class SigninRequest {
     state: SigninState;
+    url: any;
 
     constructor({
         // mandatory

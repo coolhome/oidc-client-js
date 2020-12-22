@@ -21,7 +21,7 @@ export class UrlUtility {
         return url;
     }
 
-    static parseUrlFragment(value, delimiter = "#", global = Global) {
+    static parseUrlFragment(value, delimiter = "#", global = Global): any {
         if (typeof value !== 'string'){
             value = global.location.href;
         }
@@ -39,9 +39,9 @@ export class UrlUtility {
             }
         }
 
-        var params = {},
-            regex = /([^&=]+)=([^&]*)/g,
-            m;
+        const params = {};
+        const regex = /([^&=]+)=([^&]*)/g;
+        let m: string[];
 
         var counter = 0;
         while (m = regex.exec(value)) {

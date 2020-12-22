@@ -4,10 +4,17 @@
 import { Log } from './Log';
 import { CheckSessionIFrame } from './CheckSessionIFrame';
 import { Global } from './Global';
+import { UserManager } from './UserManager';
 
 export class SessionMonitor {
+    private _userManager: UserManager;
+    private _CheckSessionIFrameCtor: typeof CheckSessionIFrame;
+    private _timer: { setInterval: (cb: any, duration: any) => NodeJS.Timeout; clearInterval: (handle: any) => void; };
+    private _sub: any;
+    private _sid: any;
+    private _checkSessionIFrame: CheckSessionIFrame;
 
-    constructor(userManager, CheckSessionIFrameCtor = CheckSessionIFrame, timer = Global.timer) {
+    constructor(userManager: UserManager, CheckSessionIFrameCtor = CheckSessionIFrame, timer = Global.timer) {
         if (!userManager) {
             Log.error("SessionMonitor.ctor: No user manager passed to SessionMonitor");
             throw new Error("userManager");
@@ -29,7 +36,8 @@ export class SessionMonitor {
             else if (this._settings.monitorAnonymousSession) {
                 this._userManager.querySessionStatus().then(session => {
                     let tmpUser = {
-                        session_state : session.session_state
+                        session_state : session.session_state,
+                        profile: undefined as any,
                     };
                     if (session.sub && session.sid) {
                         tmpUser.profile = {
@@ -125,7 +133,8 @@ export class SessionMonitor {
 
                 this._userManager.querySessionStatus().then(session => {
                     let tmpUser = {
-                        session_state : session.session_state
+                        session_state : session.session_state,
+                        profile: undefined as any,
                     };
                     if (session.sub && session.sid) {
                         tmpUser.profile = {

@@ -7,12 +7,18 @@ import { UserInfoService } from './UserInfoService';
 import { TokenClient } from './TokenClient';
 import { ErrorResponse } from './ErrorResponse';
 import { JoseUtil } from './JoseUtil';
+import { OidcClientSettings } from './OidcClientSettings';
 
 const ProtocolClaims = ["nonce", "at_hash", "iat", "nbf", "exp", "aud", "iss", "c_hash"];
 
 export class ResponseValidator {
+    private _settings: OidcClientSettings;
+    private _metadataService: MetadataService;
+    private _userInfoService: UserInfoService;
+    private _joseUtil: typeof JoseUtil;
+    private _tokenClient: TokenClient;
 
-    constructor(settings, 
+    constructor(settings: OidcClientSettings, 
         MetadataServiceCtor = MetadataService,
         UserInfoServiceCtor = UserInfoService, 
         joseUtil = JoseUtil,
@@ -210,7 +216,7 @@ export class ResponseValidator {
 
         var result = Object.assign({}, claims);
 
-        if (this._settings._filterProtocolClaims) {
+        if (this._settings.filterProtocolClaims) {
             ProtocolClaims.forEach(type => {
                 delete result[type];
             });
@@ -283,7 +289,7 @@ export class ResponseValidator {
             Log.debug("ResponseValidator._validateIdTokenAttributes: Validaing JWT attributes; using clock skew (in seconds) of: ", clockSkewInSeconds);
 
             return this._settings.getEpochTime().then(now => {
-                return this._joseUtil.validateJwtAttributes(response.id_token, issuer, audience, clockSkewInSeconds, now).then(payload => {
+                return this._joseUtil.validateJwtAttributes(response.id_token, issuer, audience, clockSkewInSeconds, now, false).then(payload => {
                 
                     if (state.nonce && state.nonce !== payload.nonce) {
                         Log.error("ResponseValidator._validateIdTokenAttributes: Invalid nonce in id_token");
@@ -381,7 +387,7 @@ export class ResponseValidator {
                 let clockSkewInSeconds = this._settings.clockSkew;
                 Log.debug("ResponseValidator._validateIdToken: Validaing JWT; using clock skew (in seconds) of: ", clockSkewInSeconds);
 
-                return this._joseUtil.validateJwt(response.id_token, key, issuer, audience, clockSkewInSeconds).then(()=>{
+                return this._joseUtil.validateJwt(response.id_token, key, issuer, audience, clockSkewInSeconds, undefined, undefined).then(()=>{
                     Log.debug("ResponseValidator._validateIdToken: JWT validation successful");
 
                     if (!jwt.payload.sub) {
