@@ -5,6 +5,7 @@
       "allowJs": true,
       "target": "es5",
       "declaration": true,
+      "emitDeclarationOnly": true,
       "lib": ["dom", "ES2015"]
     },
     "include": ["./src/**/*", "./test/unit/**/*"],

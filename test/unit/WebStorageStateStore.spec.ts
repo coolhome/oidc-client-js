@@ -2,15 +2,15 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 import { Log } from '../../src/Log';
-import { WebStorageStateStore } from '../../src/WebStorageStateStore';
+import { WebStorageStateStore, WebStorageStateStoreType } from '../../src/WebStorageStateStore';
 import { InMemoryWebStorage } from '../../src/InMemoryWebStorage';
 
 import { assert, expect } from 'chai';
 
 describe("WebStorageStateStore", function() {
     let prefix;
-    let subject;
-    let store;
+    let subject: WebStorageStateStoreType;
+    let store: Storage;
 
     beforeEach(function() {
         prefix = "";
