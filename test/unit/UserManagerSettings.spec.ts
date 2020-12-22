@@ -4,9 +4,7 @@
 import { Log } from '../../src/Log';
 import { UserManagerSettings } from '../../src/UserManagerSettings';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
+import { assert } from 'chai';
 
 describe("UserManagerSettings", function () {
 

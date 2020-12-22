@@ -5,10 +5,7 @@ import { Log } from '../../src/Log';
 import { SignoutResponse } from '../../src/SignoutResponse';
 import { ErrorResponse } from '../../src/ErrorResponse';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
-let expect = chai.expect;
+import { assert, expect } from 'chai';
 
 describe("SignoutResponse", function() {
 

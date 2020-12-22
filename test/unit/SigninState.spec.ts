@@ -4,9 +4,7 @@
 import { Log } from '../../src/Log';
 import { SigninState } from '../../src/SigninState';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
+import { assert } from 'chai';
 
 describe("SigninState", function() {
 

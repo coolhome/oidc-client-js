@@ -4,9 +4,7 @@
 import { Log } from '../../src/Log';
 import { SigninRequest } from '../../src/SigninRequest';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
+import { assert } from 'chai';
 
 describe("SigninRequest", function() {
 

@@ -13,9 +13,7 @@ import { StubStateStore } from './StubStateStore';
 import { StubResponseValidator } from './StubResponseValidator';
 import { StubTokenRevocationClient } from './StubTokenRevocationClient';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
+import { assert } from 'chai';
 
 describe("UserManager", function () {
     let settings;

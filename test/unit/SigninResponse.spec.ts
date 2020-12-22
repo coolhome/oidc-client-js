@@ -4,10 +4,7 @@
 import { Log } from '../../src/Log';
 import { SigninResponse } from '../../src/SigninResponse';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
-let expect = chai.expect;
+import { assert, expect } from 'chai';
 
 describe("SigninResponse", function () {
 

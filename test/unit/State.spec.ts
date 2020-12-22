@@ -7,9 +7,7 @@ import { State } from '../../src/State';
 import { InMemoryWebStorage } from '../../src/InMemoryWebStorage';
 import { WebStorageStateStore } from '../../src/WebStorageStateStore';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
+import { assert } from 'chai';
 
 describe("State", function() {
 

@@ -3,9 +3,8 @@
 
 import { UserManagerEvents } from '../../src/UserManagerEvents';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
+import { assert } from 'chai';
+
 
 describe("UserManagerEvents", function () {
 

@@ -5,10 +5,7 @@ import { Log } from '../../src/Log';
 import { WebStorageStateStore } from '../../src/WebStorageStateStore';
 import { InMemoryWebStorage } from '../../src/InMemoryWebStorage';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
-let expect = chai.expect;
+import { assert, expect } from 'chai';
 
 describe("WebStorageStateStore", function() {
     let prefix;

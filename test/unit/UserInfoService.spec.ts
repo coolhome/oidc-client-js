@@ -7,9 +7,7 @@ import { UserInfoService } from '../../src/UserInfoService';
 import { StubJsonService } from './StubJsonService';
 import { StubMetadataService } from './StubMetadataService';
 
-import chai from 'chai';
-chai.should();
-let assert = chai.assert;
+import { assert } from 'chai';
 
 describe("UserInfoService", function() {
     let subject;
