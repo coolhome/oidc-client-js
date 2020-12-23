@@ -6,9 +6,8 @@
   "scripts": {
     "build": "gulp",
     "start": "node samples/VanillaJS/server.js",
-    "test": "mocha --compilers js:babel-register test/unit/*.spec.js",
-    "test-new": "mocha -r ts-node/register ./test/unit/*.spec.ts",
-    "test-new-watch": "mocha -require ts-node/register --watch ./test/unit/*.spec.ts",
+    "test-new": "mocha --require ts-node/register --require jsdom-global/register ./test/unit/**/*.spec.ts",
+    "test-new-watch": "mocha --require ts-node/register --require jsdom-global/register --watch ./test/unit/**/*.spec.ts",
     "all": "gulp build & mocha --compilers js:babel-register test/unit/*.spec.js",
     "all-new": "mocha -r ts-node/register ./test/unit/*.spec.ts"
   },
@@ -59,6 +58,8 @@
     "gulp-concat": "^2.6.1",
     "gulp-rename": "^1.4.0",
     "jsbn": "^1.1.0",
+    "jsdom": "16.4.0",
+    "jsdom-global": "3.0.2",
     "jsrsasign": "^10.1.4",
     "mocha": "^8.2.1",
     "natives": "^1.1.6",

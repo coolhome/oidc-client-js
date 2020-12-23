@@ -10,7 +10,7 @@ export class JsonService {
 
     constructor(
         additionalContentTypes = null,
-        XMLHttpRequestCtor = () => new window.XMLHttpRequest,
+        XMLHttpRequestCtor = () => new global.XMLHttpRequest,
         jwtHandler = null
     ) {
         if (additionalContentTypes && Array.isArray(additionalContentTypes)) {
