@@ -1,0 +1,12 @@
+{
+    "diff": true,
+    "extension": ["js"],
+    "reporter": "spec",
+    "slow": 75,
+    "timeout": 10000,
+    "ui": "bdd",
+    "require": ["ts-node/register", "jsdom-global/register"],
+    "spec": ["./test/unit/**/State*.spec.ts"],
+    "recursive": true,
+    "watch-files": ["src/**/*.ts", "test/unit/**/*.spec.ts"]
+  }

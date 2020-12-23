@@ -3,6 +3,7 @@
 
 import { Log } from './Log';
 import random from './random';
+import { WebStorageStateStoreType } from './WebStorageStateStore';
 
 export interface StateOptions {
     id?: any;
@@ -58,9 +59,9 @@ export class State {
         return new State(JSON.parse(storageString));
     }
 
-    static clearStaleState(storage, age) {
+    static clearStaleState(storage: WebStorageStateStoreType, staleAge) {
 
-        var cutoff = Date.now() / 1000 - age;
+        var cutoff = (new Date().getTime() / 1000 | 0) - staleAge;
 
         return storage.getAllKeys().then(keys => {
             Log.debug("State.clearStaleState: got keys", keys);

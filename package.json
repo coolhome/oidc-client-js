@@ -6,8 +6,8 @@
   "scripts": {
     "build": "gulp",
     "start": "node samples/VanillaJS/server.js",
-    "test-new": "mocha --require ts-node/register --require jsdom-global/register ./test/unit/**/*.spec.ts",
-    "test-new-watch": "mocha --require ts-node/register --require jsdom-global/register --watch ./test/unit/**/*.spec.ts",
+    "test-new": "mocha",
+    "test-new-watch": "mocha --watch",
     "all": "gulp build & mocha --compilers js:babel-register test/unit/*.spec.js",
     "all-new": "mocha -r ts-node/register ./test/unit/*.spec.ts"
   },

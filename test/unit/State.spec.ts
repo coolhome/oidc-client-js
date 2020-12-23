@@ -16,8 +16,6 @@ describe("State", function () {
         Log.logger = console;
     });
 
-    // chai.util.overwriteMethod(global, 'Date', 'constructor')
-
     describe("constructor", function () {
 
         it("should generate id", function () {
@@ -73,10 +71,10 @@ describe("State", function () {
 
     describe("clearStaleState", function () {
 
-        it("should remove old state entries", function (done) {
+        it("should remove old state entries", async function () {
 
-            let oldNow = Date.now;
-            global.Date.now = () => {
+            let oldgetTime = Date.prototype.getTime;
+            Date.prototype.getTime = () => {
                 return 200 * 1000; // ms
             };
 
@@ -102,17 +100,14 @@ describe("State", function () {
             inMemStore.setItem(prefix + s5.id, s5.toStorageString());
             inMemStore.setItem("junk5", "junk");
 
-            State.clearStaleState(store, 100).then(() => {
-                Log.debug("clearStaleState done");
+            await State.clearStaleState(store, 100);
+            Log.debug("clearStaleState done");
 
-                inMemStore.length.should.equal(8);
-                inMemStore.getItem(prefix + "s4").should.be.ok;
-                inMemStore.getItem(prefix + "s5").should.be.ok;
+            inMemStore.length.should.equal(8);
+            inMemStore.getItem(prefix + "s4").should.be.ok;
+            inMemStore.getItem(prefix + "s5").should.be.ok;
 
-                global.Date.now = oldNow;
-                done();
-            });
-
+            Date.prototype.getTime = oldgetTime;
         });
 
     });
