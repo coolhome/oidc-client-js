@@ -3,7 +3,7 @@
 
 import { Log } from './Log';
 import { MetadataService, MetadataServiceType } from './MetadataService';
-import { UserInfoService } from './UserInfoService';
+import { UserInfoService, UserInfoServiceType } from './UserInfoService';
 import { TokenClient } from './TokenClient';
 import { ErrorResponse } from './ErrorResponse';
 import { JoseUtil } from './JoseUtil';
@@ -19,13 +19,13 @@ export interface ResponseValidatorType {
 export class ResponseValidator implements ResponseValidatorType {
     public _settings: OidcClientSettings;
     private _metadataService: MetadataServiceType;
-    private _userInfoService: UserInfoService;
+    private _userInfoService: UserInfoServiceType;
     private _joseUtil: typeof JoseUtil;
     private _tokenClient: TokenClient;
 
-    constructor(settings: OidcClientSettings,
-        MetadataServiceCtor?: (settings: OidcClientSettings) => MetadataServiceType,
-        UserInfoServiceCtor?: (settings: OidcClientSettings) => UserInfoService,
+    constructor(settings?: OidcClientSettings,
+        MetadataServiceCtor = (settings: OidcClientSettings) => new MetadataService(settings) as MetadataServiceType,
+        UserInfoServiceCtor = (settings: OidcClientSettings) => new UserInfoService(settings) as UserInfoServiceType,
         joseUtil = JoseUtil,
         TokenClientCtor = TokenClient) {
         if (!settings) {
@@ -34,8 +34,8 @@ export class ResponseValidator implements ResponseValidatorType {
         }
 
         this._settings = settings;
-        this._metadataService = MetadataServiceCtor ? MetadataServiceCtor(this._settings) : new MetadataService(this._settings);
-        this._userInfoService = UserInfoServiceCtor ? UserInfoServiceCtor(this._settings) : new UserInfoService(this._settings);
+        this._metadataService = MetadataServiceCtor(this._settings);
+        this._userInfoService =  UserInfoServiceCtor(this._settings);
         this._joseUtil = joseUtil;
         this._tokenClient = new TokenClientCtor(this._settings);
     }

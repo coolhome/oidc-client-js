@@ -247,7 +247,7 @@ export class OidcClient {
         });
     }
 
-    clearStaleState(stateStore: WebStorageStateStoreType) {
+    clearStaleState(stateStore?: WebStorageStateStoreType) {
         Log.debug("OidcClient.clearStaleState");
 
         stateStore = stateStore || this._stateStore;

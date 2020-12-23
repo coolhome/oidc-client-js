@@ -6,7 +6,7 @@
     "timeout": 10000,
     "ui": "bdd",
     "require": ["ts-node/register", "jsdom-global/register"],
-    "spec": ["./test/unit/**/State*.spec.ts"],
-    "recursive": true,
+    "spec_": ["./test/unit/**/ResponseValidator.spec.ts"],
+    "spec": ["./test/unit/**/*.spec.ts"],
     "watch-files": ["src/**/*.ts", "test/unit/**/*.spec.ts"]
   }

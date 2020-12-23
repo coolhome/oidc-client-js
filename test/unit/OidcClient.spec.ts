@@ -15,6 +15,7 @@ import { StubResponseValidator } from './StubResponseValidator';
 
 import { assert } from 'chai';
 import 'chai/register-should';
+import { WebStorageStateStoreType } from '../../src/WebStorageStateStore';
 
 describe("OidcClient", function () {
     let settings;
@@ -559,15 +560,16 @@ describe("OidcClient", function () {
             var oldState = State.clearStaleState;
 
             let wasCalled = false;
-            let store: any;
-            let age: any;
+            let store: WebStorageStateStoreType;
+            let age: number;
 
-            State.clearStaleState = function (store, age) {
+            State.clearStaleState = function (_store, _age) {
                 wasCalled = true;
-                store = store;
-                age = age;
+                store = _store;
+                age = _age;
+                return Promise.resolve(undefined);
             };
-            subject.clearStaleState(undefined);
+            subject.clearStaleState();
 
             wasCalled.should.be.true;
             store.should.equal(subject._stateStore);

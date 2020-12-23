@@ -59,7 +59,7 @@ export class State {
         return new State(JSON.parse(storageString));
     }
 
-    static clearStaleState(storage: WebStorageStateStoreType, staleAge) {
+    static clearStaleState(storage: WebStorageStateStoreType, staleAge: number) {
 
         var cutoff = (new Date().getTime() / 1000 | 0) - staleAge;
 

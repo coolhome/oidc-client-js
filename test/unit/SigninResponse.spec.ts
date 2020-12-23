@@ -98,35 +98,35 @@ describe("SigninResponse", function () {
 
     describe("expires_in", function () {
         it("should calculate how much time left", function () {
-            var oldNow = Date.now;
-            Date.now = function () {
+            var oldGetTime = Date.prototype.getTime;
+            Date.prototype.getTime = function () {
                 return 1000 * 1000; // ms
             }
             let subject = new SigninResponse("expires_in=100");
             subject.expires_in.should.equal(100);
 
-            Date.now = function () {
+            Date.prototype.getTime = function () {
                 return 1050 * 1000; // ms
             }
             subject.expires_in.should.equal(50);
-            Date.now = oldNow;
+            Date.prototype.getTime = oldGetTime;
         });
     });
 
     describe("expired", function () {
         it("should calculate how much time left", function () {
-            var oldNow = Date.now;
-            Date.now = function () {
+            var oldGetTime = Date.prototype.getTime;
+            Date.prototype.getTime = function () {
                 return 1000 * 1000; // ms
             }
             let subject = new SigninResponse("expires_in=100");
             subject.expired.should.be.false;
 
-            Date.now = function () {
+            Date.prototype.getTime = function () {
                 return 1100 * 1000; // ms
             }
             subject.expired.should.be.true;
-            Date.now = oldNow;
+            Date.prototype.getTime = oldGetTime;
         });
     });
 

@@ -63,7 +63,7 @@ class StubUserInfoService extends UserInfoService {
     getClaimsResult: any;
 
     constructor() {
-        super();
+        super(new OidcClientSettings());
         this.getClaimsWasCalled = false;
     }
 
@@ -97,6 +97,7 @@ class MockResponseValidator extends ResponseValidator {
     _processSigninParamsWasCalled: boolean;
     _processSigninParamsResult: any;
     _processSigninParams(...args) {
+        console.log("-------------------------------------------------------------------- _processSigninParams", args)
         return this._mock("_processSigninParams", ...args);
     }
 
@@ -171,7 +172,7 @@ describe("ResponseValidator", function () {
 
     let at_hash = "JgDUCyoatJyEmGiiWbwOhA";
 
-    let settings;
+    let settings: OidcClientSettings;
     let subject: MockResponseValidator;
     let stubMetadataService: StubMetadataService;
     let stubUserInfoService: StubUserInfoService;
@@ -196,10 +197,10 @@ describe("ResponseValidator", function () {
             isOpenIdConnect: false
         };
 
-        settings = {
+        settings = new OidcClientSettings({
             authority: "op",
             client_id: 'client'
-        };
+        });
         stubMetadataService = new StubMetadataService();
         stubUserInfoService = new StubUserInfoService();
         mockJoseUtility = new MockJoseUtility();
@@ -211,13 +212,16 @@ describe("ResponseValidator", function () {
 
         it("should require a settings param", function () {
             try {
-                new ResponseValidator(undefined, (settings: OidcClientSettings) => stubMetadataService, (settings: OidcClientSettings) => stubUserInfoService);
+                new ResponseValidator(
+                    undefined,
+                    () => stubMetadataService,
+                    () => stubUserInfoService
+                );
+                assert.fail();
             }
             catch (e) {
                 e.message.should.contain('settings');
-                return;
             }
-            assert.fail();
         });
 
     });
@@ -371,18 +375,15 @@ describe("ResponseValidator", function () {
             });
         });
 
-        it("should assign the authority on the settings if not already assigned", function (done) {
-
+        it("should assign the authority on the settings if not already assigned", async function () {
             delete subject._settings.authority;
             stubState.authority = "something different";
 
             stubResponse.id_token = id_token;
 
-            subject._processSigninParams(stubState, stubResponse).then(response => {
-                subject._settings.authority.should.equal("something different");
-                delete subject._settings.authority;
-                done();
-            });
+            await subject._processSigninParams(stubState, stubResponse);
+            subject._settings.authority.should.equal("something different");
+            delete subject._settings.authority;
         });
 
         it("should assign the client_id on the settings if not already assigned", function (done) {
@@ -516,8 +517,11 @@ describe("ResponseValidator", function () {
         });
 
         it("should load and merge user info claims when loadUserInfo configured", function (done) {
-
-            settings.loadUserInfo = true;
+            settings = new OidcClientSettings({
+                authority: "op",
+                client_id: 'client',
+                loadUserInfo: true
+            });
 
             stubResponse.isOpenIdConnect = true;
             stubResponse.profile = { a: 'apple', b: 'banana' };
@@ -534,7 +538,11 @@ describe("ResponseValidator", function () {
 
         it("should not run if reqest was not openid", function (done) {
 
-            settings.loadUserInfo = true;
+            settings = new OidcClientSettings({
+                authority: "op",
+                client_id: 'client',
+                loadUserInfo: true
+            });
 
             stubResponse.isOpenIdConnect = false;
             stubResponse.profile = { a: 'apple', b: 'banana' };
@@ -550,7 +558,11 @@ describe("ResponseValidator", function () {
 
         it("should not load and merge user info claims when loadUserInfo not configured", function (done) {
 
-            settings.loadUserInfo = false;
+            settings = new OidcClientSettings({
+                authority: "op",
+                client_id: 'client',
+                loadUserInfo: true
+            });
 
             stubResponse.isOpenIdConnect = true;
             stubResponse.profile = { a: 'apple', b: 'banana' };
@@ -566,7 +578,11 @@ describe("ResponseValidator", function () {
 
         it("should not load user info claims if no access token", function (done) {
 
-            settings.loadUserInfo = true;
+            settings = new OidcClientSettings({
+                authority: "op",
+                client_id: 'client',
+                loadUserInfo: true
+            });
 
             stubResponse.isOpenIdConnect = true;
             stubResponse.profile = { a: 'apple', b: 'banana' };
@@ -669,8 +685,10 @@ describe("ResponseValidator", function () {
 
             var result = subject._filterProtocolClaims(claims);
             result.should.deep.equal({
-                foo: 1, bar: 'test',
-                sub: '123', email: 'foo@gmail.com',
+                foo: 1,
+                bar: 'test',
+                sub: '123',
+                email: 'foo@gmail.com',
                 role: ['admin', 'dev']
             });
 

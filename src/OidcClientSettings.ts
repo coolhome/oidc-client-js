@@ -70,7 +70,7 @@ export class OidcClientSettings {
     protected _acr_values: any;
     protected _resource: any;
     protected _response_mode: any;
-    protected _filterProtocolClaims: boolean;
+    public _filterProtocolClaims: boolean;
     protected _loadUserInfo: boolean;
     protected _staleStateAge: number;
     protected _clockSkew: number;

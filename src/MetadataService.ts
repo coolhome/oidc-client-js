@@ -33,14 +33,15 @@ export class MetadataService implements MetadataServiceType {
     private _metadataUrl: any;
     constructor(
         settings: OidcClientSettings = undefined,
-        JsonServiceCtor = JsonService) {
+        JsonServiceCtor = (settings?: any) => new JsonService(settings), 
+    ) {
         if (!settings) {
             Log.error("MetadataService: No settings passed to MetadataService");
             throw new Error("settings");
         }
 
         this._settings = settings;
-        this._jsonService = new JsonServiceCtor(['application/jwk-set+json']);
+        this._jsonService = JsonServiceCtor(['application/jwk-set+json']);
     }
 
     get metadataUrl() {
@@ -122,7 +123,7 @@ export class MetadataService implements MetadataServiceType {
         return this._getMetadataProperty("jwks_uri", true);
     }
 
-    _getMetadataProperty(name, optional = false) {
+    _getMetadataProperty(name: string, optional = false) {
         Log.debug("MetadataService.getMetadataProperty for: " + name);
 
         return this.getMetadata().then(metadata => {

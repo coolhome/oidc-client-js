@@ -9,23 +9,26 @@ import { StubJsonService } from './StubJsonService';
 import { assert } from 'chai';
 import 'chai/register-should';
 
-describe("MetadataService", function() {
-    let subject;
+describe("MetadataService", function () {
+    let subject: MetadataService;
     let settings;
-    let stubJsonService;
+    let stubJsonService: StubJsonService;
 
-    beforeEach(function() {
+    beforeEach(function () {
         Log.logger = console;
         Log.level = Log.NONE;
 
         settings = {};
         stubJsonService = new StubJsonService();
-        subject = new MetadataService(settings, stubJsonService);
+        subject = new MetadataService(
+            settings,
+            () => stubJsonService
+        );
     });
 
-    describe("constructor", function() {
+    describe("constructor", function () {
 
-        it("should require a settings param", function() {
+        it("should require a settings param", function () {
             try {
                 new MetadataService();
             }
@@ -39,15 +42,15 @@ describe("MetadataService", function() {
 
     });
 
-    describe("getMetadata", function() {
+    describe("getMetadata", function () {
 
-        it("should return a promise", function() {
+        it("should return a promise", function () {
             var p = subject.getMetadata();
             p.should.be.instanceof(Promise);
-            p.catch(e=>{});
+            p.catch(e => { });
         });
 
-        it("should use metadata on settings", function(done) {
+        it("should use metadata on settings", function (done) {
             settings.metadata = "test";
 
             let p = subject.getMetadata();
@@ -58,7 +61,7 @@ describe("MetadataService", function() {
             });
         });
 
-        it("should require metadataUrl", function(done) {
+        it("should require metadataUrl", function (done) {
             delete settings.metadataUrl;
 
             let p = subject.getMetadata();
@@ -69,7 +72,7 @@ describe("MetadataService", function() {
             });
         });
 
-        it("should require metadataUrl", function(done) {
+        it("should require metadataUrl", function (done) {
             delete settings.metadataUrl;
 
             let p = subject.getMetadata();
@@ -80,7 +83,7 @@ describe("MetadataService", function() {
             });
         });
 
-        it("should use metadataUrl to make json call", function() {
+        it("should use metadataUrl to make json call", function () {
             settings.metadataUrl = "http://sts/metadata";
             stubJsonService.result = Promise.resolve('test');
 
@@ -89,7 +92,7 @@ describe("MetadataService", function() {
             stubJsonService.url.should.equal("http://sts/metadata");
         });
 
-        it("should return metadata from json call", function(done) {
+        it("should return metadata from json call", function (done) {
             settings.metadataUrl = "http://sts/metadata";
             stubJsonService.result = Promise.resolve("test");
 
@@ -101,7 +104,7 @@ describe("MetadataService", function() {
             });
         });
 
-        it("should cache metadata from json call", function(done) {
+        it("should cache metadata from json call", function (done) {
             settings.metadataUrl = "http://sts/metadata";
             stubJsonService.result = Promise.resolve("test");
 
@@ -113,7 +116,7 @@ describe("MetadataService", function() {
             });
         });
 
-        it("should fail if json call fails", function(done) {
+        it("should fail if json call fails", function (done) {
             settings.metadataUrl = "http://sts/metadata";
             stubJsonService.result = Promise.reject(new Error("test"));
 
@@ -127,15 +130,15 @@ describe("MetadataService", function() {
 
     });
 
-     describe("_getMetadataProperty", function() {
+    describe("_getMetadataProperty", function () {
 
-        it("should return a promise", function() {
-            var p = subject._getMetadataProperty();
+        it("should return a promise", function () {
+            var p = subject._getMetadataProperty(undefined, undefined);
             p.should.be.instanceof(Promise);
-            p.catch(e=>{});
+            p.catch(e => { });
         });
 
-        it("should use metadata on settings", function(done) {
+        it("should use metadata on settings", function (done) {
             settings.metadata = {
                 foo: "test"
             };
@@ -148,7 +151,7 @@ describe("MetadataService", function() {
             });
         });
 
-        it("should fail if no data on metadata", function(done) {
+        it("should fail if no data on metadata", function (done) {
             settings.metadata = {
             };
 
@@ -160,7 +163,7 @@ describe("MetadataService", function() {
             });
         });
 
-         it("should fail if json call to load metadata fails", function(done) {
+        it("should fail if json call to load metadata fails", function (done) {
 
             settings.metadataUrl = "http://sts/metadata";
             stubJsonService.result = Promise.reject(new Error("test"));
@@ -175,9 +178,9 @@ describe("MetadataService", function() {
 
     });
 
-    describe("getAuthorizationEndpoint", function() {
+    describe("getAuthorizationEndpoint", function () {
 
-        it("should return value from metadata", function(done) {
+        it("should return value from metadata", function (done) {
             settings.metadata = {
                 authorization_endpoint: "http://sts/authorize"
             };
@@ -192,9 +195,9 @@ describe("MetadataService", function() {
 
     });
 
-    describe("getUserInfoEndpoint", function() {
+    describe("getUserInfoEndpoint", function () {
 
-        it("should return value from", function(done) {
+        it("should return value from", function (done) {
             settings.metadata = {
                 userinfo_endpoint: "http://sts/userinfo"
             };
@@ -209,9 +212,9 @@ describe("MetadataService", function() {
 
     });
 
-    describe("getEndSessionEndpoint", function() {
+    describe("getEndSessionEndpoint", function () {
 
-        it("should return value from", function(done) {
+        it("should return value from", function (done) {
             settings.metadata = {
                 end_session_endpoint: "http://sts/signout"
             };
@@ -224,7 +227,7 @@ describe("MetadataService", function() {
             });
         });
 
-        it("should support optional value", function(done) {
+        it("should support optional value", function (done) {
             settings.metadata = {
             };
 
@@ -238,9 +241,9 @@ describe("MetadataService", function() {
 
     });
 
-    describe("getCheckSessionIframe", function() {
+    describe("getCheckSessionIframe", function () {
 
-        it("should return value from", function(done) {
+        it("should return value from", function (done) {
             settings.metadata = {
                 check_session_iframe: "http://sts/check_session"
             };
@@ -253,7 +256,7 @@ describe("MetadataService", function() {
             });
         });
 
-        it("should support optional value", function(done) {
+        it("should support optional value", function (done) {
             settings.metadata = {
             };
 
@@ -267,9 +270,9 @@ describe("MetadataService", function() {
 
     });
 
-    describe("getIssuer", function() {
+    describe("getIssuer", function () {
 
-        it("should return value from", function(done) {
+        it("should return value from", function (done) {
             settings.metadata = {
                 issuer: "http://sts"
             };
@@ -284,15 +287,15 @@ describe("MetadataService", function() {
 
     });
 
-    describe("getSigningKeys", function() {
+    describe("getSigningKeys", function () {
 
-        it("should return a promise", function() {
+        it("should return a promise", function () {
             var p = subject.getSigningKeys();
             p.should.be.instanceof(Promise);
-            p.catch(e=>{});
+            p.catch(e => { });
         });
 
-        it("should use signingKeys on settings", function(done) {
+        it("should use signingKeys on settings", function (done) {
             settings.signingKeys = "test";
 
             let p = subject.getSigningKeys();
@@ -303,7 +306,7 @@ describe("MetadataService", function() {
             });
         });
 
-        it("should fail if metadata does not have jwks_uri", function(done) {
+        it("should fail if metadata does not have jwks_uri", function (done) {
             settings.metadata = "test";
 
             let p = subject.getSigningKeys();
@@ -314,7 +317,7 @@ describe("MetadataService", function() {
             });
         });
 
-        it("should fail if keys missing on keyset from jwks_uri", function(done) {
+        it("should fail if keys missing on keyset from jwks_uri", function (done) {
             settings.metadata = {
                 jwks_uri: "http://sts/metadata/keys"
             };
@@ -328,14 +331,16 @@ describe("MetadataService", function() {
             })
         });
 
-        it("should make json call to jwks_uri", function(done) {
+        it("should make json call to jwks_uri", function (done) {
             settings.metadata = {
                 jwks_uri: "http://sts/metadata/keys"
             };
-            stubJsonService.result = Promise.resolve({keys:[{
-                use:'sig',
-                kid:"test"
-            }]});
+            stubJsonService.result = Promise.resolve({
+                keys: [{
+                    use: 'sig',
+                    kid: "test"
+                }]
+            });
 
             let p = subject.getSigningKeys();
 
@@ -345,42 +350,46 @@ describe("MetadataService", function() {
             });
         });
 
-        it("should return keys from jwks_uri", function(done) {
+        it("should return keys from jwks_uri", function (done) {
 
             settings.metadata = {
                 jwks_uri: "http://sts/metadata/keys"
             };
-            stubJsonService.result = Promise.resolve({keys:[{
-                use:'sig',
-                kid:"test"
-            }]});
+            stubJsonService.result = Promise.resolve({
+                keys: [{
+                    use: 'sig',
+                    kid: "test"
+                }]
+            });
 
             let p = subject.getSigningKeys();
 
             p.then(keys => {
                 keys.should.deep.equal([{
-                    use:'sig',
-                    kid:"test"
+                    use: 'sig',
+                    kid: "test"
                 }]);
                 done();
             });
         });
 
-        it("should cache keys in settings", function(done) {
+        it("should cache keys in settings", function (done) {
             settings.metadata = {
                 jwks_uri: "http://sts/metadata/keys"
             };
-            stubJsonService.result = Promise.resolve({keys:[{
-                use:'sig',
-                kid:"test"
-            }]});
+            stubJsonService.result = Promise.resolve({
+                keys: [{
+                    use: 'sig',
+                    kid: "test"
+                }]
+            });
 
             let p = subject.getSigningKeys();
 
             p.then(keys => {
                 settings.signingKeys.should.deep.equal([{
-                    use:'sig',
-                    kid:"test"
+                    use: 'sig',
+                    kid: "test"
                 }]);
                 done();
             })

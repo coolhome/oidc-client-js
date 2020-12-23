@@ -7,14 +7,18 @@ import { Log } from './Log';
 import { JoseUtil } from './JoseUtil';
 import { OidcClientSettings } from './OidcClientSettings';
 
-export class UserInfoService {
+export type UserInfoServiceType = {
+    getClaims(token): Promise<any>;
+};
+
+export class UserInfoService implements UserInfoServiceType {
     private _settings: any;
     private _jsonService: JsonService;
     private _metadataService: MetadataServiceType;
     private _joseUtil: typeof JoseUtil;
     constructor(
         settings?: OidcClientSettings, 
-        JsonServiceCtor = (settings: OidcClientSettings) => new JsonService(settings) as JsonService, 
+        JsonServiceCtor = (settings?: any) => new JsonService(settings), 
         MetadataServiceCtor = (settings: OidcClientSettings) => new MetadataService(settings) as MetadataServiceType, 
         joseUtil = JoseUtil
     ) {
