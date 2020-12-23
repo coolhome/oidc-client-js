@@ -9,57 +9,61 @@ import { WebStorageStateStore } from '../../src/WebStorageStateStore';
 
 import 'chai/register-should';
 
-describe("State", function() {
+describe("State", function () {
 
-    beforeEach(function(){
+    beforeEach(function () {
         Log.level = Log.NONE;
         Log.logger = console;
     });
 
-    describe("constructor", function() {
+    // chai.util.overwriteMethod(global, 'Date', 'constructor')
 
-        it("should generate id", function() {
+    describe("constructor", function () {
+
+        it("should generate id", function () {
             var subject = new State();
             subject.id.should.be.ok;
         });
 
-        it("should accept id", function() {
+        it("should accept id", function () {
             var subject = new State({ id: 5 });
             subject.id.should.be.equal(5);
         });
 
-        it("should accept data", function() {
+        it("should accept data", function () {
             var subject = new State({ data: "test" });
-            subject.data.should.be.equal("test");
+            subject.data.should.be.equal("test");    
         });
 
-        it("should accept data as objects", function() {
+        it("should accept data as objects", function () {
             var subject = new State({ data: { foo: "test" } });
             subject.data.should.be.deep.equal({ foo: "test" });
         });
 
-        it("should accept created", function() {
+        it("should accept created", function () {
             var subject = new State({ created: 1000 });
             subject.created.should.be.equal(1000);
         });
 
-        it("should use date.now for created", function() {
-            var oldNow = Date.now;
-            Date.now = function() {
+        it("should use date.now for created", async () => {
+            var oldGetTime = Date.prototype.getTime;
+            Date.prototype.getTime = () => {
                 return 123 * 1000; // ms
             };
+
             var subject = new State();
             subject.created.should.be.equal(123);
-            Date.now = oldNow;
+            Date.prototype.getTime = oldGetTime;
         });
-        it("should accept request_type", function() {
+
+        it("should accept request_type", function () {
             var subject = new State({ request_type: 'xoxo' });
             subject.request_type.should.be.equal('xoxo');
         });
     });
 
-    it("can serialize and then deserialize", function() {
-        var subject1 = new State({ data: { foo: "test" }, created: 1000, request_type:'type' });
+    it("can serialize and then deserialize", function () {
+        var subject1 = new State({ data: { foo: "test" }, created: 1000, request_type: 'type' });
 
         var storage = subject1.toStorageString();
         var subject2 = State.fromStorageString(storage);
@@ -67,12 +71,12 @@ describe("State", function() {
         subject2.should.be.deep.equal(subject1);
     });
 
-    describe("clearStaleState", function() {
+    describe("clearStaleState", function () {
 
-        it("should remove old state entries", function(done) {
+        it("should remove old state entries", function (done) {
 
             let oldNow = Date.now;
-            Date.now = function() {
+            global.Date.now = () => {
                 return 200 * 1000; // ms
             };
 
@@ -105,7 +109,7 @@ describe("State", function() {
                 inMemStore.getItem(prefix + "s4").should.be.ok;
                 inMemStore.getItem(prefix + "s5").should.be.ok;
 
-                Date.now = oldNow;
+                global.Date.now = oldNow;
                 done();
             });
 
