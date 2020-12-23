@@ -35,7 +35,7 @@ export class ResponseValidator implements ResponseValidatorType {
 
         this._settings = settings;
         this._metadataService = MetadataServiceCtor(this._settings);
-        this._userInfoService =  UserInfoServiceCtor(this._settings);
+        this._userInfoService = UserInfoServiceCtor(this._settings);
         this._joseUtil = joseUtil;
         this._tokenClient = new TokenClientCtor(this._settings);
     }
@@ -95,8 +95,8 @@ export class ResponseValidator implements ResponseValidatorType {
         if (!this._settings.authority) {
             this._settings.authority = state.authority;
         }
-        // ensure we're using the correct authority if the authority is not loaded from signin state
         else if (this._settings.authority && this._settings.authority !== state.authority) {
+            // ensure we're using the correct authority if the authority is not loaded from signin state
             Log.error("ResponseValidator._processSigninParams: authority mismatch on settings vs. signin state");
             return Promise.reject(new Error("authority mismatch on settings vs. signin state"));
         }

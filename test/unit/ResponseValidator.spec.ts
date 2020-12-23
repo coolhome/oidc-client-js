@@ -97,7 +97,6 @@ class MockResponseValidator extends ResponseValidator {
     _processSigninParamsWasCalled: boolean;
     _processSigninParamsResult: any;
     _processSigninParams(...args) {
-        console.log("-------------------------------------------------------------------- _processSigninParams", args)
         return this._mock("_processSigninParams", ...args);
     }
 
@@ -376,7 +375,7 @@ describe("ResponseValidator", function () {
         });
 
         it("should assign the authority on the settings if not already assigned", async function () {
-            delete subject._settings.authority;
+            delete subject._settings._authority;
             stubState.authority = "something different";
 
             stubResponse.id_token = id_token;
@@ -388,7 +387,7 @@ describe("ResponseValidator", function () {
 
         it("should assign the client_id on the settings if not already assigned", function (done) {
 
-            delete subject._settings.client_id;
+            delete subject._settings._client_id;
             stubState.client_id = "something different";
 
             stubResponse.id_token = id_token;
@@ -538,11 +537,7 @@ describe("ResponseValidator", function () {
 
         it("should not run if reqest was not openid", function (done) {
 
-            settings = new OidcClientSettings({
-                authority: "op",
-                client_id: 'client',
-                loadUserInfo: true
-            });
+            settings.loadUserInfo = true;
 
             stubResponse.isOpenIdConnect = false;
             stubResponse.profile = { a: 'apple', b: 'banana' };
@@ -558,12 +553,7 @@ describe("ResponseValidator", function () {
 
         it("should not load and merge user info claims when loadUserInfo not configured", function (done) {
 
-            settings = new OidcClientSettings({
-                authority: "op",
-                client_id: 'client',
-                loadUserInfo: true
-            });
-
+            settings.loadUserInfo = false;
             stubResponse.isOpenIdConnect = true;
             stubResponse.profile = { a: 'apple', b: 'banana' };
             stubResponse.access_token = "access_token";
@@ -578,11 +568,7 @@ describe("ResponseValidator", function () {
 
         it("should not load user info claims if no access token", function (done) {
 
-            settings = new OidcClientSettings({
-                authority: "op",
-                client_id: 'client',
-                loadUserInfo: true
-            });
+            settings.loadUserInfo = true;
 
             stubResponse.isOpenIdConnect = true;
             stubResponse.profile = { a: 'apple', b: 'banana' };

@@ -53,11 +53,11 @@ export interface OidcClientSettingsOptions {
 }
 
 export class OidcClientSettings {
-    protected _authority: string;
+    public _authority: string;
     protected _metadataUrl: string;
     protected _metadata: string;
     protected _signingKeys: JsonWebKey[];
-    protected _client_id: any;
+    public _client_id: any;
     protected _client_secret: any;
     protected _response_type: string;
     protected _scope: string;
@@ -247,6 +247,9 @@ export class OidcClientSettings {
     }
     get loadUserInfo() {
         return this._loadUserInfo;
+    }
+    set loadUserInfo(value) {
+        this._loadUserInfo = value;
     }
     get staleStateAge() {
         return this._staleStateAge;

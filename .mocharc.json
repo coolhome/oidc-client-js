@@ -7,7 +7,7 @@
     "timeout": 2000,
     "ui": "bdd",
     "require": ["ts-node/register", "jsdom-global/register"],
-    "spec_": ["./test/unit/**/ResponseValidator.spec.ts"],
-    "spec": ["./test/unit/**/*.spec.ts"],
+    "spec": ["./test/unit/**/ResponseValidator.spec.ts"],
+    "spec_": ["./test/unit/**/*.spec.ts"],
     "watch-files": ["src/**/*.ts", "test/unit/**/*.spec.ts"]
   }
