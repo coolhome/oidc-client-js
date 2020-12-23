@@ -18,11 +18,10 @@ http://www-cs-students.stanford.edu/~tjw/jsbn/LICENSE
  * - Perform common base64 encoding/decoding tasks.
  */
 
-import JSBN from 'jsbn';
-import SHA256 from 'crypto-js/sha256';
-import base64Js from 'base64-js';
+import { BigInteger } from 'jsbn';
+import { SHA256 } from 'crypto-js';
+import { toByteArray } from 'base64-js';
 
-var BigInteger = JSBN.BigInteger;
 
 /*! (c) Tom Wu | http://www-cs-students.stanford.edu/~tjw/jsbn/
  */
@@ -35,21 +34,21 @@ const Base64 = {
         var i;
         var k = 0; // b64 state, 0-3
         var slop;
-        for(i = 0; i < s.length; ++i) {
-            if(s.charAt(i) === b64pad) break;
+        for (i = 0; i < s.length; ++i) {
+            if (s.charAt(i) === b64pad) break;
             var v = b64map.indexOf(s.charAt(i));
-            if(v < 0) continue;
-            if(k === 0) {
+            if (v < 0) continue;
+            if (k === 0) {
                 ret += String.fromCharCode(v >> 2);
                 slop = v & 3;
                 k = 1;
             }
-            else if(k === 1) {
+            else if (k === 1) {
                 ret += String.fromCharCode((slop << 2) | (v >> 4));
                 slop = v & 0xf;
                 k = 2;
             }
-            else if(k === 2) {
+            else if (k === 2) {
                 ret += String.fromCharCode(slop);
                 ret += String.fromCharCode(v >> 2);
                 slop = v & 3;
@@ -61,7 +60,7 @@ const Base64 = {
                 k = 0;
             }
         }
-        if(k === 1)
+        if (k === 1)
             ret += String.fromCharCode(slop << 2);
         return ret;
     },
@@ -69,19 +68,19 @@ const Base64 = {
         var i;
         var c;
         var ret = "";
-        for(i = 0; i+3 <= h.length; i+=3) {
-            c = parseInt(h.substring(i,i+3),16);
+        for (i = 0; i + 3 <= h.length; i += 3) {
+            c = parseInt(h.substring(i, i + 3), 16);
             ret += b64map.charAt(c >> 6) + b64map.charAt(c & 63);
         }
-        if(i+1 === h.length) {
-            c = parseInt(h.substring(i,i+1),16);
+        if (i + 1 === h.length) {
+            c = parseInt(h.substring(i, i + 1), 16);
             ret += b64map.charAt(c << 2);
         }
-        else if(i+2 === h.length) {
-            c = parseInt(h.substring(i,i+2),16);
+        else if (i + 2 === h.length) {
+            c = parseInt(h.substring(i, i + 2), 16);
             ret += b64map.charAt(c >> 2) + b64map.charAt((c & 3) << 4);
         }
-        if (b64pad) while((ret.length & 3) > 0) ret += b64pad;
+        if (b64pad) while ((ret.length & 3) > 0) ret += b64pad;
         return ret;
     },
 
@@ -108,7 +107,7 @@ const Base64 = {
     },
 
     decodeToHEX(str) {
-        return Base64.byteArrayToHex(base64Js.toByteArray(Base64.padding(str)));
+        return Base64.byteArrayToHex(toByteArray(Base64.padding(str)));
     },
 
     base64ToBase64Url(s) {
@@ -141,7 +140,7 @@ var DigestInfoHead = {
 
 var DigestAlgs = {
     sha256: SHA256,
-    SHA256:SHA256
+    SHA256: SHA256
 };
 
 function RSAVerifier(modulus, exp) {
@@ -202,7 +201,7 @@ const AllowedSigningAlgs = ['RS256'];
 
 const jws = {
     JWS: {
-        parse: function(token) {
+        parse: function (token) {
             var parts = token.split('.');
             var header;
             var payload;
@@ -225,7 +224,7 @@ const jws = {
                 payloadObj: payload,
             };
         },
-        verify: function(jwt, key, allowedSigningAlgs = []) {
+        verify: function (jwt, key, allowedSigningAlgs = []) {
             allowedSigningAlgs.forEach((alg) => {
                 if (AllowedSigningAlgs.indexOf(alg) === -1) {
                     throw new Error('Invalid signing algorithm: ' + alg);
@@ -261,14 +260,14 @@ const KeyUtil = {
 };
 
 const X509 = {
-    getPublicKeyFromCertPEM: function() {
+    getPublicKeyFromCertPEM: function () {
         throw new Error('Not implemented. Use the full oidc-client library if you need support for X509.');
     },
 };
 
 const crypto = {
     Util: {
-        hashString: function(value, alg) {
+        hashString: function (value, alg) {
             var hashFunc = DigestAlgs[alg];
             return hashFunc(value).toString();
         },
@@ -282,7 +281,7 @@ function hextob64u(s) {
     return Base64.base64ToBase64Url(Base64.hexToBase64(s));
 }
 
-const {b64tohex} = Base64;
+const { b64tohex } = Base64;
 
 export {
     jws,

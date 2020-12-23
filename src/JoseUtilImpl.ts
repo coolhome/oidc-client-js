@@ -117,8 +117,7 @@ export default function getJoseUtil({ jws, KeyUtil, X509, crypto, hextob64u, b64
             return Promise.resolve(payload);
         }
 
-        static _validateJwt(jwt, key, issuer, audience, clockSkew, now, timeInsensitive) {
-
+        static _validateJwt(jwt, key, issuer, audience, clockSkew, now, timeInsensitive) {            
             return JoseUtil.validateJwtAttributes(jwt, issuer, audience, clockSkew, now, timeInsensitive).then(payload => {
                 try {
                     if (!jws.JWS.verify(jwt, key, AllowedSigningAlgs)) {
