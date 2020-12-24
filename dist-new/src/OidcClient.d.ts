@@ -1,4 +1,5 @@
 import { OidcClientSettings } from './OidcClientSettings';
+import { SignoutRequest } from './SignoutRequest';
 import { WebStorageStateStoreType } from './WebStorageStateStore';
 export declare class OidcClient {
     protected _settings: OidcClientSettings;
@@ -29,10 +30,10 @@ export declare class OidcClient {
         extraTokenParams?: any;
         request_type?: any;
         skipUserInfo?: any;
-    }, stateStore: any): any;
+    }, stateStore: any): Promise<any>;
     readSigninResponseState(url: any, stateStore: any, removeState?: boolean): any;
     processSigninResponse(url: any, stateStore: any): any;
-    createSignoutRequest({ id_token_hint, data, state, post_logout_redirect_uri, extraQueryParams, request_type, }?: any, stateStore?: WebStorageStateStoreType): any;
+    createSignoutRequest({ id_token_hint, data, state, post_logout_redirect_uri, extraQueryParams, request_type, }?: any, stateStore?: WebStorageStateStoreType): Promise<SignoutRequest>;
     readSignoutResponseState(url: any, stateStore: any, removeState?: boolean): any;
     processSignoutResponse(url: any, stateStore: any): any;
     clearStaleState(stateStore?: WebStorageStateStoreType): Promise<any[]>;

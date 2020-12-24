@@ -2,16 +2,16 @@ import { JsonService } from './JsonService';
 import { OidcClientSettings } from './OidcClientSettings';
 export interface MetadataServiceType {
     resetSigningKeys(): any;
-    getMetadata(): any;
-    getIssuer(): any;
-    getAuthorizationEndpoint(): any;
-    getUserInfoEndpoint(): any;
-    getTokenEndpoint(optional: boolean): any;
-    getCheckSessionIframe(): any;
-    getEndSessionEndpoint(): any;
-    getRevocationEndpoint(): any;
-    getKeysEndpoint(): any;
-    _getMetadataProperty(name: string, optional: boolean): any;
+    getMetadata(): Promise<string>;
+    getIssuer(): Promise<string>;
+    getAuthorizationEndpoint(): Promise<string>;
+    getUserInfoEndpoint(): Promise<string>;
+    getTokenEndpoint(optional: boolean): Promise<string>;
+    getCheckSessionIframe(): Promise<string>;
+    getEndSessionEndpoint(): Promise<string>;
+    getRevocationEndpoint(): Promise<string>;
+    getKeysEndpoint(): Promise<string>;
+    _getMetadataProperty(name: string, optional: boolean): Promise<any>;
     getSigningKeys(): Promise<JsonWebKeyStoreKey[]>;
 }
 export declare type JsonWebKeyStoreKey = JsonWebKey & {

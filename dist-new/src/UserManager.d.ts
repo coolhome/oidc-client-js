@@ -30,7 +30,7 @@ export declare class UserManager extends OidcClient {
     signinPopupCallback(url: any): any;
     signinSilent(args?: any): Promise<any>;
     _useRefreshToken(args?: any): Promise<User>;
-    _validateIdTokenFromTokenRefreshToken(profile: any, id_token: any): any;
+    _validateIdTokenFromTokenRefreshToken(profile: any, id_token: any): Promise<never>;
     _signinSilentIframe(args?: any): any;
     signinSilentCallback(url: any): any;
     signinCallback(url: any): any;

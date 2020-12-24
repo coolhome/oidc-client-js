@@ -13,12 +13,12 @@ export declare class StubMetadataService implements MetadataServiceType {
     _getMetadataPropertyResult: Promise<any>;
     metadataUrlResult: any;
     resetSigningKeys(): void;
-    getMetadata(): any;
-    getIssuer(): any;
-    getAuthorizationEndpoint(): any;
-    getEndSessionEndpoint(): any;
-    getUserInfoEndpoint(): any;
-    getSigningKeys(): any;
+    getMetadata(): Promise<any>;
+    getIssuer(): Promise<any>;
+    getAuthorizationEndpoint(): Promise<any>;
+    getEndSessionEndpoint(): Promise<any>;
+    getUserInfoEndpoint(): Promise<any>;
+    getSigningKeys(): Promise<any>;
     getTokenEndpoint(optional?: any): Promise<any>;
     getCheckSessionIframe(): Promise<any>;
     getRevocationEndpoint(): Promise<any>;

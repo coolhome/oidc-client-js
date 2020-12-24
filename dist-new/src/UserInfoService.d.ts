@@ -21,7 +21,7 @@ export declare class UserInfoService implements UserInfoServiceType {
         hashString(value: any, alg: any): any;
         hexToBase64Url(value: any): any;
     });
-    getClaims(token: any): any;
+    getClaims(token: any): Promise<any>;
     _getClaimsFromJwt(req: any): any;
     _filterByAlg(keys: any, alg: any): any;
 }

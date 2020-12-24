@@ -3,10 +3,14 @@
       "outDir": "./dist-new",
       "sourceMap": true,
       "allowJs": true,
-      "target": "es5",
+      "target": "esnext",
       "declaration": true,
-      "emitDeclarationOnly": true,
-      "lib": ["dom", "ES2015"]
+      "moduleResolution": "Node",
+      "esModuleInterop": true,
+      "emitDeclarationOnly": false,
+      "isolatedModules": true,
+      "lib": ["dom", "ES2015"],
+      "noEmit": true,
     },
     "include": ["./src/**/*", "./test/unit/**/*"],
   }

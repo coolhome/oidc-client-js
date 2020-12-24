@@ -30,13 +30,13 @@ export declare class ResponseValidator implements ResponseValidatorType {
     _processClaims(state: any, response: any): Promise<any>;
     _mergeClaims(claims1: any, claims2: any): any;
     _filterProtocolClaims(claims: any): any;
-    _validateTokens(state: any, response: any): any;
+    _validateTokens(state: any, response: any): Promise<any>;
     _processCode(state: any, response: any): Promise<any>;
-    _validateIdTokenAttributes(state: any, response: any): any;
-    _validateIdTokenAndAccessToken(state: any, response: any): any;
+    _validateIdTokenAttributes(state: any, response: any): Promise<any>;
+    _validateIdTokenAndAccessToken(state: any, response: any): Promise<any>;
     _getSigningKeyForJwt(jwt: any): Promise<any>;
     _getSigningKeyForJwtWithSingleRetry(jwt: any): Promise<any>;
-    _validateIdToken(state: any, response: any): any;
+    _validateIdToken(state: any, response: any): Promise<any>;
     _filterByAlg(keys: any, alg: any): any;
     _validateAccessToken(response: any): Promise<any>;
 }

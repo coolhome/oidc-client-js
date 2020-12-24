@@ -33,11 +33,11 @@ export interface OidcClientSettingsOptions {
     extraTokenParams?: any;
 }
 export declare class OidcClientSettings {
-    protected _authority: string;
+    _authority: string;
     protected _metadataUrl: string;
     protected _metadata: string;
     protected _signingKeys: JsonWebKey[];
-    protected _client_id: any;
+    _client_id: any;
     protected _client_secret: any;
     protected _response_type: string;
     protected _scope: string;
@@ -85,6 +85,7 @@ export declare class OidcClientSettings {
     set signingKeys(value: JsonWebKey[]);
     get filterProtocolClaims(): boolean;
     get loadUserInfo(): boolean;
+    set loadUserInfo(value: boolean);
     get staleStateAge(): number;
     get clockSkew(): number;
     get userInfoJwtIssuer(): string;
