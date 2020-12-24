@@ -1,1 +1,0 @@
-{"version":3,"file":"CordovaPopupNavigator.js","sourceRoot":"","sources":["../../src/CordovaPopupNavigator.ts"],"names":[],"mappings":"AAAA,mEAAmE;AACnE,2GAA2G;AAE3G,OAAO,EAAE,kBAAkB,EAAE,MAAM,sBAAsB,CAAC;AAE1D,MAAM,OAAO,qBAAqB;IAE9B,OAAO,CAAC,MAAM;QACV,IAAI,KAAK,GAAG,IAAI,kBAAkB,CAAC,MAAM,CAAC,CAAC;QAC3C,OAAO,OAAO,CAAC,OAAO,CAAC,KAAK,CAAC,CAAC;IAClC,CAAC;CACJ"}
