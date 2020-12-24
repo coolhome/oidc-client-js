@@ -1,0 +1,41 @@
+import { State, StateOptions } from './State';
+declare type SigninStateOptions = StateOptions & {
+    nonce?: any;
+    authority?: any;
+    client_id?: any;
+    redirect_uri?: any;
+    code_verifier?: any;
+    response_mode?: any;
+    client_secret?: any;
+    scope?: any;
+    extraTokenParams?: any;
+    skipUserInfo?: any;
+};
+export declare class SigninState extends State {
+    protected _nonce: any;
+    protected _code_verifier: any;
+    protected _code_challenge: any;
+    protected _redirect_uri: any;
+    protected _authority: any;
+    protected _client_id: any;
+    protected _response_mode: any;
+    protected _client_secret: any;
+    protected _scope: any;
+    protected _extraTokenParams: any;
+    protected _skipUserInfo: any;
+    constructor(options: SigninStateOptions);
+    get nonce(): any;
+    get authority(): any;
+    get client_id(): any;
+    get redirect_uri(): any;
+    get code_verifier(): any;
+    get code_challenge(): any;
+    get response_mode(): any;
+    get client_secret(): any;
+    get scope(): any;
+    get extraTokenParams(): any;
+    get skipUserInfo(): any;
+    toStorageString(): string;
+    static fromStorageString(storageString: any): SigninState;
+}
+export {};

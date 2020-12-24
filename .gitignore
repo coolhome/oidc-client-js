@@ -6,7 +6,6 @@
 *.user
 *.sln.docstates
 .idea/
-dist-new/
 
 # Build results
 
