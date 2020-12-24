@@ -3,6 +3,7 @@
 
 import { Log } from './Log';
 import { Timer } from './Timer';
+import { User } from './User';
 
 const DefaultAccessTokenExpiringNotificationTime = 60; // seconds
 
@@ -22,7 +23,7 @@ export class AccessTokenEvents {
         this._accessTokenExpired = accessTokenExpiredTimer;
     }
 
-    load(container) {
+    load(container: User) {
         // only register events if there's an access token and it has an expiration
         if (container.access_token && container.expires_in !== undefined) {
             let duration = container.expires_in;

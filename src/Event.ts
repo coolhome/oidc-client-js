@@ -4,19 +4,19 @@
 import { Log } from './Log';
 
 export class Event {
-    protected _name: any;
-    protected _callbacks: any[];
+    protected _name: string;
+    protected _callbacks: Function[];
 
-    constructor(name) {
+    constructor(name: string) {
         this._name = name;
         this._callbacks = [];
     }
 
-    addHandler(cb) {
+    addHandler(cb: Function) {
         this._callbacks.push(cb);
     }
 
-    removeHandler(cb) {
+    removeHandler(cb: Function) {
         var idx = this._callbacks.findIndex(item => item === cb);
         if (idx >= 0) {
             this._callbacks.splice(idx, 1);

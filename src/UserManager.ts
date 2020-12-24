@@ -221,7 +221,9 @@ export class UserManager extends OidcClient {
                         user.id_token = result.id_token || user.id_token;
                         user.access_token = result.access_token;
                         user.refresh_token = result.refresh_token || user.refresh_token;
-                        user.expires_in = result.expires_in;
+                        user.expires_in = typeof result.expires_in === 'number'
+                            ? result.expires_in
+                            : parseInt(result.expires_in);
 
                         return this.storeUser(user).then(() => {
                             this._events.load(user);

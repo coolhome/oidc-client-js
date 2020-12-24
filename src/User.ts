@@ -4,27 +4,27 @@
 import { Log } from './Log';
 
 export interface UserOptions {
-    id_token?: any,
-    session_state?: any,
-    access_token?: any,
-    refresh_token?: any,
-    token_type?: any,
-    scope?: any,
+    id_token?: string,
+    session_state?: string,
+    access_token?: string,
+    refresh_token?: string,
+    token_type?: string,
+    scope?: string,
     profile?: any,
-    expires_at?: any, 
-    state?: any,
+    expires_at?: number,
+    state?: string,
 }
 
 export class User {
-    id_token: any;
-    session_state: any;
-    access_token: any;
-    refresh_token: any;
-    token_type: any;
-    scope: any;
-    profile: any;
-    expires_at: any;
-    state: any;
+    id_token?: string;
+    session_state?: string;
+    access_token?: string;
+    refresh_token?: string;
+    token_type?: string;
+    scope?: string;
+    profile?: string;
+    expires_at?: number;
+    state?: any;
     constructor(options?: UserOptions) {
         this.id_token = options.id_token;
         this.session_state = options.session_state;
@@ -37,7 +37,7 @@ export class User {
         this.state = options.state;
     }
 
-    get expires_in() {
+    get expires_in(): number {
         if (this.expires_at) {
             let now = new Date().getTime() / 1000 | 0;
             return this.expires_at - now;
@@ -45,10 +45,8 @@ export class User {
         return undefined;
     }
 
-    // todo: only accept number?
-    set expires_in(value: number | string) {
-        let expires_in = typeof value === 'number' ? value : parseInt(value);
-        if (typeof expires_in === 'number' && expires_in > 0) {
+    set expires_in(expires_in: number) {
+        if (expires_in > 0) {
             let now = new Date().getTime() / 1000 | 0;
             this.expires_at = now + expires_in;
         }
@@ -80,7 +78,7 @@ export class User {
         });
     }
 
-    static fromStorageString(storageString) {
+    static fromStorageString(storageString: string) {
         Log.debug("User.fromStorageString");
         return new User(JSON.parse(storageString));
     }
