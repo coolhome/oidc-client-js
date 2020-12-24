@@ -61,17 +61,17 @@ export class AccessTokenEvents {
         this._accessTokenExpired.cancel();
     }
 
-    addAccessTokenExpiring(cb) {
+    addAccessTokenExpiring(cb: Function) {
         this._accessTokenExpiring.addHandler(cb);
     }
-    removeAccessTokenExpiring(cb) {
+    removeAccessTokenExpiring(cb: Function) {
         this._accessTokenExpiring.removeHandler(cb);
     }
 
-    addAccessTokenExpired(cb) {
+    addAccessTokenExpired(cb: Function) {
         this._accessTokenExpired.addHandler(cb);
     }
-    removeAccessTokenExpired(cb) {
+    removeAccessTokenExpired(cb: Function) {
         this._accessTokenExpired.removeHandler(cb);
     }
 }
