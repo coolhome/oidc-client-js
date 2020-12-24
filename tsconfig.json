@@ -3,7 +3,7 @@
       "outDir": "./dist-new",
       "sourceMap": true,
       "allowJs": true,
-      "target": "esnext",
+      "target": "es6",
       "declaration": true,
       "moduleResolution": "Node",
       "esModuleInterop": true,

@@ -6,20 +6,21 @@ import { UrlUtility } from './UrlUtility';
 const OidcScope = "openid";
 
 export class SigninResponse {
-    error: any;
-    error_description: any;
-    error_uri: any;
-    code: any;
-    state: any;
-    id_token: any;
-    session_state: any;
-    access_token: any;
-    token_type: any;
-    scope: any;
+    error?: string;
+    error_description?: string;
+    error_uri?: string;
+    code?: string;
+    state?: string;
+    id_token?: string;
+    session_state?: string;
+    access_token?: string;
+    token_type?: string;
+    scope?: string;
+    
     profile: any;
     expires_at: number;
-    
-    constructor(url, delimiter = "#") {
+
+    constructor(url: string, delimiter = "#") {
 
         var values = UrlUtility.parseUrlFragment(url, delimiter);
 
@@ -46,9 +47,9 @@ export class SigninResponse {
         }
         return undefined;
     }
-    
+
     // todo: only accept number?
-    set expires_in(value: number|string){
+    set expires_in(value: number | string) {
         let expires_in = typeof value === 'number' ? value : parseInt(value);
         if (typeof expires_in === 'number' && expires_in > 0) {
             let now = new Date().getTime() / 1000 | 0;

@@ -4,21 +4,21 @@
 import { Log } from './Log';
 
 export class ErrorResponse extends Error {
-    error: any;
-    error_description: any;
-    error_uri: any;
-    state: any;
-    session_state: any;
+    error?: string;
+    error_description?: string;
+    error_uri?: string;
+    state?: string;
+    session_state?: string;
 
     constructor({
-        error = undefined as string,
-        error_description = undefined as string,
-        error_uri = undefined,
-        state = undefined,
-        session_state = undefined
-    }={}
+        error = undefined as string | undefined,
+        error_description = undefined as string | undefined,
+        error_uri = undefined as string | undefined,
+        state = undefined as string | undefined,
+        session_state = undefined as string | undefined
+    } = {}
     ) {
-         if (!error){
+        if (!error) {
             Log.error("No error passed to ErrorResponse");
             throw new Error("error");
         }
