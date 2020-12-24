@@ -9,22 +9,22 @@ import { StubMetadataService } from './StubMetadataService';
 import { assert } from 'chai';
 import 'chai/register-should';
 
-describe("UserInfoService", function() {
-    let subject;
+describe("UserInfoService", function () {
+    let subject: UserInfoService;
     let settings;
-    let stubJsonService;
-    let stubMetadataService;
+    let stubJsonService: StubJsonService;
+    let stubMetadataService: StubMetadataService;
 
-    beforeEach(function() {
+    beforeEach(function () {
         settings = {};
         stubJsonService = new StubJsonService();
         stubMetadataService = new StubMetadataService();
-        subject = new UserInfoService(settings, () => new StubJsonService(), () => stubMetadataService);
+        subject = new UserInfoService(settings, () => stubJsonService, () => stubMetadataService);
     });
 
-    describe("constructor", function() {
+    describe("constructor", function () {
 
-        it("should require a settings param", function() {
+        it("should require a settings param", function () {
             try {
                 new UserInfoService();
             }
@@ -37,22 +37,22 @@ describe("UserInfoService", function() {
 
     });
 
-    describe("getClaims", function() {
+    describe("getClaims", function () {
 
-        it("should return a promise", function() {
-            var p = subject.getClaims();
+        it("should return a promise", function () {
+            var p = subject.getClaims(undefined);
             p.should.be.instanceof(Promise);
-            p.catch(e=>{});
+            p.catch(e => { });
         });
 
-        it("should require a token", function(done) {
-            subject.getClaims().catch(err => {
+        it("should require a token", function (done) {
+            subject.getClaims(undefined).catch(err => {
                 err.message.should.contain("token");
                 done();
             });
         });
 
-        it("should call userinfo endpoint and pass token", function(done) {
+        it("should call userinfo endpoint and pass token", function (done) {
             stubMetadataService.userInfoEndpointResult = Promise.resolve("http://sts/userinfo");
             stubJsonService.result = Promise.resolve("test");
 
@@ -60,11 +60,11 @@ describe("UserInfoService", function() {
                 stubJsonService.url.should.equal("http://sts/userinfo");
                 stubJsonService.token.should.equal("token");
                 done();
-            });
+            }).catch(err => done(err));
 
         });
 
-        it("should fail when dependencies fail", function(done) {
+        it("should fail when dependencies fail", function (done) {
             stubMetadataService.userInfoEndpointResult = Promise.reject(new Error("test"));
 
             subject.getClaims("token").then(null,
@@ -76,25 +76,25 @@ describe("UserInfoService", function() {
 
         });
 
-        it("should return claims", function(done) {
+        it("should return claims", function (done) {
             stubMetadataService.userInfoEndpointResult = Promise.resolve("http://sts/userinfo");
             stubJsonService.result = Promise.resolve({
                 foo: 1, bar: 'test',
-                aud:'some_aud', iss:'issuer',
-                sub:'123', email:'foo@gmail.com',
-                role:['admin', 'dev'],
-                nonce:'nonce', at_hash:"athash",
-                iat:5, nbf:10, exp:20
+                aud: 'some_aud', iss: 'issuer',
+                sub: '123', email: 'foo@gmail.com',
+                role: ['admin', 'dev'],
+                nonce: 'nonce', at_hash: "athash",
+                iat: 5, nbf: 10, exp: 20
             });
 
             subject.getClaims("token").then(claims => {
                 claims.should.deep.equal({
                     foo: 1, bar: 'test',
-                    aud:'some_aud', iss:'issuer',
-                    sub:'123', email:'foo@gmail.com',
-                    role:['admin', 'dev'],
-                    nonce:'nonce', at_hash:"athash",
-                    iat:5, nbf:10, exp:20
+                    aud: 'some_aud', iss: 'issuer',
+                    sub: '123', email: 'foo@gmail.com',
+                    role: ['admin', 'dev'],
+                    nonce: 'nonce', at_hash: "athash",
+                    iat: 5, nbf: 10, exp: 20
                 });
                 done();
             });

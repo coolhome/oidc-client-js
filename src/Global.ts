@@ -33,7 +33,7 @@ export class Global {
 
     static get sessionStorage() {
         if (!testing && typeof window !== 'undefined') {
-            return sessionStorage;
+            return global.sessionStorage;
         }
     }
 

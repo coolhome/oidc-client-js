@@ -19,22 +19,22 @@ export class StubMetadataService implements MetadataServiceType {
 
     resetSigningKeys() { }
     getMetadata() {
-        return this.getMetadataResult;
+        return Promise.resolve(this.getMetadataResult);
     }
     getIssuer() {
-        return this.getIssuerResult;
+        return Promise.resolve(this.getIssuerResult);
     }
     getAuthorizationEndpoint() {
-        return this.getAuthorizationEndpointResult;
+        return Promise.resolve(this.getAuthorizationEndpointResult);
     }
     getEndSessionEndpoint() {
-        return this.getEndSessionEndpointResult;
+        return Promise.resolve(this.getEndSessionEndpointResult);
     }
     getUserInfoEndpoint() {
-        return this.userInfoEndpointResult;
+        return Promise.resolve(this.userInfoEndpointResult);
     }
     getSigningKeys() {
-        return this.getSigningKeysResult;
+        return Promise.resolve(this.getSigningKeysResult);
     }
 
     getTokenEndpoint(optional?: any): Promise<any> {

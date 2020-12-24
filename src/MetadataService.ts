@@ -9,16 +9,16 @@ const OidcMetadataUrlPath = '.well-known/openid-configuration';
 
 export interface MetadataServiceType {
     resetSigningKeys();
-    getMetadata();
-    getIssuer();
-    getAuthorizationEndpoint();
-    getUserInfoEndpoint();
-    getTokenEndpoint(optional: boolean);
-    getCheckSessionIframe();
-    getEndSessionEndpoint();
-    getRevocationEndpoint();
-    getKeysEndpoint();
-    _getMetadataProperty(name: string, optional: boolean);
+    getMetadata(): Promise<string>;
+    getIssuer(): Promise<string>;
+    getAuthorizationEndpoint(): Promise<string>;
+    getUserInfoEndpoint(): Promise<string>;
+    getTokenEndpoint(optional: boolean): Promise<string>;
+    getCheckSessionIframe(): Promise<string>;
+    getEndSessionEndpoint(): Promise<string>;
+    getRevocationEndpoint(): Promise<string>;
+    getKeysEndpoint(): Promise<string>;
+    _getMetadataProperty(name: string, optional: boolean): Promise<any>;
     getSigningKeys(): Promise<JsonWebKeyStoreKey[]>;
 }
 
