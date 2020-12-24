@@ -15,19 +15,21 @@ import { UserInfoService } from '../../src/UserInfoService';
 class MockJoseUtility {
     parseJwtWasCalled: boolean;
     parseJwtResult: any;
+
     validateJwtWasCalled: boolean;
     validateJwtResult: any;
     hashStringWasCalled: boolean;
     hashStringResult: any;
     hexToBase64UrlCalled: boolean;
     hexToBase64UrlResult: any;
+
     parseJwt(...args: Parameters<typeof JoseUtil.parseJwt>) {
         this.parseJwtWasCalled = true;
         if (this.parseJwtResult) {
             Log.debug("MockJoseUtility.parseJwt", this.parseJwtResult)
             return this.parseJwtResult;
         }
-        return JoseUtil.parseJwt(args);
+        return JoseUtil.parseJwt(...args);
     }
 
     validateJwt(...args: Parameters<typeof JoseUtil.validateJwt>) {
@@ -749,7 +751,7 @@ describe("ResponseValidator", function () {
 
     describe("_validateIdTokenAndAccessToken", function () {
 
-        it("should validate id_token and access_token", function (done) {
+        it("should validate id_token and access_token", async function () {
 
             stubResponse.id_token = id_token;
             stubResponse.access_token = access_token;
@@ -758,12 +760,10 @@ describe("ResponseValidator", function () {
             };
             subject._validateIdTokenResult = Promise.resolve(stubResponse);
 
-            subject._validateIdTokenAndAccessToken(stubState, stubResponse).then(response => {
-                subject._validateIdTokenWasCalled.should.be.true;
-                subject._validateAccessTokenWasCalled.should.be.true;
-                done();
-            });
+            await subject._validateIdTokenAndAccessToken(stubState, stubResponse);
 
+            subject._validateIdTokenWasCalled.should.be.true;
+            subject._validateAccessTokenWasCalled.should.be.true;
         });
 
         it("should not access_token if id_token validation fails", function (done) {
@@ -926,7 +926,7 @@ describe("ResponseValidator", function () {
             });
         });
 
-        it("should set profile on result if successful", function (done) {
+        it("should set profile on result if successful", async function () {
 
             stubResponse.id_token = id_token;
             stubMetadataService.getIssuerResult = Promise.resolve("test");
@@ -934,10 +934,9 @@ describe("ResponseValidator", function () {
 
             mockJoseUtility.validateJwtResult = Promise.resolve();
 
-            subject._validateIdToken(stubState, stubResponse).then(response => {
-                response.profile.should.be.ok;
-                done();
-            });
+            const response = await subject._validateIdToken(stubState, stubResponse);
+            response.profile.should.be.ok;
+
         });
 
     });
