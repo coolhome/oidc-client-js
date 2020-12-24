@@ -2,21 +2,34 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 import { Log } from './Log';
-import { Global } from './Global';
 import { Event } from './Event';
 
 const TimerDuration = 5; // seconds
 
+export type NowFunc = () => number | string;
+export interface TimerFunctions {
+    setInterval(cb: (...args: any[]) => void, duration: number);
+    clearInterval(handle: number);
+}
+
+const DefaultTimer = {
+    setInterval(cb: (...args: any[]) => void, duration: number): any {
+        return global.setInterval(cb, duration);
+    },
+    clearInterval(handle: any) {
+        return global.clearInterval(handle);
+    }
+};
+
+
+
 export class Timer extends Event {
-    private _nowFunc: () => number|string; // todo: only accept number?
-    private _timer: { 
-        setInterval: (cb: any, duration: any) => NodeJS.Timeout; 
-        clearInterval: (handle: any) => void;
-    };
-    private _timerHandle: NodeJS.Timeout;
+    private _nowFunc: () => number | string; // todo: only accept number?
+    private _timer: TimerFunctions;
+    private _timerHandle: any;
     private _expiration: number;
 
-    constructor(name, timer = Global.timer, nowFunc = undefined) {
+    constructor(name: string, timer: TimerFunctions = global, nowFunc?: NowFunc) {
         super(name);
         this._timer = timer;
 
@@ -34,12 +47,12 @@ export class Timer extends Event {
     }
 
     // todo: only accept number?
-    init(rawDuration: number|string) {
+    init(rawDuration: number | string) {
         let duration = typeof rawDuration === 'number' ? rawDuration : parseInt(rawDuration);
         if (duration <= 0) {
             duration = 1;
         }
-    
+
         var expiration = this.now + duration;
         if (this.expiration === expiration && this._timerHandle) {
             // no need to reinitialize to same expiration, so bail out
@@ -61,7 +74,7 @@ export class Timer extends Event {
         }
         this._timerHandle = this._timer.setInterval(this._callback.bind(this), timerDuration * 1000);
     }
-    
+
     get expiration() {
         return this._expiration;
     }

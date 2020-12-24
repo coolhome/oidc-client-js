@@ -5,16 +5,17 @@ import { Log } from './Log';
 import { CheckSessionIFrame } from './CheckSessionIFrame';
 import { Global } from './Global';
 import { UserManager } from './UserManager';
+import { TimerFunctions } from './Timer';
 
 export class SessionMonitor {
     private _userManager: UserManager;
     private _CheckSessionIFrameCtor: typeof CheckSessionIFrame;
-    private _timer: { setInterval: (cb: any, duration: any) => NodeJS.Timeout; clearInterval: (handle: any) => void; };
+    private _timer: TimerFunctions;
     private _sub: any;
     private _sid: any;
     private _checkSessionIFrame: CheckSessionIFrame;
 
-    constructor(userManager: UserManager, CheckSessionIFrameCtor = CheckSessionIFrame, timer = Global.timer) {
+    constructor(userManager: UserManager, CheckSessionIFrameCtor = CheckSessionIFrame, timer: TimerFunctions = global) {
         if (!userManager) {
             Log.error("SessionMonitor.ctor: No user manager passed to SessionMonitor");
             throw new Error("userManager");
@@ -36,7 +37,7 @@ export class SessionMonitor {
             else if (this._settings.monitorAnonymousSession) {
                 this._userManager.querySessionStatus().then(session => {
                     let tmpUser = {
-                        session_state : session.session_state,
+                        session_state: session.session_state,
                         profile: undefined as any,
                     };
                     if (session.sub && session.sid) {
@@ -47,10 +48,10 @@ export class SessionMonitor {
                     }
                     this._start(tmpUser);
                 })
-                .catch(err => {
-                    // catch to suppress errors since we're in a ctor
-                    Log.error("SessionMonitor ctor: error from querySessionStatus:", err.message);
-                });
+                    .catch(err => {
+                        // catch to suppress errors since we're in a ctor
+                        Log.error("SessionMonitor ctor: error from querySessionStatus:", err.message);
+                    });
             }
         }).catch(err => {
             // catch to suppress errors since we're in a ctor
@@ -128,12 +129,12 @@ export class SessionMonitor {
 
         if (this._settings.monitorAnonymousSession) {
             // using a timer to delay re-initialization to avoid race conditions during signout
-            let timerHandle = this._timer.setInterval(()=>{
+            let timerHandle = this._timer.setInterval(() => {
                 this._timer.clearInterval(timerHandle);
 
                 this._userManager.querySessionStatus().then(session => {
                     let tmpUser = {
-                        session_state : session.session_state,
+                        session_state: session.session_state,
                         profile: undefined as any,
                     };
                     if (session.sub && session.sid) {
@@ -144,10 +145,10 @@ export class SessionMonitor {
                     }
                     this._start(tmpUser);
                 })
-                .catch(err => {
-                    // catch to suppress errors since we're in a callback
-                    Log.error("SessionMonitor: error from querySessionStatus:", err.message);
-                });
+                    .catch(err => {
+                        // catch to suppress errors since we're in a callback
+                        Log.error("SessionMonitor: error from querySessionStatus:", err.message);
+                    });
 
             }, 1000);
         }

@@ -19,7 +19,7 @@ export class WebStorageStateStore implements WebStorageStateStoreType {
         this._prefix = prefix;
     }
 
-    set(key, value) {
+    set(key: string, value: string) {
         Log.debug("WebStorageStateStore.set", key);
 
         key = this._prefix + key;
@@ -29,7 +29,7 @@ export class WebStorageStateStore implements WebStorageStateStoreType {
         return Promise.resolve(undefined);
     }
 
-    get(key) {
+    get(key: string) {
         Log.debug("WebStorageStateStore.get", key);
 
         key = this._prefix + key;
@@ -39,7 +39,7 @@ export class WebStorageStateStore implements WebStorageStateStoreType {
         return Promise.resolve(item);
     }
 
-    remove(key) {
+    remove(key: string) {
         Log.debug("WebStorageStateStore.remove", key);
 
         key = this._prefix + key;
