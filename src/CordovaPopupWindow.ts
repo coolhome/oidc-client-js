@@ -1,13 +1,8 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
 import { Log } from './Log';
-
-// declare global {
-//     interface Window {
-//         cordova: Cordova | undefined;
-//     }
-// }
+import cordova from 'cordova';
+import 'cordova-plugin-inappbrowser';
 
 const DefaultPopupFeatures = 'location=no,toolbar=no,zoom=no';
 const DefaultPopupTarget = "_blank";
@@ -50,13 +45,11 @@ export class CordovaPopupWindow {
                 return this._error("cordova is undefined")
             }
 
-            const cordova = (window as any).cordova;
-
             var cordovaMetadata = window.cordova.require("cordova/plugin_list").metadata;
             if (this._isInAppBrowserInstalled(cordovaMetadata) === false) {
                 return this._error("InAppBrowser plugin not found")
             }
-            this._popup = cordova.InAppBrowser.open(params.url, this.target, this.features);
+            this._popup = window.cordova.InAppBrowser.open(params.url, this.target, this.features);
             if (this._popup) {
                 Log.debug("CordovaPopupWindow.navigate: popup successfully created");
 

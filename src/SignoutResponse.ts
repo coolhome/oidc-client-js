@@ -4,10 +4,11 @@
 import { UrlUtility } from './UrlUtility';
 
 export class SignoutResponse {
-    error: any;
-    error_description: any;
-    error_uri: any;
-    state: any;
+    error?: string;
+    error_description?: string;
+    error_uri?: string;
+    state?: string;
+
     constructor(url) {
 
         var values = UrlUtility.parseUrlFragment(url, "?");

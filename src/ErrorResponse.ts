@@ -11,8 +11,8 @@ export class ErrorResponse extends Error {
     session_state: any;
 
     constructor({
-        error = undefined,
-        error_description = undefined,
+        error = undefined as string,
+        error_description = undefined as string,
         error_uri = undefined,
         state = undefined,
         session_state = undefined

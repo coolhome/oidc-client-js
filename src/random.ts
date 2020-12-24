@@ -1,13 +1,12 @@
 /**
  * Generates RFC4122 version 4 guid ()
  */
-
-// TODO: Move to own file?
 declare global { 
   interface Window{
      msCrypto: Crypto;
   }
 }
+
 var crypto = (typeof window !== 'undefined') ? (global.crypto || window.msCrypto) : null;
 
 function _cryptoUuidv4() {

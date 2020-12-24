@@ -5,7 +5,7 @@ import { Log } from './Log';
 import { Global } from './Global';
 
 export class UrlUtility {
-    static addQueryParam(url, name, value) {
+    static addQueryParam(url: string, name: string, value: string | number | boolean) {
         if (url.indexOf('?') < 0) {
             url += "?";
         }
@@ -21,43 +21,39 @@ export class UrlUtility {
         return url;
     }
 
-    static parseUrlFragment(value, delimiter = "#", global: Window = window): any {
-        if (typeof value !== 'string'){
-            value = global.location.href;
-        }
+    static parseUrlFragment(url?: string, delimiter = "#", window: Window = global.window) {
+        url = url ?? window.location.href;
 
-        var idx = value.lastIndexOf(delimiter);
+        var idx = url.lastIndexOf(delimiter);
         if (idx >= 0) {
-            value = value.substr(idx + 1);
+            url = url.substr(idx + 1);
         }
 
         if (delimiter === "?") {
             // if we're doing query, then strip off hash fragment before we parse
-            idx = value.indexOf('#');
+            idx = url.indexOf('#');
             if (idx >= 0) {
-                value = value.substr(0, idx);
+                url = url.substr(0, idx);
             }
         }
 
-        const params = {};
+        const params: {
+            [parameter: string]: string
+        } = {};
         const regex = /([^&=]+)=([^&]*)/g;
         let m: string[];
 
         var counter = 0;
-        while (m = regex.exec(value)) {
+        while (m = regex.exec(url)) {
             params[decodeURIComponent(m[1])] = decodeURIComponent(m[2].replace(/\+/g, ' '));
             if (counter++ > 50) {
-                Log.error("UrlUtility.parseUrlFragment: response exceeded expected number of parameters", value);
+                Log.error("UrlUtility.parseUrlFragment: response exceeded expected number of parameters", url);
                 return {
                     error: "Response exceeded expected number of parameters"
                 };
             }
         }
 
-        for (var prop in params) {
-            return params;
-        }
-
-        return {};
+        return params;
     }
 }
